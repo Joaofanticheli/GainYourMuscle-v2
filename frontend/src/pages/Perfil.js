@@ -9,7 +9,7 @@ import Navbar from '../components/Navbar';
 import '../styles/Perfil.css';
 
 const Perfil = () => {
-  const { user, login } = useAuth();
+  const { user } = useAuth();
 
   const [editando, setEditando] = useState(false);
   const [loading, setLoading] = useState(false);
