@@ -83,7 +83,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/workout', workoutRoutes);
 
 // Rota 404 - quando a rota não existe
-app.use('*', (req, res) => {
+app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: 'Rota não encontrada'
