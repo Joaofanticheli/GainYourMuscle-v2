@@ -5,7 +5,7 @@
 import axios from 'axios';
 
 // URL base da API (mude para produção depois)
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://gainyourmuscle-v2.onrender.com/api';
 
 // Cria instância do axios com configurações padrão
 const api = axios.create({
