@@ -67,6 +67,218 @@
   font-weight: 600;
 }
 
+/* ── Abas ── */
+.workout-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.workout-tab {
+  flex: 1;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 9px;
+  color: var(--muted);
+  font-size: 0.9em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.workout-tab:hover {
+  color: var(--dark);
+}
+
+.tab-ativa {
+  background: var(--gradient);
+  color: #07070f !important;
+  box-shadow: 0 0 14px rgba(0,212,255,0.3);
+}
+
+/* ── Treino de Hoje ── */
+.aba-hoje {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.descanso-card {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.descanso-icon {
+  font-size: 3.5em;
+  margin-bottom: 12px;
+}
+
+.descanso-card h2 {
+  font-size: 1.4em;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.descanso-card p {
+  color: var(--muted);
+}
+
+.hoje-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.hoje-titulo {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 4px;
+}
+
+.hoje-progresso {
+  font-size: 0.82em;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.hoje-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.85em;
+  color: var(--muted);
+}
+
+/* Barra de progresso */
+.progresso-bar {
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progresso-fill {
+  height: 100%;
+  background: var(--gradient);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+/* Exercise tracking card */
+.exercise-track-card {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 14px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.exercise-track-card.exercise-feito {
+  border-color: rgba(0,255,136,0.3);
+  background: rgba(0,255,136,0.04);
+}
+
+.exercise-track-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.exercise-track-info {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex: 1;
+}
+
+/* Botão de check */
+.btn-check {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.1em;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.btn-check:hover {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.btn-check-feito {
+  background: var(--success) !important;
+  border-color: var(--success) !important;
+  color: #07070f !important;
+}
+
+/* Inputs de tracking */
+.exercise-track-inputs {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.track-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.track-input-group label {
+  font-size: 0.72em;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.track-input-group input {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  color: var(--dark);
+  padding: 6px 10px;
+  font-size: 0.85em;
+  width: 80px;
+}
+
+.track-obs {
+  flex: 1;
+  min-width: 160px;
+}
+
+.track-obs input {
+  width: 100%;
+}
+
+.track-input-group input:focus {
+  outline: none;
+  border-color: rgba(0,212,255,0.4);
+}
+
 /* Dias */
 .workout-days {
   display: flex;
@@ -322,4 +534,7 @@
   .workout-header h1 { font-size: 1.5em; }
   .day-header { flex-direction: column; align-items: flex-start; }
   .exercise-card { flex-direction: column; }
+  .hoje-header { flex-direction: column; }
+  .exercise-track-inputs { flex-direction: column; }
+  .track-input-group input { width: 100%; }
 }

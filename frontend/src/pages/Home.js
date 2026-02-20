@@ -12,6 +12,9 @@ const Home = () => {
   const { isAuthenticated } = useAuth();
   const [showMotivation, setShowMotivation] = useState(false);
 
+  // Verifica se há token salvo (usuário já tem conta)
+  const temToken = !!localStorage.getItem('token');
+
   // Se já está logado, redireciona para dashboard
   React.useEffect(() => {
     if (isAuthenticated) {
@@ -30,7 +33,24 @@ const Home = () => {
         <h2 className="home-subtitle">Melhore seu estilo de vida!</h2>
       </header>
 
-      {!showMotivation ? (
+      {temToken ? (
+        /* Usuário já tem conta — mostrar boas-vindas */
+        <main className="home-main">
+          <div className="home-welcome">
+            <div className="home-welcome-icon">👋</div>
+            <h2>Bem-vindo de volta!</h2>
+            <p>Sua conta está esperando por você.<br />Continue de onde parou.</p>
+            <div className="home-answers">
+              <button className="btn btn-primary btn-large" onClick={() => navigate('/login')}>
+                Fazer Login
+              </button>
+              <button className="btn btn-outline" onClick={() => navigate('/register')}>
+                Nova Conta
+              </button>
+            </div>
+          </div>
+        </main>
+      ) : !showMotivation ? (
         <main className="home-main">
           <div className="home-question">
             <p>Está pronto</p>

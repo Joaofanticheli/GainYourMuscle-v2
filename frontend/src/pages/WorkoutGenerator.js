@@ -12,8 +12,10 @@ const WorkoutGenerator = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [celebrando, setCelebrando] = useState(false);
 
   const [formData, setFormData] = useState({
+    objetivo: '',
     diasTreino: '',
     experiencia: '',
     fadiga: '',
@@ -38,7 +40,6 @@ const WorkoutGenerator = () => {
     setLoading(true);
 
     try {
-      // Converte diasTreino para número
       const params = {
         ...formData,
         diasTreino: parseInt(formData.diasTreino)
@@ -47,8 +48,7 @@ const WorkoutGenerator = () => {
       const response = await workoutAPI.generate(params);
 
       if (response.data.success) {
-        alert('✅ ' + response.data.message);
-        navigate('/meu-treino');
+        setCelebrando(true);
       }
     } catch (error) {
       setError(
@@ -59,12 +59,54 @@ const WorkoutGenerator = () => {
     }
   };
 
+  // Tela de celebração após geração
+  if (celebrando) {
+    return (
+      <div>
+        <Navbar />
+        <div className="workout-generator-container">
+          <div className="celebracao-card">
+            <div className="celebracao-icone">🎉</div>
+            <h1 className="celebracao-titulo">Treino criado!</h1>
+            <p className="celebracao-subtitulo">
+              Parabéns! Seu treino personalizado está pronto.<br />
+              Hoje é o <strong>Dia 1 do seu projeto</strong> — registre suas medidas iniciais
+              para acompanhar sua evolução ao longo do tempo!
+            </p>
+
+            <div className="celebracao-dica">
+              <p>
+                💡 Registrar seu peso e medidas hoje cria uma <strong>linha de base</strong>.
+                Em semanas você verá a diferença e isso vai te manter motivado(a)!
+              </p>
+            </div>
+
+            <div className="celebracao-acoes">
+              <button
+                className="btn btn-primary btn-large"
+                onClick={() => navigate('/progresso')}
+              >
+                📏 Registrar Dia 1
+              </button>
+              <button
+                className="btn btn-outline"
+                onClick={() => navigate('/meu-treino')}
+              >
+                Ver Meu Treino
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Navbar />
       <div className="workout-generator-container">
         <header className="generator-header">
-          <h1>🏋️ Gerar Treino Personalizado</h1>
+          <h1>Gerar Treino Personalizado</h1>
           <p>Responda o questionário para criarmos seu treino ideal!</p>
         </header>
 
@@ -91,8 +133,43 @@ const WorkoutGenerator = () => {
           <form className="generator-form" onSubmit={handleSubmit}>
             {error && <div className="alert alert-error">{error}</div>}
 
+            {/* ── OBJETIVO PRINCIPAL ── */}
+            <fieldset className="fieldset-objetivo">
+              <legend>Qual é o seu objetivo?</legend>
+              <p className="fieldset-desc">Esta é a pergunta mais importante — ela define todo o seu programa.</p>
+
+              <div className="objetivo-grid">
+                {[
+                  { value: 'hipertrofia',    icon: '💪', label: 'Ganhar Músculo',      desc: 'Aumentar massa muscular' },
+                  { value: 'emagrecimento',  icon: '🔥', label: 'Emagrecer',           desc: 'Reduzir gordura corporal' },
+                  { value: 'forca',          icon: '🏋️', label: 'Ganhar Força',        desc: 'Levantar cargas maiores' },
+                  { value: 'condicionamento',icon: '🏃', label: 'Condicionamento',     desc: 'Melhorar resistência' },
+                  { value: 'saude_geral',    icon: '❤️', label: 'Saúde Geral',         desc: 'Qualidade de vida' },
+                ].map(({ value, icon, label, desc }) => (
+                  <label
+                    key={value}
+                    className={`objetivo-card ${formData.objetivo === value ? 'objetivo-selecionado' : ''}`}
+                  >
+                    <input
+                      type="radio"
+                      name="objetivo"
+                      value={value}
+                      checked={formData.objetivo === value}
+                      onChange={handleChange}
+                      required
+                    />
+                    <span className="objetivo-icon">{icon}</span>
+                    <span className="objetivo-label">{label}</span>
+                    <span className="objetivo-desc">{desc}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            {/* ── AJUSTE FINO ── */}
             <fieldset>
-              <legend>Responda para montar seu treino</legend>
+              <legend>Ajuste fino do seu treino</legend>
+              <p className="fieldset-desc">Agora personalizamos os detalhes para o seu dia a dia.</p>
 
               <div className="form-group">
                 <label htmlFor="diasTreino">

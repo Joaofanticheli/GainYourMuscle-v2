@@ -3,17 +3,19 @@
 // ============================================================================
 
 import React, { useState, useEffect } from 'react';
-import { userAPI } from '../services/api';
+import { userAPI, workoutAPI } from '../services/api';
 import Navbar from '../components/Navbar';
 import '../styles/Progresso.css';
 
 const Progresso = () => {
   const [historico, setHistorico] = useState([]);
+  const [historicoTreinos, setHistoricoTreinos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [sucesso, setSucesso] = useState('');
   const [error, setError] = useState('');
   const [mostrarForm, setMostrarForm] = useState(false);
+  const [diaDoprojeto, setDiaDoprojeto] = useState(null);
 
   const [formData, setFormData] = useState({
     peso: '',
@@ -28,15 +30,51 @@ const Progresso = () => {
   });
 
   useEffect(() => {
-    carregarHistorico();
+    carregarDados();
   }, []);
 
-  const carregarHistorico = async () => {
+  const carregarDados = async () => {
     try {
-      const response = await userAPI.getProgress();
-      setHistorico(response.data.progresso || []);
+      const [progressoRes, workoutRes, historicoTreinoRes] = await Promise.allSettled([
+        userAPI.getProgress(),
+        workoutAPI.getCurrent(),
+        workoutAPI.getHistory()
+      ]);
+
+      if (progressoRes.status === 'fulfilled') {
+        setHistorico(progressoRes.value.data.progresso || []);
+      }
+
+      // Calcula Dia X baseado em workout.createdAt
+      if (workoutRes.status === 'fulfilled' && workoutRes.value.data.workout) {
+        const workout = workoutRes.value.data.workout;
+        const inicio = new Date(workout.createdAt || workout.dataInicio);
+        const hoje = new Date();
+        const diffMs = hoje - inicio;
+        const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
+        setDiaDoprojeto(diffDias);
+      }
+
+      // Histórico de treinos concluídos (para cruzar com registros)
+      if (historicoTreinoRes.status === 'fulfilled') {
+        const workouts = historicoTreinoRes.value.data.workouts || [];
+        // Achata todos os historico[] de todos os treinos
+        const checkins = [];
+        workouts.forEach(w => {
+          if (w.historico && w.historico.length > 0) {
+            w.historico.forEach(h => {
+              checkins.push({
+                data: new Date(h.data),
+                notas: h.feedback?.notas || '',
+                nomeTreino: w.nome
+              });
+            });
+          }
+        });
+        setHistoricoTreinos(checkins);
+      }
     } catch (err) {
-      console.error('Erro ao carregar progresso:', err);
+      console.error('Erro ao carregar dados:', err);
     } finally {
       setLoading(false);
     }
@@ -74,17 +112,28 @@ const Progresso = () => {
 
       await userAPI.addProgress(payload);
       setSucesso('Progresso registrado! Continue assim! 💪');
-      setMostrarForm(false);
+
+      // Reseta form e mantém aberto para próximos registros
       setFormData({
         peso: '', notas: '',
         medidas: { braco: '', peito: '', cintura: '', quadril: '', coxa: '' }
       });
-      carregarHistorico();
+      setMostrarForm(false);
+      carregarDados();
     } catch (err) {
       setError(err.response?.data?.message || 'Erro ao salvar progresso.');
     } finally {
       setSalvando(false);
     }
+  };
+
+  // Retorna o treino feito em determinada data (se houver)
+  const treinoDodia = (data) => {
+    const dataRef = new Date(data);
+    return historicoTreinos.find(t => {
+      const diff = Math.abs(t.data - dataRef);
+      return diff < 24 * 60 * 60 * 1000; // mesmo dia
+    });
   };
 
   if (loading) {
@@ -104,8 +153,11 @@ const Progresso = () => {
       <div className="progresso-container">
         <header className="progresso-header">
           <div>
-            <h1>📈 Meu Progresso</h1>
-            <p>Registre seu peso e medidas para acompanhar sua evolução</p>
+            <h1>Meu Progresso</h1>
+            {diaDoprojeto !== null && (
+              <div className="dia-projeto">Dia {diaDoprojeto} do projeto</div>
+            )}
+            <p>Registre peso e medidas para acompanhar sua evolução</p>
           </div>
           <button
             className="btn btn-primary"
@@ -124,7 +176,7 @@ const Progresso = () => {
             <h2>Novo Registro</h2>
             <form onSubmit={handleSubmit} className="progresso-form">
               <div className="form-section">
-                <h3>Peso e Observações</h3>
+                <h3>Peso</h3>
                 <div className="form-row">
                   <div className="form-group">
                     <label>Peso atual (kg)</label>
@@ -140,20 +192,20 @@ const Progresso = () => {
                     />
                   </div>
                 </div>
-                </div>
+              </div>
 
               <div className="form-section">
                 <h3>Medidas (cm) — opcional</h3>
                 <div className="medidas-grid">
                   {[
-                    { name: 'braco', label: 'Braço' },
-                    { name: 'peito', label: 'Peito' },
+                    { name: 'braco',   label: 'Braço' },
+                    { name: 'peito',   label: 'Peito' },
                     { name: 'cintura', label: 'Cintura' },
                     { name: 'quadril', label: 'Quadril' },
-                    { name: 'coxa', label: 'Coxa' }
+                    { name: 'coxa',    label: 'Coxa' }
                   ].map(({ name, label }) => (
                     <div className="form-group" key={name}>
-                      <label>{label}</label>
+                      <label className="medida-label">{label}</label>
                       <input
                         type="number"
                         name={name}
@@ -166,6 +218,20 @@ const Progresso = () => {
                       />
                     </div>
                   ))}
+                </div>
+              </div>
+
+              <div className="form-section">
+                <h3>Observações</h3>
+                <div className="form-group">
+                  <textarea
+                    name="notas"
+                    value={formData.notas}
+                    onChange={handleChange}
+                    placeholder="Olá, eu do futuro! Hoje estou começando minha jornada. Peso X kg e ainda não vejo muito resultado — mas estou aqui, dando o primeiro passo. Não desista de mim!"
+                    rows="4"
+                    disabled={salvando}
+                  />
                 </div>
               </div>
 
@@ -183,40 +249,50 @@ const Progresso = () => {
         {/* Histórico */}
         {historico.length === 0 ? (
           <div className="card empty-state">
-            <h2>Nenhum registro ainda 📋</h2>
+            <h2>Nenhum registro ainda</h2>
             <p>Clique em "Registrar Hoje" para começar a acompanhar seu progresso!</p>
           </div>
         ) : (
           <div className="historico-lista">
             <h2>Histórico</h2>
-            {historico.map((registro, index) => (
-              <div className="card registro-card" key={registro._id || index}>
-                <div className="registro-header">
-                  <span className="registro-data">
-                    📅 {new Date(registro.data).toLocaleDateString('pt-BR', {
-                      day: '2-digit', month: 'long', year: 'numeric'
-                    })}
-                  </span>
-                  {registro.peso && (
-                    <span className="registro-peso">{registro.peso} kg</span>
+            {historico.map((registro, index) => {
+              const treinoFeito = treinoDodia(registro.data);
+              return (
+                <div className="card registro-card" key={registro._id || index}>
+                  <div className="registro-header">
+                    <span className="registro-data">
+                      {new Date(registro.data).toLocaleDateString('pt-BR', {
+                        day: '2-digit', month: 'long', year: 'numeric'
+                      })}
+                    </span>
+                    {registro.peso && (
+                      <span className="registro-peso">{registro.peso} kg</span>
+                    )}
+                  </div>
+
+                  {registro.medidas && Object.values(registro.medidas).some(v => v) && (
+                    <div className="registro-medidas">
+                      {registro.medidas.braco   && <span>Braço: <strong>{registro.medidas.braco}cm</strong></span>}
+                      {registro.medidas.peito   && <span>Peito: <strong>{registro.medidas.peito}cm</strong></span>}
+                      {registro.medidas.cintura && <span>Cintura: <strong>{registro.medidas.cintura}cm</strong></span>}
+                      {registro.medidas.quadril && <span>Quadril: <strong>{registro.medidas.quadril}cm</strong></span>}
+                      {registro.medidas.coxa    && <span>Coxa: <strong>{registro.medidas.coxa}cm</strong></span>}
+                    </div>
+                  )}
+
+                  {treinoFeito && (
+                    <div className="registro-treino-feito">
+                      ✅ Treino concluído: <strong>{treinoFeito.nomeTreino}</strong>
+                      {treinoFeito.notas && <span className="registro-treino-notas"> — {treinoFeito.notas}</span>}
+                    </div>
+                  )}
+
+                  {registro.notas && (
+                    <p className="registro-notas">"{registro.notas}"</p>
                   )}
                 </div>
-
-                {registro.medidas && Object.values(registro.medidas).some(v => v) && (
-                  <div className="registro-medidas">
-                    {registro.medidas.braco && <span>💪 Braço: {registro.medidas.braco}cm</span>}
-                    {registro.medidas.peito && <span>🫁 Peito: {registro.medidas.peito}cm</span>}
-                    {registro.medidas.cintura && <span>⬛ Cintura: {registro.medidas.cintura}cm</span>}
-                    {registro.medidas.quadril && <span>🍑 Quadril: {registro.medidas.quadril}cm</span>}
-                    {registro.medidas.coxa && <span>🦵 Coxa: {registro.medidas.coxa}cm</span>}
-                  </div>
-                )}
-
-                {registro.notas && (
-                  <p className="registro-notas">💬 {registro.notas}</p>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

@@ -172,21 +172,42 @@ function selecionarExercicios(grupo, params) {
  * Determina séries e repetições baseado nos parâmetros
  * @param {object} params - Parâmetros do usuário
  * @param {string} grupo - Grupo muscular
- * @returns {object} - Séries e repetições
+ * @returns {object} - Séries e repetições e descanso
  */
 function determinarSeriesReps(params, grupo) {
-  const { experiencia, fadiga, duracao } = params;
+  const { experiencia, fadiga, duracao, objetivo } = params;
 
   let series = 3;
   let reps = '8-12';
+  let descanso = 60;
+
+  // Prioridade: objetivo define o perfil base
+  if (objetivo === 'forca') {
+    series = 5;
+    reps = '4-6';
+    descanso = 120;
+  } else if (objetivo === 'emagrecimento' || objetivo === 'condicionamento') {
+    series = 3;
+    reps = '15-20';
+    descanso = 40;
+  } else if (objetivo === 'saude_geral') {
+    series = 3;
+    reps = '10-15';
+    descanso = 60;
+  } else {
+    // hipertrofia (default)
+    series = 3;
+    reps = '8-12';
+    descanso = 60;
+  }
 
   // Ajusta por experiência
   if (experiencia === 'nunca') {
-    series = 2;
-    reps = '10-15';
+    series = Math.max(2, series - 1);
+    if (objetivo !== 'forca') reps = '10-15';
   } else if (experiencia === 'intermediaria') {
-    series = 4;
-    reps = '6-10';
+    series = series + 1;
+    if (objetivo === 'hipertrofia' || !objetivo) reps = '6-10';
   }
 
   // Ajusta por fadiga
@@ -203,13 +224,14 @@ function determinarSeriesReps(params, grupo) {
     series = series + 1;
   }
 
-  // Abdômen tem mais reps
+  // Abdômen tem mais reps e menos séries
   if (grupo === 'abdomen') {
     reps = '15-20';
     series = Math.min(series, 3);
+    descanso = 30;
   }
 
-  return { series, reps };
+  return { series, reps, descanso };
 }
 
 /**
@@ -227,7 +249,8 @@ function gerarTreinoPersonalizado(params) {
     disciplina = 'intermediario',
     variedade = 'intermediario',
     ambiente = 'grande',
-    muscular = 'pouco'
+    muscular = 'pouco',
+    objetivo = 'hipertrofia'
   } = params;
 
   // 1. Determina a divisão de treino
@@ -257,14 +280,14 @@ function gerarTreinoPersonalizado(params) {
         const randomIndex = Math.floor(Math.random() * disponiveis.length);
         const exercicio = disponiveis.splice(randomIndex, 1)[0];
 
-        const { series, reps } = determinarSeriesReps(params, grupo);
+        const { series, reps, descanso: descansoBase } = determinarSeriesReps(params, grupo);
 
         exerciciosSelecionados.push({
           nome: exercicio.nome,
           grupoMuscular: grupo,
           series,
           repeticoes: reps,
-          descanso: fadiga === 'evito' ? 90 : fadiga === 'nao' ? 45 : 60,
+          descanso: descansoBase,
           observacoes: lesao !== 'nenhuma' ? 'Execute com cuidado, respeitando seus limites' : '',
           videoUrl: exercicio.videoUrl || '',
           ordem: ordem++
@@ -289,11 +312,30 @@ function gerarTreinoPersonalizado(params) {
     };
   });
 
-  // 3. Retorna o treino completo
+  // 3. Monta nome e descrição baseados no objetivo
+  const objetivoNomes = {
+    hipertrofia:    { nome: 'Hipertrofia', desc: 'Focado em ganho de massa muscular com séries moderadas e sobrecarga progressiva.' },
+    forca:          { nome: 'Força',       desc: 'Focado em desenvolver força máxima com cargas altas e baixas repetições.' },
+    emagrecimento:  { nome: 'Emagrecimento', desc: 'Focado em queima calórica com alta repetição, pouco descanso e volume elevado.' },
+    condicionamento:{ nome: 'Condicionamento', desc: 'Focado em resistência e condicionamento físico geral.' },
+    saude_geral:    { nome: 'Saúde Geral', desc: 'Equilíbrio entre força, resistência e bem-estar, ideal para qualidade de vida.' }
+  };
+  const nivelNome = experiencia === 'nunca' ? 'Iniciante' : experiencia === 'novato' ? 'Novato' : 'Intermediário';
+  const objInfo = objetivoNomes[objetivo] || objetivoNomes.hipertrofia;
+
+  // 4. Mapeia objetivo para o campo `tipo` do modelo
+  const tipoMap = {
+    hipertrofia: 'hipertrofia',
+    forca: 'forca',
+    emagrecimento: 'emagrecimento',
+    condicionamento: 'resistencia',
+    saude_geral: 'funcional'
+  };
+
   return {
-    nome: `Treino ${divisao.tipo} - ${experiencia === 'nunca' ? 'Iniciante' : experiencia === 'novato' ? 'Novato' : 'Intermediário'}`,
-    descricao: `Treino personalizado focado em hipertrofia, adaptado ao seu nível e preferências.`,
-    tipo: 'hipertrofia',
+    nome: `Treino ${divisao.tipo} - ${objInfo.nome} (${nivelNome})`,
+    descricao: objInfo.desc,
+    tipo: tipoMap[objetivo] || 'hipertrofia',
     nivel: experiencia === 'nunca' ? 'iniciante' : experiencia === 'novato' ? 'intermediario' : 'avancado',
     divisao: divisao.tipo,
     diasPorSemana: diasTreino,
