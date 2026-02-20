@@ -140,18 +140,7 @@ const Progresso = () => {
                     />
                   </div>
                 </div>
-                <div className="form-group">
-                  <label>Observações (opcional)</label>
-                  <textarea
-                    name="notas"
-                    value={formData.notas}
-                    onChange={handleChange}
-                    placeholder="Como você está se sentindo? Alguma conquista do dia?"
-                    rows="3"
-                    disabled={salvando}
-                  />
                 </div>
-              </div>
 
               <div className="form-section">
                 <h3>Medidas (cm) — opcional</h3>

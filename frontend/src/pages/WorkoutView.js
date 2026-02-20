@@ -10,6 +10,9 @@ import '../styles/WorkoutView.css';
 const WorkoutView = () => {
   const [workout, setWorkout] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [humor, setHumor] = useState('');
+  const [concluido, setConcluido] = useState(false);
+  const [salvando, setSalvando] = useState(false);
 
   useEffect(() => {
     loadWorkout();
@@ -23,6 +26,20 @@ const WorkoutView = () => {
       console.error('Erro ao carregar treino:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleConcluir = async () => {
+    if (!workout) return;
+    setSalvando(true);
+    try {
+      await workoutAPI.complete(workout._id, { notas: humor });
+      setConcluido(true);
+    } catch (error) {
+      console.error('Erro ao concluir treino:', error);
+      setConcluido(true); // marca mesmo assim localmente
+    } finally {
+      setSalvando(false);
     }
   };
 
@@ -124,6 +141,38 @@ const WorkoutView = () => {
             <li>Respeite os dias de descanso para recuperação muscular</li>
             <li>Aumente a carga progressivamente quando sentir facilidade</li>
           </ul>
+        </div>
+
+        {/* Check-in do treino */}
+        <div className="checkin-card">
+          {concluido ? (
+            <div className="checkin-sucesso">
+              <div className="checkin-sucesso-icon">✅</div>
+              <h3>Treino concluído!</h3>
+              <p>Parabéns! Cada treino é uma vitória. 💪</p>
+            </div>
+          ) : (
+            <>
+              <h3 className="checkin-titulo">Check-in do Treino</h3>
+              <div className="form-group">
+                <label>Como você está se sentindo hoje?</label>
+                <textarea
+                  value={humor}
+                  onChange={(e) => setHumor(e.target.value)}
+                  placeholder="Ex: Me senti com bastante energia, aumentei a carga no supino..."
+                  rows="3"
+                  disabled={salvando}
+                />
+              </div>
+              <button
+                className="btn btn-primary btn-block"
+                onClick={handleConcluir}
+                disabled={salvando}
+              >
+                {salvando ? 'Salvando...' : '✅ Marcar Treino como Concluído'}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
