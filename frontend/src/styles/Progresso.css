@@ -1,6 +1,4 @@
-/* ============================================================
-   PROGRESSO
-   ============================================================ */
+/* ── PROGRESSO ── */
 
 .progresso-container {
   max-width: 860px;
@@ -20,23 +18,26 @@
 .progresso-header h1 {
   font-size: 2em;
   font-weight: 800;
-  color: var(--dark);
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .progresso-header p {
-  color: #666;
+  color: var(--muted);
   margin-top: 6px;
-}
-
-/* Formulário */
-.progresso-form-card {
-  margin-bottom: 24px;
+  font-size: 0.88em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .progresso-form-card h2 {
-  font-size: 1.1em;
+  font-size: 0.85em;
   font-weight: 700;
-  color: var(--dark);
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   margin-bottom: 20px;
 }
 
@@ -45,42 +46,19 @@
 }
 
 .form-section h3 {
-  font-size: 0.95em;
-  font-weight: 600;
-  color: var(--primary);
-  margin-bottom: 14px;
+  font-size: 0.78em;
+  font-weight: 700;
+  color: var(--secondary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  margin-bottom: 14px;
 }
 
 .progresso-form .form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 14px;
-}
-
-.progresso-form .form-group label {
-  font-weight: 600;
-  font-size: 0.9em;
-  color: var(--dark);
-}
-
-.progresso-form .form-group input,
-.progresso-form .form-group textarea {
-  padding: 10px 14px;
-  border: 2px solid #e8e8e8;
-  border-radius: 8px;
-  font-size: 1em;
-  transition: border-color 0.2s;
-  font-family: inherit;
-  resize: vertical;
-}
-
-.progresso-form .form-group input:focus,
-.progresso-form .form-group textarea:focus {
-  outline: none;
-  border-color: var(--primary);
+  margin-bottom: 12px;
 }
 
 .progresso-form .form-row {
@@ -91,20 +69,22 @@
 
 .medidas-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
 }
 
 /* Histórico */
 .historico-lista h2 {
-  font-size: 1.2em;
+  font-size: 0.85em;
   font-weight: 700;
-  color: var(--dark);
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   margin-bottom: 16px;
 }
 
 .registro-card {
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .registro-header {
@@ -117,57 +97,49 @@
 }
 
 .registro-data {
-  font-size: 0.9em;
-  color: #666;
+  font-size: 0.85em;
+  color: var(--muted);
   font-weight: 500;
 }
 
 .registro-peso {
   background: var(--gradient);
-  color: white;
-  padding: 4px 14px;
+  color: #07070f;
+  padding: 3px 14px;
   border-radius: 16px;
-  font-weight: 700;
-  font-size: 1em;
+  font-weight: 800;
+  font-size: 0.9em;
 }
 
 .registro-medidas {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 8px;
 }
 
 .registro-medidas span {
-  background: #f0f2ff;
+  background: rgba(0,212,255,0.07);
+  border: 1px solid rgba(0,212,255,0.2);
   color: var(--primary);
-  padding: 4px 10px;
+  padding: 3px 10px;
   border-radius: 12px;
-  font-size: 0.82em;
+  font-size: 0.78em;
   font-weight: 600;
 }
 
 .registro-notas {
-  font-size: 0.9em;
-  color: #666;
+  font-size: 0.85em;
+  color: var(--muted);
   font-style: italic;
   margin-top: 6px;
   padding-top: 8px;
-  border-top: 1px solid #f0f0f0;
-}
-
-.alert-success {
-  background: #e8f8ee;
-  color: #27ae60;
-  border-left: 4px solid #27ae60;
-  padding: 12px 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  border-top: 1px solid rgba(255,255,255,0.05);
 }
 
 .empty-state {
   text-align: center;
-  padding: 40px 20px;
+  padding: 50px 20px;
 }
 
 .empty-state h2 {
@@ -177,10 +149,11 @@
 }
 
 .empty-state p {
-  color: #666;
+  color: var(--muted);
 }
 
 @media (max-width: 540px) {
   .progresso-header { flex-direction: column; }
   .medidas-grid { grid-template-columns: 1fr 1fr; }
+  .progresso-form .form-row { grid-template-columns: 1fr; }
 }

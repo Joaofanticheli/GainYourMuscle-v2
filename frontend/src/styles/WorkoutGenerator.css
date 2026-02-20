@@ -1,6 +1,4 @@
-/* ============================================================
-   WORKOUT GENERATOR
-   ============================================================ */
+/* ── WORKOUT GENERATOR ── */
 
 .workout-generator-container {
   max-width: 1000px;
@@ -16,56 +14,70 @@
 .generator-header h1 {
   font-size: 2em;
   font-weight: 800;
-  color: var(--dark);
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(0,212,255,0.3));
 }
 
 .generator-header p {
-  color: #666;
+  color: var(--muted);
   margin-top: 8px;
-  font-size: 1.05em;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .generator-content {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 30px;
+  gap: 24px;
   align-items: start;
 }
 
+/* Painel lateral de info */
 .generator-info {
-  background: var(--gradient);
-  color: white;
+  background: var(--card);
+  border: 1px solid rgba(168,85,247,0.25);
   border-radius: 16px;
   padding: 28px;
   position: sticky;
   top: 84px;
+  box-shadow: 0 0 24px rgba(168,85,247,0.1);
 }
 
 .generator-info h2 {
-  font-size: 1.15em;
+  font-size: 0.85em;
   font-weight: 700;
   margin-bottom: 16px;
+  color: var(--secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .generator-info p {
-  font-size: 0.95em;
+  font-size: 0.88em;
   line-height: 1.7;
-  opacity: 0.92;
+  color: var(--muted);
   margin-bottom: 12px;
 }
 
 .generator-trust {
   margin-top: 20px;
-  font-size: 1.1em !important;
-  opacity: 1 !important;
+  font-size: 1em !important;
+  color: var(--primary) !important;
   text-align: center;
+  font-weight: 700 !important;
 }
 
+/* Formulário */
 .generator-form {
-  background: white;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 30px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: var(--glow-primary);
 }
 
 .generator-form fieldset {
@@ -74,41 +86,12 @@
 }
 
 .generator-form legend {
-  font-size: 1.1em;
+  font-size: 0.85em;
   font-weight: 700;
-  color: var(--dark);
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   margin-bottom: 20px;
-  padding: 0;
-}
-
-.generator-form .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 18px;
-}
-
-.generator-form .form-group label {
-  font-weight: 600;
-  font-size: 0.9em;
-  color: var(--dark);
-}
-
-.generator-form .form-group select {
-  padding: 12px 14px;
-  border: 2px solid #e8e8e8;
-  border-radius: 8px;
-  font-size: 1em;
-  transition: border-color 0.2s;
-  background: #fafafa;
-  color: var(--dark);
-  cursor: pointer;
-}
-
-.generator-form .form-group select:focus {
-  outline: none;
-  border-color: var(--primary);
-  background: white;
 }
 
 @media (max-width: 720px) {

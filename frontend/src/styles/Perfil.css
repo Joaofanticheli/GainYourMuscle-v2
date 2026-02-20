@@ -1,6 +1,4 @@
-/* ============================================================
-   PERFIL
-   ============================================================ */
+/* ── PERFIL ── */
 
 .perfil-container {
   max-width: 900px;
@@ -15,28 +13,35 @@
 .perfil-header h1 {
   font-size: 2em;
   font-weight: 800;
-  color: var(--dark);
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .perfil-header p {
-  color: #666;
+  color: var(--muted);
   margin-top: 6px;
+  font-size: 0.88em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .perfil-grid {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 18px;
+  margin-bottom: 18px;
 }
 
-/* Card de avatar */
 .perfil-card {
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  border-color: rgba(168,85,247,0.25);
+  box-shadow: 0 0 24px rgba(168,85,247,0.1);
 }
 
 .perfil-avatar {
@@ -49,27 +54,27 @@
   justify-content: center;
   font-size: 2.2em;
   font-weight: 800;
-  color: white;
+  color: #07070f;
   margin-bottom: 8px;
+  box-shadow: 0 0 24px rgba(0,212,255,0.4);
 }
 
 .perfil-card h2 {
-  font-size: 1.2em;
+  font-size: 1.1em;
   font-weight: 700;
   color: var(--dark);
 }
 
 .perfil-email {
-  font-size: 0.9em;
-  color: #888;
+  font-size: 0.85em;
+  color: var(--muted);
 }
 
 .perfil-membro {
-  font-size: 0.8em;
-  color: #aaa;
+  font-size: 0.78em;
+  color: rgba(255,255,255,0.2);
 }
 
-/* Cabeçalho do form */
 .perfil-form-header {
   display: flex;
   justify-content: space-between;
@@ -78,76 +83,48 @@
 }
 
 .perfil-form-header h2 {
-  font-size: 1.1em;
+  font-size: 0.85em;
   font-weight: 700;
-  color: var(--dark);
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .btn-sm {
   padding: 6px 14px;
-  font-size: 0.85em;
+  font-size: 0.82em;
 }
 
-/* Dados em modo visualização */
 .perfil-dados {
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
 .dado-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-.dado-item:last-child {
-  border-bottom: none;
-}
+.dado-item:last-child { border-bottom: none; }
 
 .dado-label {
-  font-size: 0.9em;
-  color: #666;
+  font-size: 0.88em;
+  color: var(--muted);
 }
 
 .dado-valor {
   font-weight: 600;
   color: var(--dark);
+  font-size: 0.9em;
 }
 
-/* Formulário de edição */
 .perfil-edit-form {
   display: flex;
   flex-direction: column;
   gap: 4px;
-}
-
-.perfil-edit-form .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
-}
-
-.perfil-edit-form .form-group label {
-  font-weight: 600;
-  font-size: 0.9em;
-  color: var(--dark);
-}
-
-.perfil-edit-form .form-group input {
-  padding: 10px 14px;
-  border: 2px solid #e8e8e8;
-  border-radius: 8px;
-  font-size: 1em;
-  transition: border-color 0.2s;
-}
-
-.perfil-edit-form .form-group input:focus {
-  outline: none;
-  border-color: var(--primary);
 }
 
 .perfil-edit-form .form-row {
@@ -168,9 +145,11 @@
 }
 
 .imc-card h2 {
-  font-size: 1.1em;
+  font-size: 0.85em;
   font-weight: 700;
-  color: var(--dark);
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   margin-bottom: 16px;
 }
 
@@ -182,30 +161,25 @@
 }
 
 .imc-valor {
-  font-size: 3em;
-  font-weight: 800;
+  font-size: 3.2em;
+  font-weight: 900;
   line-height: 1;
+  text-shadow: 0 0 20px currentColor;
 }
 
 .imc-categoria {
-  font-size: 1.1em;
-  font-weight: 600;
+  font-size: 1em;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .imc-info {
-  color: #888;
-  font-size: 0.9em;
+  color: var(--muted);
+  font-size: 0.85em;
   max-width: 500px;
   margin-top: 8px;
-}
-
-.alert-success {
-  background: #e8f8ee;
-  color: #27ae60;
-  border-left: 4px solid #27ae60;
-  padding: 12px 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  line-height: 1.6;
 }
 
 @media (max-width: 640px) {

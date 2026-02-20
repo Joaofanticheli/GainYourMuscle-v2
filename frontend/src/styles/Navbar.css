@@ -1,14 +1,13 @@
-/* ============================================================
-   NAVBAR
-   ============================================================ */
+/* ── NAVBAR ── */
 
 .navbar {
-  background: var(--gradient);
-  color: white;
-  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.4);
+  background: rgba(7, 7, 15, 0.92);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.08);
 }
 
 .navbar-container {
@@ -27,58 +26,68 @@
 }
 
 .navbar-brand h1 {
-  font-size: 1.3em;
+  font-size: 1.25em;
   font-weight: 800;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   letter-spacing: -0.5px;
+  text-shadow: none;
+  filter: drop-shadow(0 0 8px rgba(0,212,255,0.5));
 }
 
 .navbar-menu {
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   flex-wrap: wrap;
 }
 
 .navbar-menu li a {
-  color: rgba(255,255,255,0.9);
+  color: var(--muted);
   text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 0.9em;
+  padding: 7px 12px;
+  border-radius: 7px;
+  font-size: 0.88em;
   font-weight: 500;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  border: 1px solid transparent;
 }
 
 .navbar-menu li a:hover {
-  background: rgba(255,255,255,0.2);
-  color: white;
+  color: var(--primary);
+  background: rgba(0, 212, 255, 0.08);
+  border-color: var(--border);
 }
 
 .navbar-user span {
-  font-size: 0.85em;
-  opacity: 0.8;
+  font-size: 0.82em;
+  color: var(--muted);
   padding: 0 8px;
 }
 
 .btn-logout {
-  background: rgba(255,255,255,0.2);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.4);
-  padding: 8px 16px;
-  border-radius: 8px;
+  background: rgba(255, 68, 102, 0.1);
+  color: #ff6688;
+  border: 1px solid rgba(255, 68, 102, 0.25);
+  padding: 7px 16px;
+  border-radius: 7px;
   font-size: 0.85em;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .btn-logout:hover {
-  background: rgba(255,255,255,0.35);
+  background: rgba(255, 68, 102, 0.2);
+  border-color: rgba(255, 68, 102, 0.5);
+  box-shadow: 0 0 16px rgba(255, 68, 102, 0.3);
 }
 
 @media (max-width: 640px) {
-  .navbar-container { flex-wrap: wrap; height: auto; padding: 12px 16px; }
-  .navbar-menu { gap: 4px; }
+  .navbar-container { flex-wrap: wrap; height: auto; padding: 10px 14px; gap: 8px; }
   .navbar-user { display: none; }
+  .navbar-menu { gap: 2px; }
 }
