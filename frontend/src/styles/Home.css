@@ -1,0 +1,118 @@
+/* ============================================================
+   HOME PAGE
+   ============================================================ */
+
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--gradient);
+  color: white;
+}
+
+.home-header {
+  text-align: center;
+  padding: 60px 20px 20px;
+}
+
+.home-title {
+  font-size: 3em;
+  font-weight: 800;
+  letter-spacing: -1px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.home-subtitle {
+  font-size: 1.3em;
+  font-weight: 400;
+  margin-top: 10px;
+  opacity: 0.9;
+}
+
+.home-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.home-question {
+  text-align: center;
+  font-size: 2em;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 40px;
+}
+
+.home-answers {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.home-answers .btn {
+  min-width: 150px;
+  font-size: 1.1em;
+}
+
+.home-answers .btn-secondary {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: 2px solid rgba(255,255,255,0.5);
+}
+
+.home-answers .btn-secondary:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+/* Tela de motivação */
+.motivation-text {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.motivation-content {
+  background: rgba(255,255,255,0.15);
+  border-radius: 16px;
+  padding: 40px;
+  backdrop-filter: blur(8px);
+}
+
+.motivation-content p {
+  margin-bottom: 16px;
+  font-size: 1.05em;
+  line-height: 1.7;
+}
+
+.home-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.home-actions .btn-outline {
+  border-color: white;
+  color: white;
+}
+
+.home-actions .btn-outline:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.home-footer {
+  text-align: center;
+  padding: 20px;
+  opacity: 0.7;
+  font-size: 0.9em;
+}
+
+@media (max-width: 600px) {
+  .home-title { font-size: 2em; }
+  .home-question { font-size: 1.5em; }
+  .motivation-content { padding: 24px; }
+}
