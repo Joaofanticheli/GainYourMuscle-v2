@@ -234,7 +234,7 @@ function gerarTreinoPersonalizado(params) {
   const divisao = determinarDivisao(diasTreino);
 
   // 2. Gera os dias de treino
-  const diasTreino = divisao.dias.map((dia, index) => {
+  const diasGerados = divisao.dias.map((dia, index) => {
     const exerciciosDoDia = [];
     let ordem = 1;
 
@@ -297,7 +297,7 @@ function gerarTreinoPersonalizado(params) {
     nivel: experiencia === 'nunca' ? 'iniciante' : experiencia === 'novato' ? 'intermediario' : 'avancado',
     divisao: divisao.tipo,
     diasPorSemana: diasTreino,
-    dias: diasTreino,
+    dias: diasGerados,
     parametros: params
   };
 }
