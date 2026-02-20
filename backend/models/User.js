@@ -201,24 +201,13 @@ const UserSchema = new mongoose.Schema({
  * Executado ANTES de salvar o documento no banco
  * Usado para criptografar a senha antes de salvar
  */
-UserSchema.pre('save', async function(next) {
+UserSchema.pre('save', async function() {
   // Se a senha não foi modificada, não precisa criptografar novamente
-  if (!this.isModified('password')) {
-    return next();
-  }
+  if (!this.isModified('password')) return;
 
-  try {
-    // Gera um "salt" (sal) para a criptografia
-    // Quanto maior o número, mais seguro, mas mais lento (10 é um bom equilíbrio)
-    const salt = await bcrypt.genSalt(10);
-
-    // Criptografa a senha usando o salt
-    this.password = await bcrypt.hash(this.password, salt);
-
-    next();
-  } catch (error) {
-    next(error);
-  }
+  // Gera um "salt" e criptografa a senha
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 // ============================================================================
