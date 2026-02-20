@@ -1,5 +1,7 @@
 # 💪 GainYourMuscle v2.0
 
+🌐 **Site online:** https://gain-your-muscle-v2.vercel.app
+
 Plataforma web completa para motivação fitness, geração de treinos personalizados e acompanhamento de progresso.
 
 ## 🎯 Objetivo
