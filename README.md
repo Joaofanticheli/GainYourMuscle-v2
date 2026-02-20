@@ -6,7 +6,7 @@ Plataforma web completa para motivação fitness, geração de treinos personali
 
 Desconstruir a ideia de que:
 - Academia é chata
-- Resultados só vêm de esteroides
+- Resultados só vêm de esteroides ou canetas emagrecedoras
 - É preciso dieta extremamente regrada
 
 **Filosofia:** Fitness sustentável, prazeroso e adaptado à SUA vida!
@@ -201,7 +201,7 @@ MIT License - Sinta-se livre para usar e modificar!
 
 ## 👨‍💻 Autor
 
-Desenvolvido com 💪 por [Seu Nome]
+Desenvolvido com 💪 por Joao fanticheli
 
 ---
 
