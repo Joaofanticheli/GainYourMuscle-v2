@@ -8,6 +8,22 @@ import { userAPI } from '../services/api';
 import Navbar from '../components/Navbar';
 import '../styles/Perfil.css';
 
+const EyeIcon = ({ visivel }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    {visivel ? (
+      <>
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </>
+    ) : (
+      <>
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+        <line x1="1" y1="1" x2="23" y2="23"/>
+      </>
+    )}
+  </svg>
+);
+
 const Perfil = () => {
   const { user } = useAuth();
 
@@ -15,6 +31,7 @@ const Perfil = () => {
   const [loading, setLoading] = useState(false);
   const [sucesso, setSucesso] = useState('');
   const [error, setError] = useState('');
+  const [ocultarDados, setOcultarDados] = useState(false);
 
   const [formData, setFormData] = useState({
     nome: user?.nome || '',
@@ -57,24 +74,23 @@ const Perfil = () => {
     setError('');
   };
 
+  // Máscara de privacidade
+  const m = (valor, sufixo = '') => ocultarDados ? '•••' : (valor ? `${valor}${sufixo}` : '—');
+
   return (
     <div>
       <Navbar />
       <div className="perfil-container">
         <header className="perfil-header">
-          <h1>👤 Meu Perfil</h1>
+          <h1>Meu Perfil</h1>
           <p>Suas informações pessoais e físicas</p>
         </header>
 
-        {sucesso && (
-          <div className="alert alert-success">{sucesso}</div>
-        )}
-        {error && (
-          <div className="alert alert-error">{error}</div>
-        )}
+        {sucesso && <div className="alert alert-success">{sucesso}</div>}
+        {error && <div className="alert alert-error">{error}</div>}
 
         <div className="perfil-grid">
-          {/* Card de informações */}
+          {/* Card de identificação */}
           <div className="card perfil-card">
             <div className="perfil-avatar">
               <span>{user?.nome?.charAt(0).toUpperCase()}</span>
@@ -90,14 +106,26 @@ const Perfil = () => {
           <div className="card">
             <div className="perfil-form-header">
               <h2>Dados Pessoais</h2>
-              {!editando && (
+              <div className="perfil-form-actions">
+                {/* Botão ocultar dados físicos */}
                 <button
-                  className="btn btn-outline btn-sm"
-                  onClick={() => setEditando(true)}
+                  className="btn-ocultar"
+                  onClick={() => setOcultarDados(!ocultarDados)}
+                  title={ocultarDados ? 'Mostrar dados físicos' : 'Ocultar dados físicos'}
                 >
-                  ✏️ Editar
+                  <EyeIcon visivel={!ocultarDados} />
+                  {ocultarDados ? 'Mostrar' : 'Ocultar'}
                 </button>
-              )}
+
+                {!editando && (
+                  <button
+                    className="btn btn-outline btn-sm"
+                    onClick={() => setEditando(true)}
+                  >
+                    Editar
+                  </button>
+                )}
+              </div>
             </div>
 
             {!editando ? (
@@ -122,11 +150,15 @@ const Perfil = () => {
                 </div>
                 <div className="dado-item">
                   <span className="dado-label">Peso</span>
-                  <span className="dado-valor">{user?.peso} kg</span>
+                  <span className={`dado-valor ${ocultarDados ? 'dado-oculto' : ''}`}>
+                    {m(user?.peso, ' kg')}
+                  </span>
                 </div>
                 <div className="dado-item">
                   <span className="dado-label">Altura</span>
-                  <span className="dado-valor">{user?.altura} cm</span>
+                  <span className={`dado-valor ${ocultarDados ? 'dado-oculto' : ''}`}>
+                    {m(user?.altura, ' cm')}
+                  </span>
                 </div>
                 <div className="dado-item">
                   <span className="dado-label">Frequência Atual</span>
@@ -224,16 +256,26 @@ const Perfil = () => {
 
         {/* IMC calculado */}
         <div className="card imc-card">
-          <h2>📊 Seu IMC</h2>
-          <ImcDisplay peso={user?.peso} altura={user?.altura} />
+          <h2>Seu IMC</h2>
+          <ImcDisplay peso={user?.peso} altura={user?.altura} oculto={ocultarDados} />
         </div>
       </div>
     </div>
   );
 };
 
-const ImcDisplay = ({ peso, altura }) => {
+const ImcDisplay = ({ peso, altura, oculto }) => {
   if (!peso || !altura) return <p>Dados insuficientes para calcular o IMC.</p>;
+
+  if (oculto) {
+    return (
+      <div className="imc-display">
+        <div className="imc-valor dado-oculto" style={{ color: 'var(--muted)' }}>•••</div>
+        <div className="imc-categoria dado-oculto" style={{ color: 'var(--muted)' }}>oculto</div>
+        <p className="imc-info">O IMC é apenas uma referência. Massa muscular não é gordura!</p>
+      </div>
+    );
+  }
 
   const alturaM = altura / 100;
   const imc = (peso / (alturaM * alturaM)).toFixed(1);
@@ -241,10 +283,10 @@ const ImcDisplay = ({ peso, altura }) => {
   let categoria = '';
   let cor = '';
 
-  if (imc < 18.5) { categoria = 'Abaixo do peso'; cor = '#3498db'; }
-  else if (imc < 25) { categoria = 'Peso normal'; cor = '#27ae60'; }
-  else if (imc < 30) { categoria = 'Sobrepeso'; cor = '#f39c12'; }
-  else { categoria = 'Obesidade'; cor = '#e74c3c'; }
+  if (imc < 18.5)      { categoria = 'Abaixo do peso'; cor = '#3498db'; }
+  else if (imc < 25)   { categoria = 'Peso normal';    cor = '#27ae60'; }
+  else if (imc < 30)   { categoria = 'Sobrepeso';      cor = '#f39c12'; }
+  else                  { categoria = 'Obesidade';      cor = '#e74c3c'; }
 
   return (
     <div className="imc-display">
@@ -252,7 +294,7 @@ const ImcDisplay = ({ peso, altura }) => {
       <div className="imc-categoria" style={{ color: cor }}>{categoria}</div>
       <p className="imc-info">
         O IMC é apenas uma referência. Massa muscular não é gordura!
-        Foque no seu bem-estar e desempenho. 💪
+        Foque no seu bem-estar e desempenho.
       </p>
     </div>
   );

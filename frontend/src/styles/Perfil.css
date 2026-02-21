@@ -80,6 +80,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .perfil-form-header h2 {
@@ -88,6 +90,41 @@
   color: var(--primary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+/* Grupo de ações do header (ocultar + editar) */
+.perfil-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Botão ocultar (compartilhado com Progresso) */
+.btn-ocultar {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78em;
+  font-weight: 600;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.btn-ocultar:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Valor oculto */
+.dado-oculto {
+  letter-spacing: 3px;
+  color: var(--muted) !important;
+  user-select: none;
 }
 
 .btn-sm {

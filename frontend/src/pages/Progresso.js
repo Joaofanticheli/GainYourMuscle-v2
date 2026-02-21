@@ -7,6 +7,22 @@ import { userAPI, workoutAPI } from '../services/api';
 import Navbar from '../components/Navbar';
 import '../styles/Progresso.css';
 
+const EyeIcon = ({ visivel }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    {visivel ? (
+      <>
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </>
+    ) : (
+      <>
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+        <line x1="1" y1="1" x2="23" y2="23"/>
+      </>
+    )}
+  </svg>
+);
+
 const Progresso = () => {
   const [historico, setHistorico] = useState([]);
   const [historicoTreinos, setHistoricoTreinos] = useState([]);
@@ -16,6 +32,7 @@ const Progresso = () => {
   const [error, setError] = useState('');
   const [mostrarForm, setMostrarForm] = useState(false);
   const [diaDoprojeto, setDiaDoprojeto] = useState(null);
+  const [ocultarDados, setOcultarDados] = useState(false);
 
   const [formData, setFormData] = useState({
     peso: '',
@@ -45,7 +62,6 @@ const Progresso = () => {
         setHistorico(progressoRes.value.data.progresso || []);
       }
 
-      // Calcula Dia X baseado em workout.createdAt
       if (workoutRes.status === 'fulfilled' && workoutRes.value.data.workout) {
         const workout = workoutRes.value.data.workout;
         const inicio = new Date(workout.createdAt || workout.dataInicio);
@@ -55,10 +71,8 @@ const Progresso = () => {
         setDiaDoprojeto(diffDias);
       }
 
-      // Histórico de treinos concluídos (para cruzar com registros)
       if (historicoTreinoRes.status === 'fulfilled') {
         const workouts = historicoTreinoRes.value.data.workouts || [];
-        // Achata todos os historico[] de todos os treinos
         const checkins = [];
         workouts.forEach(w => {
           if (w.historico && w.historico.length > 0) {
@@ -102,18 +116,16 @@ const Progresso = () => {
         peso: formData.peso ? Number(formData.peso) : undefined,
         notas: formData.notas,
         medidas: {
-          braco: formData.medidas.braco ? Number(formData.medidas.braco) : undefined,
-          peito: formData.medidas.peito ? Number(formData.medidas.peito) : undefined,
+          braco:   formData.medidas.braco   ? Number(formData.medidas.braco)   : undefined,
+          peito:   formData.medidas.peito   ? Number(formData.medidas.peito)   : undefined,
           cintura: formData.medidas.cintura ? Number(formData.medidas.cintura) : undefined,
           quadril: formData.medidas.quadril ? Number(formData.medidas.quadril) : undefined,
-          coxa: formData.medidas.coxa ? Number(formData.medidas.coxa) : undefined
+          coxa:    formData.medidas.coxa    ? Number(formData.medidas.coxa)    : undefined
         }
       };
 
       await userAPI.addProgress(payload);
       setSucesso('Progresso registrado! Continue assim! 💪');
-
-      // Reseta form e mantém aberto para próximos registros
       setFormData({
         peso: '', notas: '',
         medidas: { braco: '', peito: '', cintura: '', quadril: '', coxa: '' }
@@ -127,14 +139,17 @@ const Progresso = () => {
     }
   };
 
-  // Retorna o treino feito em determinada data (se houver)
   const treinoDodia = (data) => {
     const dataRef = new Date(data);
     return historicoTreinos.find(t => {
       const diff = Math.abs(t.data - dataRef);
-      return diff < 24 * 60 * 60 * 1000; // mesmo dia
+      return diff < 24 * 60 * 60 * 1000;
     });
   };
+
+  // Máscara de privacidade
+  const mascarar = (valor, sufixo = '') =>
+    ocultarDados ? '•••' : (valor ? `${valor}${sufixo}` : null);
 
   if (loading) {
     return (
@@ -254,7 +269,18 @@ const Progresso = () => {
           </div>
         ) : (
           <div className="historico-lista">
-            <h2>Histórico</h2>
+            <div className="historico-titulo-row">
+              <h2>Histórico</h2>
+              <button
+                className="btn-ocultar"
+                onClick={() => setOcultarDados(!ocultarDados)}
+                title={ocultarDados ? 'Mostrar dados' : 'Ocultar dados'}
+              >
+                <EyeIcon visivel={!ocultarDados} />
+                {ocultarDados ? 'Mostrar' : 'Ocultar'}
+              </button>
+            </div>
+
             {historico.map((registro, index) => {
               const treinoFeito = treinoDodia(registro.data);
               return (
@@ -266,17 +292,19 @@ const Progresso = () => {
                       })}
                     </span>
                     {registro.peso && (
-                      <span className="registro-peso">{registro.peso} kg</span>
+                      <span className={`registro-peso ${ocultarDados ? 'dado-oculto' : ''}`}>
+                        {mascarar(registro.peso, ' kg')}
+                      </span>
                     )}
                   </div>
 
                   {registro.medidas && Object.values(registro.medidas).some(v => v) && (
                     <div className="registro-medidas">
-                      {registro.medidas.braco   && <span>Braço: <strong>{registro.medidas.braco}cm</strong></span>}
-                      {registro.medidas.peito   && <span>Peito: <strong>{registro.medidas.peito}cm</strong></span>}
-                      {registro.medidas.cintura && <span>Cintura: <strong>{registro.medidas.cintura}cm</strong></span>}
-                      {registro.medidas.quadril && <span>Quadril: <strong>{registro.medidas.quadril}cm</strong></span>}
-                      {registro.medidas.coxa    && <span>Coxa: <strong>{registro.medidas.coxa}cm</strong></span>}
+                      {registro.medidas.braco   && <span>Braço: <strong className={ocultarDados ? 'dado-oculto' : ''}>{mascarar(registro.medidas.braco, 'cm')}</strong></span>}
+                      {registro.medidas.peito   && <span>Peito: <strong className={ocultarDados ? 'dado-oculto' : ''}>{mascarar(registro.medidas.peito, 'cm')}</strong></span>}
+                      {registro.medidas.cintura && <span>Cintura: <strong className={ocultarDados ? 'dado-oculto' : ''}>{mascarar(registro.medidas.cintura, 'cm')}</strong></span>}
+                      {registro.medidas.quadril && <span>Quadril: <strong className={ocultarDados ? 'dado-oculto' : ''}>{mascarar(registro.medidas.quadril, 'cm')}</strong></span>}
+                      {registro.medidas.coxa    && <span>Coxa: <strong className={ocultarDados ? 'dado-oculto' : ''}>{mascarar(registro.medidas.coxa, 'cm')}</strong></span>}
                     </div>
                   )}
 

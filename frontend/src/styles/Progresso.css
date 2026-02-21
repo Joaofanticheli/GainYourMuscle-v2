@@ -95,6 +95,46 @@
   letter-spacing: 0.3px;
 }
 
+/* Botão ocultar dados */
+.btn-ocultar {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78em;
+  font-weight: 600;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.btn-ocultar:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Valor oculto */
+.dado-oculto {
+  letter-spacing: 3px;
+  color: var(--muted) !important;
+  user-select: none;
+}
+
+/* Header do histórico com botão */
+.historico-titulo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.historico-titulo-row h2 {
+  margin-bottom: 0;
+}
+
 /* Histórico */
 .historico-lista h2 {
   font-size: 0.85em;
@@ -102,7 +142,7 @@
   color: var(--primary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 .registro-card {
