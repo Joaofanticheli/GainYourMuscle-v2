@@ -236,7 +236,7 @@ const deleteProgress = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Registro não encontrado' });
     }
 
-    registro.deleteOne();
+    user.progresso.pull({ _id: req.params.id });
     await user.save();
 
     res.json({ success: true, message: 'Registro removido.' });

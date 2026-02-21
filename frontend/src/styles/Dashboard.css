@@ -135,22 +135,28 @@
   font-size: 0.95em;
 }
 
-/* Dicas */
-.tips-section {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 24px;
-  box-shadow: var(--glow-primary);
+/* Peso com eye icon */
+.stat-peso-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.tips-section h3 {
-  font-size: 0.85em;
-  font-weight: 700;
-  margin-bottom: 14px;
+.btn-peso-olho {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  opacity: 0.6;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.btn-peso-olho:hover {
+  opacity: 1;
   color: var(--primary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .tips-list {
@@ -173,6 +179,12 @@
   left: 0;
   color: var(--primary);
   font-weight: 700;
+}
+
+.dado-oculto {
+  letter-spacing: 3px;
+  color: var(--muted) !important;
+  user-select: none;
 }
 
 @media (max-width: 600px) {

@@ -240,6 +240,29 @@
   gap: 8px;
 }
 
+/* Wrapper do peso com eye icon */
+.peso-registro-wrap {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Botão de eye icon (compartilhado) */
+.btn-peso-olho {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.35);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.btn-peso-olho:hover {
+  color: var(--primary);
+}
+
 /* Botão de lixeira */
 .btn-delete-registro {
   background: transparent;

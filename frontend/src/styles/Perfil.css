@@ -158,6 +158,28 @@
   font-size: 0.9em;
 }
 
+/* Peso com eye icon */
+.dado-peso-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-peso-olho {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.35);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.btn-peso-olho:hover {
+  color: var(--primary);
+}
+
 .perfil-edit-form {
   display: flex;
   flex-direction: column;

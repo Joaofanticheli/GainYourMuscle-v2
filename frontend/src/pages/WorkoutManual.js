@@ -36,7 +36,7 @@ const diaVazio = (dia) => ({
   exercicios: [exercicioVazio()],
 });
 
-const WorkoutManual = () => {
+const WorkoutManual = ({ embedded = false }) => {
   const navigate = useNavigate();
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
@@ -156,36 +156,36 @@ const WorkoutManual = () => {
 
   // ── Tela de sucesso ───────────────────────────────────────────────────────
   if (sucesso) {
+    const sucessoContent = (
+      <div className="manual-sucesso">
+        <div className="manual-sucesso-icon">💪</div>
+        <h1>Treino salvo!</h1>
+        <p>Seu treino personalizado foi criado com sucesso.</p>
+        <div className="manual-sucesso-acoes">
+          <button className="btn btn-primary btn-large" onClick={() => navigate('/meu-treino')}>
+            Ver Meu Treino
+          </button>
+          <button className="btn btn-outline" onClick={() => { setSucesso(false); }}>
+            Criar Outro
+          </button>
+        </div>
+      </div>
+    );
+    if (embedded) return sucessoContent;
     return (
       <div>
         <Navbar />
-        <div className="manual-container">
-          <div className="manual-sucesso">
-            <div className="manual-sucesso-icon">💪</div>
-            <h1>Treino salvo!</h1>
-            <p>Seu treino personalizado foi criado com sucesso.</p>
-            <div className="manual-sucesso-acoes">
-              <button className="btn btn-primary btn-large" onClick={() => navigate('/meu-treino')}>
-                Ver Meu Treino
-              </button>
-              <button className="btn btn-outline" onClick={() => { setSucesso(false); }}>
-                Criar Outro
-              </button>
-            </div>
-          </div>
-        </div>
+        <div className="manual-container">{sucessoContent}</div>
       </div>
     );
   }
 
-  return (
-    <div>
-      <Navbar />
-      <div className="manual-container">
-        <header className="manual-header">
-          <h1>Criar Treino Manual</h1>
-          <p>Monte seu programa do zero — exercício por exercício</p>
-        </header>
+  const formContent = (
+    <>
+      <header className="manual-header">
+        <h1>Criar Treino Manual</h1>
+        <p>Monte seu programa do zero — exercício por exercício</p>
+      </header>
 
         <form onSubmit={handleSubmit}>
           {erro && <div className="alert alert-error">{erro}</div>}
@@ -371,6 +371,16 @@ const WorkoutManual = () => {
             {salvando ? 'Salvando...' : '💾 Salvar Treino'}
           </button>
         </form>
+    </>
+  );
+
+  if (embedded) return formContent;
+
+  return (
+    <div>
+      <Navbar />
+      <div className="manual-container">
+        {formContent}
       </div>
     </div>
   );

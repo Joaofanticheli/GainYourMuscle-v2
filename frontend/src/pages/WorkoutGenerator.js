@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { workoutAPI } from '../services/api';
 import Navbar from '../components/Navbar';
+import WorkoutManual from './WorkoutManual';
 import '../styles/WorkoutGenerator.css';
 
 // ── Configuração de esportes e posições ─────────────────────────────────────
@@ -39,6 +40,7 @@ const WorkoutGenerator = () => {
   const [error, setError] = useState('');
   const [celebrando, setCelebrando] = useState(false);
   const [dadosCelebracao, setDadosCelebracao] = useState({});
+  const [abaAtiva, setAbaAtiva] = useState('gerar');
 
   const [formData, setFormData] = useState({
     objetivo:    '',
@@ -151,6 +153,27 @@ const WorkoutGenerator = () => {
     <div>
       <Navbar />
       <div className="workout-generator-container">
+
+        {/* ── ABAS ── */}
+        <div className="generator-tabs">
+          <button
+            className={`generator-tab ${abaAtiva === 'gerar' ? 'active' : ''}`}
+            onClick={() => setAbaAtiva('gerar')}
+          >
+            Gerar Treino
+          </button>
+          <button
+            className={`generator-tab ${abaAtiva === 'manual' ? 'active' : ''}`}
+            onClick={() => setAbaAtiva('manual')}
+          >
+            Criar Manual
+          </button>
+        </div>
+
+        {abaAtiva === 'manual' ? (
+          <WorkoutManual embedded />
+        ) : (
+          <>
         <header className="generator-header">
           <h1>Gerar Treino Personalizado</h1>
           <p>Responda o questionário para criarmos seu treino ideal!</p>
@@ -385,6 +408,8 @@ const WorkoutGenerator = () => {
             </fieldset>
           </form>
         </div>
+          </>
+        )}
       </div>
     </div>
   );

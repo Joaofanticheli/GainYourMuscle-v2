@@ -31,7 +31,7 @@ const Perfil = () => {
   const [loading, setLoading] = useState(false);
   const [sucesso, setSucesso] = useState('');
   const [error, setError] = useState('');
-  const [ocultarDados, setOcultarDados] = useState(false);
+  const [ocultarPeso, setOcultarPeso] = useState(true);
 
   const [formData, setFormData] = useState({
     nome: user?.nome || '',
@@ -74,8 +74,6 @@ const Perfil = () => {
     setError('');
   };
 
-  // Máscara de privacidade
-  const m = (valor, sufixo = '') => ocultarDados ? '•••' : (valor ? `${valor}${sufixo}` : '—');
 
   return (
     <div>
@@ -107,16 +105,6 @@ const Perfil = () => {
             <div className="perfil-form-header">
               <h2>Dados Pessoais</h2>
               <div className="perfil-form-actions">
-                {/* Botão ocultar dados físicos */}
-                <button
-                  className="btn-ocultar"
-                  onClick={() => setOcultarDados(!ocultarDados)}
-                  title={ocultarDados ? 'Mostrar dados físicos' : 'Ocultar dados físicos'}
-                >
-                  <EyeIcon visivel={!ocultarDados} />
-                  {ocultarDados ? 'Mostrar' : 'Ocultar'}
-                </button>
-
                 {!editando && (
                   <button
                     className="btn btn-outline btn-sm"
@@ -150,15 +138,22 @@ const Perfil = () => {
                 </div>
                 <div className="dado-item">
                   <span className="dado-label">Peso</span>
-                  <span className={`dado-valor ${ocultarDados ? 'dado-oculto' : ''}`}>
-                    {m(user?.peso, ' kg')}
-                  </span>
+                  <div className="dado-peso-wrap">
+                    <button
+                      className="btn-peso-olho"
+                      onClick={() => setOcultarPeso(!ocultarPeso)}
+                      title={ocultarPeso ? 'Mostrar peso' : 'Ocultar peso'}
+                    >
+                      <EyeIcon visivel={!ocultarPeso} />
+                    </button>
+                    <span className={`dado-valor ${ocultarPeso ? 'dado-oculto' : ''}`}>
+                      {ocultarPeso ? '•••' : `${user?.peso} kg`}
+                    </span>
+                  </div>
                 </div>
                 <div className="dado-item">
                   <span className="dado-label">Altura</span>
-                  <span className={`dado-valor ${ocultarDados ? 'dado-oculto' : ''}`}>
-                    {m(user?.altura, ' cm')}
-                  </span>
+                  <span className="dado-valor">{user?.altura} cm</span>
                 </div>
                 <div className="dado-item">
                   <span className="dado-label">Frequência Atual</span>
@@ -257,7 +252,7 @@ const Perfil = () => {
         {/* IMC calculado */}
         <div className="card imc-card">
           <h2>Seu IMC</h2>
-          <ImcDisplay peso={user?.peso} altura={user?.altura} oculto={ocultarDados} />
+          <ImcDisplay peso={user?.peso} altura={user?.altura} oculto={ocultarPeso} />
         </div>
       </div>
     </div>

@@ -32,7 +32,7 @@ const Progresso = () => {
   const [error, setError] = useState('');
   const [mostrarForm, setMostrarForm] = useState(false);
   const [diaDoprojeto, setDiaDoprojeto] = useState(null);
-  const [ocultarDados, setOcultarDados] = useState(false);
+  const [ocultarPeso, setOcultarPeso] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState(null); // id do registro a deletar
 
   const [formData, setFormData] = useState({
@@ -167,9 +167,6 @@ const Progresso = () => {
     });
   };
 
-  // Máscara de privacidade
-  const mascarar = (valor, sufixo = '') =>
-    ocultarDados ? '•••' : (valor ? `${valor}${sufixo}` : null);
 
   if (loading) {
     return (
@@ -291,14 +288,6 @@ const Progresso = () => {
           <div className="historico-lista">
             <div className="historico-titulo-row">
               <h2>Histórico</h2>
-              <button
-                className="btn-ocultar"
-                onClick={() => setOcultarDados(!ocultarDados)}
-                title={ocultarDados ? 'Mostrar dados' : 'Ocultar dados'}
-              >
-                <EyeIcon visivel={!ocultarDados} />
-                {ocultarDados ? 'Mostrar' : 'Ocultar'}
-              </button>
             </div>
 
             {historico.map((registro, index) => {
@@ -314,9 +303,18 @@ const Progresso = () => {
                     </span>
                     <div className="registro-header-right">
                       {registro.peso && (
-                        <span className={`registro-peso ${ocultarDados ? 'dado-oculto' : ''}`}>
-                          {mascarar(registro.peso, ' kg')}
-                        </span>
+                        <div className="peso-registro-wrap">
+                          <button
+                            className="btn-peso-olho"
+                            onClick={() => setOcultarPeso(!ocultarPeso)}
+                            title={ocultarPeso ? 'Mostrar peso' : 'Ocultar peso'}
+                          >
+                            <EyeIcon visivel={!ocultarPeso} />
+                          </button>
+                          <span className="registro-peso">
+                            {ocultarPeso ? '•••' : `${registro.peso} kg`}
+                          </span>
+                        </div>
                       )}
                       {!isConfirmando ? (
                         <button
@@ -344,11 +342,11 @@ const Progresso = () => {
 
                   {registro.medidas && Object.values(registro.medidas).some(v => v) && (
                     <div className="registro-medidas">
-                      {registro.medidas.braco   && <span>Braço: <strong className={ocultarDados ? 'dado-oculto' : ''}>{mascarar(registro.medidas.braco, 'cm')}</strong></span>}
-                      {registro.medidas.peito   && <span>Peito: <strong className={ocultarDados ? 'dado-oculto' : ''}>{mascarar(registro.medidas.peito, 'cm')}</strong></span>}
-                      {registro.medidas.cintura && <span>Cintura: <strong className={ocultarDados ? 'dado-oculto' : ''}>{mascarar(registro.medidas.cintura, 'cm')}</strong></span>}
-                      {registro.medidas.quadril && <span>Quadril: <strong className={ocultarDados ? 'dado-oculto' : ''}>{mascarar(registro.medidas.quadril, 'cm')}</strong></span>}
-                      {registro.medidas.coxa    && <span>Coxa: <strong className={ocultarDados ? 'dado-oculto' : ''}>{mascarar(registro.medidas.coxa, 'cm')}</strong></span>}
+                      {registro.medidas.braco   && <span>Braço: <strong>{registro.medidas.braco}cm</strong></span>}
+                      {registro.medidas.peito   && <span>Peito: <strong>{registro.medidas.peito}cm</strong></span>}
+                      {registro.medidas.cintura && <span>Cintura: <strong>{registro.medidas.cintura}cm</strong></span>}
+                      {registro.medidas.quadril && <span>Quadril: <strong>{registro.medidas.quadril}cm</strong></span>}
+                      {registro.medidas.coxa    && <span>Coxa: <strong>{registro.medidas.coxa}cm</strong></span>}
                     </div>
                   )}
 
