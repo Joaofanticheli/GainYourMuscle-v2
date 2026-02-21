@@ -86,8 +86,61 @@
   box-shadow: 0 0 16px rgba(255, 68, 102, 0.3);
 }
 
-@media (max-width: 640px) {
-  .navbar-container { flex-wrap: wrap; height: auto; padding: 10px 14px; gap: 8px; }
-  .navbar-user { display: none; }
-  .navbar-menu { gap: 2px; }
+/* ── BOTTOM NAV (mobile) ── */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* Esconde menu superior no mobile */
+  .navbar-menu {
+    display: none;
+  }
+
+  .navbar-container {
+    height: 52px;
+    padding: 0 16px;
+  }
+
+  /* Mostra bottom nav */
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: rgba(7, 7, 15, 0.97);
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px;
+    text-decoration: none;
+    color: var(--muted);
+    transition: color 0.2s;
+    gap: 2px;
+  }
+
+  .bottom-nav-item.active {
+    color: var(--primary);
+  }
+
+  .bottom-nav-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+
+  .bottom-nav-label {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
 }
