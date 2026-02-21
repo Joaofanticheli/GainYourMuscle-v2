@@ -9,29 +9,29 @@
 }
 
 :root {
-  --primary: #00d4ff;
-  --primary-dark: #00a8cc;
-  --secondary: #a855f7;
+  --primary: #8b5cf6;
+  --primary-dark: #7c3aed;
+  --secondary: #a78bfa;
   --success: #00ff88;
   --danger: #ff4466;
   --warning: #ffaa00;
   --dark: #e2e8f0;
   --muted: #8892a4;
-  --gradient: linear-gradient(135deg, #00d4ff 0%, #a855f7 100%);
-  --gradient-soft: linear-gradient(135deg, rgba(0,212,255,0.15) 0%, rgba(168,85,247,0.15) 100%);
+  --gradient: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  --gradient-soft: linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(167,139,250,0.15) 100%);
 
   /* Backgrounds */
-  --bg: #07070f;
-  --surface: #0d0d1f;
-  --card: #111126;
-  --card-hover: #161632;
+  --bg: #08081a;
+  --surface: #0e0e28;
+  --card: #121230;
+  --card-hover: #171745;
 
   /* Borders & Glow */
-  --border: rgba(0, 212, 255, 0.15);
-  --border-bright: rgba(0, 212, 255, 0.4);
-  --glow-primary: 0 0 20px rgba(0, 212, 255, 0.25);
-  --glow-secondary: 0 0 20px rgba(168, 85, 247, 0.25);
-  --glow-btn: 0 0 24px rgba(0, 212, 255, 0.5);
+  --border: rgba(139, 92, 246, 0.18);
+  --border-bright: rgba(139, 92, 246, 0.45);
+  --glow-primary: 0 0 20px rgba(139, 92, 246, 0.28);
+  --glow-secondary: 0 0 20px rgba(167, 139, 250, 0.28);
+  --glow-btn: 0 0 24px rgba(139, 92, 246, 0.55);
 }
 
 body {
@@ -40,8 +40,8 @@ body {
   color: var(--dark);
   background-color: var(--bg);
   background-image:
-    linear-gradient(rgba(0, 212, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 212, 255, 0.025) 1px, transparent 1px);
+    linear-gradient(rgba(139, 92, 246, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.025) 1px, transparent 1px);
   background-size: 48px 48px;
   min-height: 100vh;
 }
@@ -83,7 +83,7 @@ body {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 36px rgba(0, 212, 255, 0.7);
+  box-shadow: 0 0 36px rgba(139, 92, 246, 0.7);
 }
 
 .btn-secondary {
@@ -104,7 +104,7 @@ body {
 }
 
 .btn-outline:hover {
-  background: rgba(0, 212, 255, 0.1);
+  background: rgba(139, 92, 246, 0.1);
   box-shadow: var(--glow-primary);
 }
 
@@ -157,7 +157,7 @@ body {
 
 .card:hover {
   border-color: var(--border-bright);
-  box-shadow: 0 0 30px rgba(0, 212, 255, 0.15);
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.15);
 }
 
 /* ── Form ── */
@@ -195,7 +195,7 @@ body {
   outline: none;
   border-color: var(--primary);
   box-shadow: var(--glow-primary);
-  background: rgba(0, 212, 255, 0.04);
+  background: rgba(139, 92, 246, 0.04);
 }
 
 .form-group select option {
@@ -217,7 +217,7 @@ body {
   background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 212, 255, 0.3);
+  background: rgba(139, 92, 246, 0.3);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {

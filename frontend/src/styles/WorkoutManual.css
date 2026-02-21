@@ -51,7 +51,7 @@
 /* Card de dia */
 .manual-dia {
   margin-bottom: 20px;
-  border-color: rgba(168,85,247,0.2);
+  border-color: rgba(139,92,246,0.2);
 }
 
 .manual-dia-header {
@@ -211,7 +211,7 @@
 .btn-add-exercicio {
   width: 100%;
   background: transparent;
-  border: 1px dashed rgba(168,85,247,0.35);
+  border: 1px dashed rgba(139,92,246,0.35);
   color: var(--secondary);
   padding: 10px;
   border-radius: 10px;
@@ -222,8 +222,8 @@
 }
 
 .btn-add-exercicio:hover {
-  background: rgba(168,85,247,0.06);
-  border-color: rgba(168,85,247,0.6);
+  background: rgba(139,92,246,0.06);
+  border-color: rgba(139,92,246,0.6);
 }
 
 /* Tela de sucesso */

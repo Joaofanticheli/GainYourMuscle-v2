@@ -52,7 +52,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 10px rgba(0,212,255,0.3));
+  filter: drop-shadow(0 0 10px rgba(139,92,246,0.3));
 }
 
 .generator-header p {
@@ -73,12 +73,12 @@
 /* Painel lateral de info */
 .generator-info {
   background: var(--card);
-  border: 1px solid rgba(168,85,247,0.25);
+  border: 1px solid rgba(139,92,246,0.25);
   border-radius: 16px;
   padding: 28px;
   position: sticky;
   top: 84px;
-  box-shadow: 0 0 24px rgba(168,85,247,0.1);
+  box-shadow: 0 0 24px rgba(139,92,246,0.1);
 }
 
 .generator-info h2 {
@@ -175,13 +175,13 @@
 
 .objetivo-card:hover {
   border-color: var(--border-bright);
-  background: rgba(0,212,255,0.05);
+  background: rgba(139,92,246,0.05);
 }
 
 .objetivo-selecionado {
   border-color: var(--primary) !important;
-  background: rgba(0,212,255,0.1) !important;
-  box-shadow: 0 0 18px rgba(0,212,255,0.25) !important;
+  background: rgba(139,92,246,0.1) !important;
+  box-shadow: 0 0 18px rgba(139,92,246,0.25) !important;
 }
 
 .objetivo-icon {
@@ -277,12 +277,12 @@
 }
 
 .celebracao-acoes .btn-outline {
-  border-color: rgba(0,212,255,0.4);
+  border-color: rgba(139,92,246,0.4);
   color: var(--primary);
 }
 
 .celebracao-acoes .btn-outline:hover {
-  background: rgba(0,212,255,0.08);
+  background: rgba(139,92,246,0.08);
 }
 
 /* Seção de esporte (exibe após selecionar "Esporte Específico") */
@@ -309,8 +309,8 @@
 }
 
 .lesao-context {
-  background: rgba(168,85,247,0.06);
-  border: 1px solid rgba(168,85,247,0.2);
+  background: rgba(139,92,246,0.06);
+  border: 1px solid rgba(139,92,246,0.2);
   border-radius: 10px;
   padding: 14px 16px;
   margin-bottom: 12px;

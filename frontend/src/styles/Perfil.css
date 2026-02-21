@@ -40,8 +40,8 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  border-color: rgba(168,85,247,0.25);
-  box-shadow: 0 0 24px rgba(168,85,247,0.1);
+  border-color: rgba(139,92,246,0.25);
+  box-shadow: 0 0 24px rgba(139,92,246,0.1);
 }
 
 .perfil-avatar {
@@ -56,7 +56,7 @@
   font-weight: 800;
   color: #07070f;
   margin-bottom: 8px;
-  box-shadow: 0 0 24px rgba(0,212,255,0.4);
+  box-shadow: 0 0 24px rgba(139,92,246,0.4);
 }
 
 .perfil-card h2 {
