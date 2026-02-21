@@ -282,12 +282,12 @@ const WorkoutGenerator = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="fadiga">Relação com fadiga:</label>
+                <label htmlFor="fadiga">Qual é sua preferência de intensidade no treino?</label>
                 <select id="fadiga" name="fadiga" value={formData.fadiga} onChange={handleChange} required disabled={loading}>
                   <option value="">Selecione</option>
-                  <option value="evito">Evito ao máximo</option>
-                  <option value="consigo">Consigo lidar</option>
-                  <option value="nao">Não tenho problema</option>
+                  <option value="evito">Prefiro treinar com moderação — não gosto de me esgotar</option>
+                  <option value="consigo">Treino com boa intensidade, mas respeito meus limites</option>
+                  <option value="nao">Gosto de me desafiar ao limite em cada treino</option>
                 </select>
               </div>
 
