@@ -11,7 +11,8 @@ const {
   getTodayWorkout,
   getWorkoutHistory,
   completeWorkout,
-  deleteWorkout
+  deleteWorkout,
+  saveManualWorkout
 } = require('../controllers/workoutController');
 
 const { protect } = require('../middleware/auth');
@@ -48,6 +49,12 @@ router.get('/history', getWorkoutHistory);
  * Marcar treino como completo
  */
 router.post('/:id/complete', completeWorkout);
+
+/**
+ * POST /api/workout/manual
+ * Salvar treino criado manualmente
+ */
+router.post('/manual', saveManualWorkout);
 
 /**
  * DELETE /api/workout/:id

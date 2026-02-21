@@ -1,0 +1,279 @@
+/* ── TREINO MANUAL ── */
+
+.manual-container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.manual-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.manual-header h1 {
+  font-size: 2em;
+  font-weight: 800;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.manual-header p {
+  color: var(--muted);
+  margin-top: 8px;
+  font-size: 0.88em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Seção geral */
+.manual-section {
+  margin-bottom: 20px;
+}
+
+.manual-section-title {
+  font-size: 0.85em;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+
+.manual-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+}
+
+/* Card de dia */
+.manual-dia {
+  margin-bottom: 20px;
+  border-color: rgba(168,85,247,0.2);
+}
+
+.manual-dia-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.manual-dia-badge {
+  background: var(--gradient);
+  color: #07070f;
+  font-size: 0.82em;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.manual-dia-nome {
+  flex: 1;
+  min-width: 180px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 14px;
+  color: var(--dark);
+  font-size: 0.92em;
+  font-weight: 600;
+}
+
+.manual-dia-nome:focus {
+  outline: none;
+  border-color: var(--secondary);
+}
+
+.manual-dia-dificuldade {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  color: var(--dark);
+  font-size: 0.85em;
+  cursor: pointer;
+}
+
+/* Lista de exercícios */
+.manual-exercicios {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.manual-ex-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.manual-ex-ordem {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: #07070f;
+  font-size: 0.78em;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.manual-ex-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.manual-ex-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 10px;
+}
+
+.manual-ex-numeros {
+  display: grid;
+  grid-template-columns: 80px 90px 100px 1fr;
+  gap: 10px;
+  align-items: end;
+}
+
+.manual-ex-numeros .form-group {
+  margin-bottom: 0;
+}
+
+.manual-ex-numeros label {
+  font-size: 0.72em;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.manual-ex-numeros input {
+  width: 100%;
+}
+
+/* Controles (↑ ↓ ✕) */
+.manual-ex-controles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.btn-ex-ctrl {
+  width: 28px;
+  height: 28px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 6px;
+  font-size: 0.78em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.btn-ex-ctrl:hover:not(:disabled) {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-ex-ctrl:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.btn-ex-del:hover:not(:disabled) {
+  color: #ff4d4d !important;
+  border-color: rgba(255,77,77,0.4) !important;
+}
+
+/* Botão adicionar exercício */
+.btn-add-exercicio {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed rgba(168,85,247,0.35);
+  color: var(--secondary);
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 0.85em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-add-exercicio:hover {
+  background: rgba(168,85,247,0.06);
+  border-color: rgba(168,85,247,0.6);
+}
+
+/* Tela de sucesso */
+.manual-sucesso {
+  max-width: 480px;
+  margin: 60px auto;
+  text-align: center;
+  background: var(--card);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 20px;
+  padding: 48px 36px;
+  box-shadow: 0 0 40px rgba(0,255,136,0.08);
+  animation: entrar 0.4s ease;
+}
+
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.manual-sucesso-icon {
+  font-size: 3.5em;
+  margin-bottom: 16px;
+}
+
+.manual-sucesso h1 {
+  font-size: 2em;
+  font-weight: 900;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+.manual-sucesso p {
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+.manual-sucesso-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .manual-row-3 { grid-template-columns: 1fr; }
+  .manual-ex-top { grid-template-columns: 1fr; }
+  .manual-ex-numeros { grid-template-columns: 1fr 1fr; }
+  .manual-dia-header { flex-direction: column; align-items: flex-start; }
+  .manual-dia-nome { width: 100%; }
+}

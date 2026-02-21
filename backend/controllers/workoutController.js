@@ -279,11 +279,59 @@ const deleteWorkout = async (req, res) => {
   }
 };
 
+/**
+ * @route   POST /api/workout/manual
+ * @desc    Salvar treino criado manualmente pelo usuário
+ * @access  Private
+ */
+const saveManualWorkout = async (req, res) => {
+  try {
+    const { nome, descricao, tipo, nivel, divisao, diasPorSemana, dias } = req.body;
+
+    if (!nome || !dias || !Array.isArray(dias) || dias.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Nome e pelo menos um dia de treino são obrigatórios.'
+      });
+    }
+
+    // Normaliza a ordem dos exercícios em cada dia
+    const diasNormalizados = dias.map(dia => ({
+      ...dia,
+      exercicios: (dia.exercicios || []).map((ex, i) => ({ ...ex, ordem: i + 1 }))
+    }));
+
+    const workout = await Workout.create({
+      usuario: req.user.id,
+      nome,
+      descricao: descricao || 'Treino criado manualmente.',
+      tipo: tipo || 'hipertrofia',
+      nivel: nivel || 'intermediario',
+      divisao: divisao || 'Manual',
+      diasPorSemana: diasPorSemana || dias.length,
+      dias: diasNormalizados,
+      parametros: { manual: true }
+    });
+
+    await User.findByIdAndUpdate(req.user.id, { treinoAtual: workout._id });
+
+    res.status(201).json({
+      success: true,
+      message: 'Treino manual salvo com sucesso! 💪',
+      workout
+    });
+  } catch (error) {
+    console.error('Erro ao salvar treino manual:', error);
+    res.status(500).json({ success: false, message: 'Erro ao salvar treino manual', error: error.message });
+  }
+};
+
 module.exports = {
   generateWorkout,
   getCurrentWorkout,
   getTodayWorkout,
   getWorkoutHistory,
   completeWorkout,
-  deleteWorkout
+  deleteWorkout,
+  saveManualWorkout
 };

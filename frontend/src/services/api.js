@@ -93,7 +93,10 @@ export const workoutAPI = {
   complete: (id, data) => api.post(`/workout/${id}/complete`, data),
 
   // Deletar treino
-  delete: (id) => api.delete(`/workout/${id}`)
+  delete: (id) => api.delete(`/workout/${id}`),
+
+  // Salvar treino manual
+  saveManual: (data) => api.post('/workout/manual', data)
 };
 
 export default api;

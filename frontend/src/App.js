@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import WorkoutGenerator from './pages/WorkoutGenerator';
+import WorkoutManual from './pages/WorkoutManual';
 import WorkoutView from './pages/WorkoutView';
 import ForgotPassword from './pages/ForgotPassword';
 import Perfil from './pages/Perfil';
@@ -48,6 +49,15 @@ function App() {
               element={
                 <PrivateRoute>
                   <WorkoutGenerator />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/treino-manual"
+              element={
+                <PrivateRoute>
+                  <WorkoutManual />
                 </PrivateRoute>
               }
             />

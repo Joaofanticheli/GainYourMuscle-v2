@@ -206,7 +206,20 @@ const WorkoutView = () => {
                           <div className="exercise-track-info">
                             <div className="exercise-number">{exercicio.ordem}</div>
                             <div className="exercise-content">
-                              <h3>{exercicio.nome}</h3>
+                              <div className="exercise-nome-row">
+                                <h3>{exercicio.nome}</h3>
+                                {exercicio.videoUrl && (
+                                  <a
+                                    href={exercicio.videoUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-video"
+                                    title="Ver demonstração — Fabricio Pacholok"
+                                  >
+                                    ▶ Vídeo
+                                  </a>
+                                )}
+                              </div>
                               <div className="exercise-details">
                                 <span className="muscle-group">{exercicio.grupoMuscular}</span>
                                 <span className="sets-reps">
@@ -313,22 +326,29 @@ const WorkoutView = () => {
                       <div key={exIndex} className="exercise-card">
                         <div className="exercise-number">{exercicio.ordem}</div>
                         <div className="exercise-content">
-                          <h3>{exercicio.nome}</h3>
+                          <div className="exercise-nome-row">
+                            <h3>{exercicio.nome}</h3>
+                            {exercicio.videoUrl && (
+                              <a
+                                href={exercicio.videoUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn-video"
+                                title="Ver demonstração — Fabricio Pacholok"
+                              >
+                                ▶ Vídeo
+                              </a>
+                            )}
+                          </div>
                           <div className="exercise-details">
-                            <span className="muscle-group">
-                              {exercicio.grupoMuscular}
-                            </span>
+                            <span className="muscle-group">{exercicio.grupoMuscular}</span>
                             <span className="sets-reps">
                               {exercicio.series} séries × {exercicio.repeticoes} reps
                             </span>
-                            <span className="rest">
-                              ⏸️ {exercicio.descanso}s
-                            </span>
+                            <span className="rest">⏸️ {exercicio.descanso}s</span>
                           </div>
                           {exercicio.observacoes && (
-                            <p className="exercise-notes">
-                              💡 {exercicio.observacoes}
-                            </p>
+                            <p className="exercise-notes">💡 {exercicio.observacoes}</p>
                           )}
                         </div>
                       </div>
