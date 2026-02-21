@@ -1,0 +1,16 @@
+{
+  "appId": "com.gainyourmuscle.app",
+  "appName": "GainYourMuscle",
+  "webDir": "build",
+  "server": {
+    "cleartext": false,
+    "allowNavigation": [
+      "gainyourmuscle-v2.onrender.com"
+    ]
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  }
+}
