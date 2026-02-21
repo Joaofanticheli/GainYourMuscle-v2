@@ -191,15 +191,30 @@ function focoEsportivo(esporte, posicao) {
   return mapa[e]?.[p] || { principais: ['pernas', 'costas', 'abdomen'], estilo: 'funcional' };
 }
 
-// ── Helper: escolhe exercício com bias para compostos quando disciplina fraca ─
-function escolherExercicio(disponiveis, disciplina) {
+// ── Helper: escolhe exercício levando em conta disciplina e variedade ────────
+function escolherExercicio(disponiveis, disciplina, variedade) {
   if (disponiveis.length === 0) return null;
+
+  // "Prefiro sempre os mesmos" → sempre pega o primeiro da lista (clássicos/compostos)
+  if (variedade === 'nao') {
+    return disponiveis.splice(0, 1)[0];
+  }
+
+  // "Gosto de variar muito" → embaralha antes de selecionar
+  if (variedade === 'gosto' && disponiveis.length > 1) {
+    for (let i = disponiveis.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [disponiveis[i], disponiveis[j]] = [disponiveis[j], disponiveis[i]];
+    }
+  }
+
+  // Disciplina fraca + variedade não-fixada → bias para compostos (1ª metade do pool)
   if (disciplina === 'frequentemente' && disponiveis.length > 2) {
-    // Primeiros exercícios do DB são os compostos/clássicos → dá preferência
     const corte = Math.ceil(disponiveis.length / 2);
     const idx = Math.floor(Math.random() * corte);
     return disponiveis.splice(idx, 1)[0];
   }
+
   const idx = Math.floor(Math.random() * disponiveis.length);
   return disponiveis.splice(idx, 1)[0];
 }
@@ -276,7 +291,7 @@ function selecionarExercicios(grupo, params) {
   exercicios = exercicios.filter(ex => {
     if (experiencia === 'nunca') return ex.dificuldade === 'novato' || ex.dificuldade === 'nunca';
     if (experiencia === 'novato') return ex.dificuldade !== 'intermediaria' || Math.random() > 0.7;
-    return true;
+    return true; // intermediaria e avancada: todos os exercícios liberados
   });
 
   // Filtra por ambiente
@@ -332,6 +347,10 @@ function determinarSeriesReps(params, grupo) {
   } else if (experiencia === 'intermediaria') {
     series = series + 1;
     if (estilo === 'hipertrofia' || !objetivo) reps = '6-10';
+  } else if (experiencia === 'avancada') {
+    series = series + 2;
+    if (estilo === 'hipertrofia' || !objetivo) reps = '5-8';
+    else if (estilo === 'forca') reps = '3-5';
   }
 
   // Ajusta por fadiga
@@ -386,6 +405,9 @@ function gerarTreinoPersonalizado(params) {
   // Disciplina fraca → treino mais curto
   const disciplinaFraca = disciplina === 'frequentemente';
 
+  // DOMS muito problemático → reduz volume
+  const domsRestrito = muscular === 'atrapalharia';
+
   const diasGerados = divisao.dias.map(dia => {
     const exerciciosDoDia = [];
     let ordem = 1;
@@ -399,12 +421,13 @@ function gerarTreinoPersonalizado(params) {
       if (duracao === 'longo')        numEx = 4;
       if (dia.grupos.length > 2)      numEx = 2;
       if (disciplinaFraca)            numEx = Math.max(2, numEx - 1); // sessões menores = mais fácil de manter
+      if (domsRestrito)               numEx = Math.max(2, numEx - 1); // menos volume = menos DOMS
       if (foco && foco.principais.includes(grupo)) numEx = Math.min(numEx + 1, 5); // extra no foco esportivo
 
       const isGrupoAfetado = lesao !== 'nenhuma' && localLesao && gruposAfetados.includes(grupo);
 
       for (let i = 0; i < Math.min(numEx, disponiveis.length); i++) {
-        const ex = escolherExercicio(disponiveis, disciplina);
+        const ex = escolherExercicio(disponiveis, disciplina, variedade);
         if (!ex) break;
 
         const { series, reps, descanso } = determinarSeriesReps(params, grupo);
@@ -472,7 +495,10 @@ function gerarTreinoPersonalizado(params) {
     condicionamento: 'resistencia', saude_geral: 'funcional', esporte: 'funcional',
   };
 
-  const nivelNome = experiencia === 'nunca' ? 'Iniciante' : experiencia === 'novato' ? 'Novato' : 'Intermediário';
+  const nivelNome = experiencia === 'nunca' ? 'Iniciante'
+    : experiencia === 'novato'       ? 'Novato'
+    : experiencia === 'intermediaria'? 'Intermediário'
+    : 'Avançado';
 
   let nomeWorkout, descWorkout;
 
@@ -484,18 +510,25 @@ function gerarTreinoPersonalizado(params) {
       + `com foco em ${focoPrincipais} e mobilidade integrada em todos os dias.`;
   } else {
     const info = objetivoInfo[objetivo] || objetivoInfo.hipertrofia;
-    const sufixoDisciplina = disciplinaFraca ? ' — Curto e Dinâmico' : '';
-    nomeWorkout = `Treino ${divisao.tipo} — ${info.nome} (${nivelNome})${sufixoDisciplina}`;
+    let sufixo = '';
+    if (disciplinaFraca) sufixo = ' — Curto e Dinâmico';
+    else if (domsRestrito) sufixo = ' — Volume Controlado';
+    nomeWorkout = `Treino ${divisao.tipo} — ${info.nome} (${nivelNome})${sufixo}`;
     descWorkout  = disciplinaFraca
       ? `${info.desc} Sessões mais curtas e variadas para manter a motivação e garantir consistência.`
-      : info.desc;
+      : domsRestrito
+        ? `${info.desc} Volume reduzido para minimizar dor muscular pós-treino e facilitar a recuperação.`
+        : info.desc;
   }
 
   return {
     nome: nomeWorkout,
     descricao: descWorkout,
     tipo: tipoMap[objetivo] || 'hipertrofia',
-    nivel: experiencia === 'nunca' ? 'iniciante' : experiencia === 'novato' ? 'intermediario' : 'avancado',
+    nivel: experiencia === 'nunca' ? 'iniciante'
+      : experiencia === 'novato'        ? 'iniciante'
+      : experiencia === 'intermediaria' ? 'intermediario'
+      : 'avancado',
     divisao: divisao.tipo,
     diasPorSemana: diasTreino,
     dias: diasGerados,

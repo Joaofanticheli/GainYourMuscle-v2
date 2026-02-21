@@ -277,6 +277,7 @@ const WorkoutGenerator = () => {
                   <option value="nunca">Nunca fiz</option>
                   <option value="novato">Novato (menos de 1 ano)</option>
                   <option value="intermediaria">Intermediário (1-3 anos)</option>
+                  <option value="avancada">Avançado (mais de 3 anos)</option>
                 </select>
               </div>
 
