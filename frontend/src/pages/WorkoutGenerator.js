@@ -8,90 +8,135 @@ import { workoutAPI } from '../services/api';
 import Navbar from '../components/Navbar';
 import '../styles/WorkoutGenerator.css';
 
+// ── Configuração de esportes e posições ─────────────────────────────────────
+const esportesConfig = {
+  futebol:       { label: 'Futebol',          posicoes: ['Goleiro', 'Zagueiro', 'Lateral', 'Meio-campo', 'Atacante']                                          },
+  basquete:      { label: 'Basquete',         posicoes: ['Armador', 'Ala-armador', 'Ala', 'Ala-pivô', 'Pivô']                                                 },
+  volei:         { label: 'Vôlei',            posicoes: ['Levantador', 'Oposto', 'Ponteiro', 'Central', 'Libero']                                              },
+  tenis:         { label: 'Tênis',            posicoes: ['Linha de Base', 'Serve-and-Volley', 'Recreativo']                                                    },
+  natacao:       { label: 'Natação',          posicoes: ['Velocidade (sprint)', 'Resistência (fundo)', 'Polo Aquático']                                        },
+  corrida:       { label: 'Corrida',          posicoes: ['Velocista (até 400m)', 'Meio-fundo (800m-5km)', 'Fundo/Maratona']                                    },
+  luta:          { label: 'Lutas/MMA',        posicoes: ['Striking (boxe/muay thai)', 'Grappling (jiu-jitsu/luta)', 'MMA (completo)']                          },
+  ciclismo:      { label: 'Ciclismo',         posicoes: ['Sprinter', 'Escalador', 'Contrarrelógio']                                                            },
+  fut_americano: { label: 'Fut. Americano',   posicoes: ['Quarterback', 'Running Back', 'Wide Receiver', 'Lineman', 'Linebacker']                              },
+};
+
+// ── Locais de lesão ──────────────────────────────────────────────────────────
+const lesaoLocais = [
+  { value: 'ombro',          label: 'Ombro'                                  },
+  { value: 'cotovelo_punho', label: 'Cotovelo ou Punho'                      },
+  { value: 'coluna_lombar',  label: 'Coluna Lombar (parte baixa das costas)' },
+  { value: 'coluna_cervical',label: 'Pescoço / Coluna Cervical'              },
+  { value: 'quadril',        label: 'Quadril / Virilha'                      },
+  { value: 'joelho',         label: 'Joelho'                                 },
+  { value: 'tornozelo',      label: 'Tornozelo ou Pé'                        },
+];
+
+// ── Componente principal ─────────────────────────────────────────────────────
 const WorkoutGenerator = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [celebrando, setCelebrando] = useState(false);
+  const [dadosCelebracao, setDadosCelebracao] = useState({});
 
   const [formData, setFormData] = useState({
-    objetivo: '',
-    diasTreino: '',
+    objetivo:    '',
+    esporte:     '',
+    posicao:     '',
+    diasTreino:  '',
     experiencia: '',
-    fadiga: '',
-    lesao: '',
-    duracao: '',
-    disciplina: '',
-    variedade: '',
-    ambiente: '',
-    muscular: ''
+    fadiga:      '',
+    lesao:       '',
+    localLesao:  '',
+    duracao:     '',
+    disciplina:  '',
+    variedade:   '',
+    ambiente:    '',
+    muscular:    '',
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    if (name === 'objetivo') {
+      setFormData(prev => ({ ...prev, objetivo: value, esporte: '', posicao: '' }));
+    } else if (name === 'esporte') {
+      setFormData(prev => ({ ...prev, esporte: value, posicao: '' }));
+    } else if (name === 'lesao') {
+      setFormData(prev => ({ ...prev, lesao: value, localLesao: '' }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // Validações extras (além do required HTML)
+    if (formData.objetivo === 'esporte' && (!formData.esporte || !formData.posicao)) {
+      setError('Selecione o esporte e sua posição para continuar.');
+      return;
+    }
+    if (formData.lesao && formData.lesao !== 'nenhuma' && !formData.localLesao) {
+      setError('Por favor, informe onde está a limitação física.');
+      return;
+    }
+
     setLoading(true);
-
     try {
-      const params = {
-        ...formData,
-        diasTreino: parseInt(formData.diasTreino)
-      };
-
+      const params = { ...formData, diasTreino: parseInt(formData.diasTreino) };
       const response = await workoutAPI.generate(params);
-
       if (response.data.success) {
+        setDadosCelebracao({ objetivo: formData.objetivo, esporte: formData.esporte, posicao: formData.posicao });
         setCelebrando(true);
       }
-    } catch (error) {
-      setError(
-        error.response?.data?.message || 'Erro ao gerar treino. Tente novamente.'
-      );
+    } catch (err) {
+      setError(err.response?.data?.message || 'Erro ao gerar treino. Tente novamente.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Tela de celebração após geração
+  // ── Tela de celebração ─────────────────────────────────────────────────────
   if (celebrando) {
+    const isEsporte = dadosCelebracao.objetivo === 'esporte';
+    const esporteLabel = isEsporte ? (esportesConfig[dadosCelebracao.esporte]?.label || '') : '';
     return (
       <div>
         <Navbar />
         <div className="workout-generator-container">
           <div className="celebracao-card">
-            <div className="celebracao-icone">🎉</div>
-            <h1 className="celebracao-titulo">Treino criado!</h1>
+            <div className="celebracao-icone">{isEsporte ? '🏆' : '🎉'}</div>
+            <h1 className="celebracao-titulo">
+              {isEsporte ? `Programa de ${esporteLabel} pronto!` : 'Treino criado!'}
+            </h1>
             <p className="celebracao-subtitulo">
-              Parabéns! Seu treino personalizado está pronto.<br />
-              Hoje é o <strong>Dia 1 do seu projeto</strong> — registre suas medidas iniciais
-              para acompanhar sua evolução ao longo do tempo!
+              {isEsporte ? (
+                <>
+                  Seu programa específico para <strong>{dadosCelebracao.posicao}</strong> foi criado com
+                  exercícios funcionais e <strong>mobilidade integrada</strong> em todos os dias.
+                  Hoje é o <strong>Dia 1</strong> — registre suas medidas iniciais!
+                </>
+              ) : (
+                <>
+                  Parabéns! Seu treino personalizado está pronto, com <strong>mobilidade ao final de
+                  cada sessão</strong>. Hoje é o <strong>Dia 1 do seu projeto</strong> — registre suas
+                  medidas iniciais para acompanhar sua evolução!
+                </>
+              )}
             </p>
-
             <div className="celebracao-dica">
               <p>
-                💡 Registrar seu peso e medidas hoje cria uma <strong>linha de base</strong>.
-                Em semanas você verá a diferença e isso vai te manter motivado(a)!
+                Registrar seu peso e medidas hoje cria uma <strong>linha de base</strong>.
+                Em semanas você verá a diferença — e isso vai te manter motivado!
               </p>
             </div>
-
             <div className="celebracao-acoes">
-              <button
-                className="btn btn-primary btn-large"
-                onClick={() => navigate('/progresso')}
-              >
-                📏 Registrar Dia 1
+              <button className="btn btn-primary btn-large" onClick={() => navigate('/progresso')}>
+                Registrar Dia 1
               </button>
-              <button
-                className="btn btn-outline"
-                onClick={() => navigate('/meu-treino')}
-              >
+              <button className="btn btn-outline" onClick={() => navigate('/meu-treino')}>
                 Ver Meu Treino
               </button>
             </div>
@@ -101,6 +146,7 @@ const WorkoutGenerator = () => {
     );
   }
 
+  // ── Formulário ─────────────────────────────────────────────────────────────
   return (
     <div>
       <Navbar />
@@ -111,6 +157,7 @@ const WorkoutGenerator = () => {
         </header>
 
         <div className="generator-content">
+          {/* Painel lateral de info */}
           <div className="generator-info">
             <h2>Por que este questionário?</h2>
             <p>
@@ -123,28 +170,27 @@ const WorkoutGenerator = () => {
             </p>
             <p>
               Quando você começa a notar evolução, a motivação aumenta naturalmente,
-              tornando o treino mais prazeroso e sustentável! 💪
+              tornando o treino mais prazeroso e sustentável!
             </p>
-            <p className="generator-trust">
-              <strong>Confie na gente!</strong>
-            </p>
+            <p className="generator-trust"><strong>Confie na gente!</strong></p>
           </div>
 
           <form className="generator-form" onSubmit={handleSubmit}>
             {error && <div className="alert alert-error">{error}</div>}
 
-            {/* ── OBJETIVO PRINCIPAL ── */}
+            {/* ── OBJETIVO (pergunta principal) ── */}
             <fieldset className="fieldset-objetivo">
               <legend>Qual é o seu objetivo?</legend>
               <p className="fieldset-desc">Esta é a pergunta mais importante — ela define todo o seu programa.</p>
 
               <div className="objetivo-grid">
                 {[
-                  { value: 'hipertrofia',    icon: '💪', label: 'Ganhar Músculo',      desc: 'Aumentar massa muscular' },
-                  { value: 'emagrecimento',  icon: '🔥', label: 'Emagrecer',           desc: 'Reduzir gordura corporal' },
-                  { value: 'forca',          icon: '🏋️', label: 'Ganhar Força',        desc: 'Levantar cargas maiores' },
-                  { value: 'condicionamento',icon: '🏃', label: 'Condicionamento',     desc: 'Melhorar resistência' },
-                  { value: 'saude_geral',    icon: '❤️', label: 'Saúde Geral',         desc: 'Qualidade de vida' },
+                  { value: 'hipertrofia',    icon: '💪', label: 'Ganhar Músculo',   desc: 'Aumentar massa muscular'     },
+                  { value: 'emagrecimento',  icon: '🔥', label: 'Emagrecer',         desc: 'Reduzir gordura corporal'    },
+                  { value: 'forca',          icon: '🏋️', label: 'Ganhar Força',      desc: 'Levantar cargas maiores'     },
+                  { value: 'condicionamento',icon: '🏃', label: 'Condicionamento',   desc: 'Melhorar resistência'        },
+                  { value: 'saude_geral',    icon: '❤️', label: 'Saúde Geral',       desc: 'Qualidade de vida'           },
+                  { value: 'esporte',        icon: '🏅', label: 'Esporte Específico',desc: 'Treino para o seu esporte'   },
                 ].map(({ value, icon, label, desc }) => (
                   <label
                     key={value}
@@ -164,25 +210,58 @@ const WorkoutGenerator = () => {
                   </label>
                 ))}
               </div>
+
+              {/* Seção de esporte (aparece quando "Esporte Específico" é selecionado) */}
+              {formData.objetivo === 'esporte' && (
+                <div className="esporte-section">
+                  <h4>Qual esporte você pratica?</h4>
+                  <div className="form-group">
+                    <label htmlFor="esporte">Selecione o esporte</label>
+                    <select
+                      id="esporte"
+                      name="esporte"
+                      value={formData.esporte}
+                      onChange={handleChange}
+                      required
+                      disabled={loading}
+                    >
+                      <option value="">Selecione...</option>
+                      {Object.entries(esportesConfig).map(([key, cfg]) => (
+                        <option key={key} value={key}>{cfg.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {formData.esporte && (
+                    <div className="form-group">
+                      <label htmlFor="posicao">Qual é a sua posição?</label>
+                      <select
+                        id="posicao"
+                        name="posicao"
+                        value={formData.posicao}
+                        onChange={handleChange}
+                        required
+                        disabled={loading}
+                      >
+                        <option value="">Selecione...</option>
+                        {esportesConfig[formData.esporte].posicoes.map(pos => (
+                          <option key={pos} value={pos.toLowerCase()}>{pos}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                </div>
+              )}
             </fieldset>
 
             {/* ── AJUSTE FINO ── */}
             <fieldset>
               <legend>Ajuste fino do seu treino</legend>
-              <p className="fieldset-desc">Agora personalizamos os detalhes para o seu dia a dia.</p>
+              <p className="fieldset-desc">Personalizamos os detalhes para o seu dia a dia.</p>
 
               <div className="form-group">
-                <label htmlFor="diasTreino">
-                  Frequência semanal realista (dias/semana):
-                </label>
-                <select
-                  id="diasTreino"
-                  name="diasTreino"
-                  value={formData.diasTreino}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                >
+                <label htmlFor="diasTreino">Frequência semanal realista (dias/semana):</label>
+                <select id="diasTreino" name="diasTreino" value={formData.diasTreino} onChange={handleChange} required disabled={loading}>
                   <option value="">Selecione</option>
                   <option value="3">3 dias</option>
                   <option value="4">4 dias</option>
@@ -192,17 +271,8 @@ const WorkoutGenerator = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="experiencia">
-                  Experiência com musculação:
-                </label>
-                <select
-                  id="experiencia"
-                  name="experiencia"
-                  value={formData.experiencia}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                >
+                <label htmlFor="experiencia">Experiência com musculação:</label>
+                <select id="experiencia" name="experiencia" value={formData.experiencia} onChange={handleChange} required disabled={loading}>
                   <option value="">Selecione</option>
                   <option value="nunca">Nunca fiz</option>
                   <option value="novato">Novato (menos de 1 ano)</option>
@@ -212,14 +282,7 @@ const WorkoutGenerator = () => {
 
               <div className="form-group">
                 <label htmlFor="fadiga">Relação com fadiga:</label>
-                <select
-                  id="fadiga"
-                  name="fadiga"
-                  value={formData.fadiga}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                >
+                <select id="fadiga" name="fadiga" value={formData.fadiga} onChange={handleChange} required disabled={loading}>
                   <option value="">Selecione</option>
                   <option value="evito">Evito ao máximo</option>
                   <option value="consigo">Consigo lidar</option>
@@ -227,16 +290,10 @@ const WorkoutGenerator = () => {
                 </select>
               </div>
 
+              {/* Limitação física + localização */}
               <div className="form-group">
                 <label htmlFor="lesao">Limitações físicas atuais:</label>
-                <select
-                  id="lesao"
-                  name="lesao"
-                  value={formData.lesao}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                >
+                <select id="lesao" name="lesao" value={formData.lesao} onChange={handleChange} required disabled={loading}>
                   <option value="">Selecione</option>
                   <option value="nenhuma">Nenhuma</option>
                   <option value="leve">Leve desconforto</option>
@@ -244,18 +301,32 @@ const WorkoutGenerator = () => {
                 </select>
               </div>
 
+              {/* Pergunta de localização (só aparece se tem limitação) */}
+              {formData.lesao && formData.lesao !== 'nenhuma' && (
+                <div className="lesao-section">
+                  <div className="lesao-context">
+                    <strong>Por que perguntamos isso?</strong>
+                    <p>
+                      Sabendo onde está o desconforto, adaptamos os exercícios para evitar
+                      a região afetada — reduzindo a carga naqueles movimentos, adicionando
+                      alertas e evitando agravar o problema. Você treina com segurança e continua evoluindo!
+                    </p>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="localLesao">Onde fica a limitação?</label>
+                    <select id="localLesao" name="localLesao" value={formData.localLesao} onChange={handleChange} required disabled={loading}>
+                      <option value="">Selecione a região</option>
+                      {lesaoLocais.map(({ value, label }) => (
+                        <option key={value} value={value}>{label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
               <div className="form-group">
-                <label htmlFor="duracao">
-                  Preferência de duração do treino:
-                </label>
-                <select
-                  id="duracao"
-                  name="duracao"
-                  value={formData.duracao}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                >
+                <label htmlFor="duracao">Preferência de duração do treino:</label>
+                <select id="duracao" name="duracao" value={formData.duracao} onChange={handleChange} required disabled={loading}>
                   <option value="">Selecione</option>
                   <option value="curto">45 minutos</option>
                   <option value="normal">1 hora</option>
@@ -264,51 +335,28 @@ const WorkoutGenerator = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="disciplina">
-                  Nível de disciplina (quantas vezes você falta no treino):
-                </label>
-                <select
-                  id="disciplina"
-                  name="disciplina"
-                  value={formData.disciplina}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                >
+                <label htmlFor="disciplina">Quantas vezes você costuma faltar no treino?</label>
+                <select id="disciplina" name="disciplina" value={formData.disciplina} onChange={handleChange} required disabled={loading}>
                   <option value="">Selecione</option>
-                  <option value="frequentemente">Frequentemente</option>
+                  <option value="frequentemente">Com frequência — é difícil manter</option>
                   <option value="intermediario">Às vezes</option>
-                  <option value="raramente">Raramente</option>
+                  <option value="raramente">Raramente — tenho boa consistência</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label htmlFor="variedade">Preferência por variedade:</label>
-                <select
-                  id="variedade"
-                  name="variedade"
-                  value={formData.variedade}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                >
+                <label htmlFor="variedade">Preferência por variedade nos exercícios:</label>
+                <select id="variedade" name="variedade" value={formData.variedade} onChange={handleChange} required disabled={loading}>
                   <option value="">Selecione</option>
-                  <option value="gosto">Gosto de variar</option>
-                  <option value="nao">Não gosto de variar</option>
+                  <option value="gosto">Gosto de variar muito</option>
+                  <option value="nao">Prefiro sempre os mesmos</option>
                   <option value="intermediario">Gosto que varie um pouco</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label htmlFor="ambiente">Ambiente principal:</label>
-                <select
-                  id="ambiente"
-                  name="ambiente"
-                  value={formData.ambiente}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                >
+                <label htmlFor="ambiente">Ambiente principal de treino:</label>
+                <select id="ambiente" name="ambiente" value={formData.ambiente} onChange={handleChange} required disabled={loading}>
                   <option value="">Selecione</option>
                   <option value="casa">Em casa</option>
                   <option value="pequena">Academia pequena</option>
@@ -317,21 +365,12 @@ const WorkoutGenerator = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="muscular">
-                  Tolerância a desconforto muscular na rotina:
-                </label>
-                <select
-                  id="muscular"
-                  name="muscular"
-                  value={formData.muscular}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                >
+                <label htmlFor="muscular">Tolerância a dor muscular no dia seguinte (DOMS):</label>
+                <select id="muscular" name="muscular" value={formData.muscular} onChange={handleChange} required disabled={loading}>
                   <option value="">Selecione</option>
-                  <option value="atrapalharia">Atrapalharia muito</option>
+                  <option value="atrapalharia">Atrapalharia muito minha rotina</option>
                   <option value="pouco">Atrapalharia um pouco</option>
-                  <option value="nao">Não atrapalharia</option>
+                  <option value="nao">Não atrapalharia nada</option>
                 </select>
               </div>
 

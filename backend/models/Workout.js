@@ -15,7 +15,7 @@ const ExerciseSchema = new mongoose.Schema({
   grupoMuscular: {
     type: String,
     required: true,
-    enum: ['peito', 'costas', 'ombro', 'biceps', 'triceps', 'pernas', 'abdomen', 'cardio']
+    enum: ['peito', 'costas', 'ombro', 'biceps', 'triceps', 'pernas', 'abdomen', 'cardio', 'mobilidade']
   },
   series: {
     type: Number,
