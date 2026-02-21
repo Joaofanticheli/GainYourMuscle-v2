@@ -161,6 +161,12 @@ const UserSchema = new mongoose.Schema({
     notas: String
   }],
 
+  // ========== PLANO NUTRICIONAL ==========
+  planoNutricional: {
+    type: mongoose.Schema.Types.Mixed,
+    default: null
+  },
+
   // ========== TREINO ATUAL ==========
   treinoAtual: {
     type: mongoose.Schema.Types.ObjectId,

@@ -34,7 +34,7 @@ const Navbar = () => {
             <Link to="/gerar-treino">Gerar Treino</Link>
           </li>
           <li>
-            <Link to="/treino-manual">Treino Manual</Link>
+            <Link to="/nutricao">Nutrição</Link>
           </li>
           <li>
             <Link to="/progresso">Progresso</Link>

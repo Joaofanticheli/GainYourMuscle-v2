@@ -99,4 +99,16 @@ export const workoutAPI = {
   saveManual: (data) => api.post('/workout/manual', data)
 };
 
+// ============================================================================
+// NUTRIÇÃO
+// ============================================================================
+
+export const nutritionAPI = {
+  // Gerar plano nutricional com IA
+  generate: (params) => api.post('/nutrition/generate', params),
+
+  // Obter plano salvo
+  getPlan: () => api.get('/nutrition/plan'),
+};
+
 export default api;

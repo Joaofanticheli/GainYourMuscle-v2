@@ -18,6 +18,7 @@ import WorkoutView from './pages/WorkoutView';
 import ForgotPassword from './pages/ForgotPassword';
 import Perfil from './pages/Perfil';
 import Progresso from './pages/Progresso';
+import NutricaoPlanner from './pages/NutricaoPlanner';
 
 // Estilos globais
 import './App.css';
@@ -94,6 +95,15 @@ function App() {
               element={
                 <PrivateRoute>
                   <Progresso />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/nutricao"
+              element={
+                <PrivateRoute>
+                  <NutricaoPlanner />
                 </PrivateRoute>
               }
             />

@@ -18,6 +18,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const workoutRoutes = require('./routes/workout');
+const nutritionRoutes = require('./routes/nutrition');
 
 // ============================================================================
 // CONFIGURAÇÃO DO SERVIDOR
@@ -81,6 +82,9 @@ app.use('/api/user', userRoutes);
 
 // Rotas de treino (gerar treino, salvar, buscar, etc)
 app.use('/api/workout', workoutRoutes);
+
+// Rotas de nutrição (gerar plano nutricional com IA)
+app.use('/api/nutrition', nutritionRoutes);
 
 // Rota 404 - quando a rota não existe
 app.use((req, res) => {
