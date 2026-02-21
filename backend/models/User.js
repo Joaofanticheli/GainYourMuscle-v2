@@ -89,7 +89,7 @@ const UserSchema = new mongoose.Schema({
     // Nível de experiência
     experiencia: {
       type: String,
-      enum: ['nunca', 'novato', 'intermediaria'],
+      enum: ['nunca', 'novato', 'intermediaria', 'avancada'],
       default: 'novato'
     },
 
