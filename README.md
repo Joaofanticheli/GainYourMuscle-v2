@@ -1,211 +1,221 @@
 # 💪 GainYourMuscle v2.0
 
-🌐 **Site online:** https://gain-your-muscle-v2.vercel.app
+> Plataforma completa de fitness com geração de treinos por IA, plano nutricional personalizado e acompanhamento de progresso.
 
-Plataforma web completa para motivação fitness, geração de treinos personalizados e acompanhamento de progresso.
+**🌐 Web:** https://gain-your-muscle-v2.vercel.app
+**🔗 API:** https://gainyourmuscle-v2.onrender.com
+**📱 Android:** APK disponível (build via Android Studio)
+**🍎 iOS:** Instalável como PWA pelo Safari
 
-## 🎯 Objetivo
+---
 
-Desconstruir a ideia de que:
-- Academia é chata
-- Resultados só vêm de esteroides ou canetas emagrecedoras
-- É preciso dieta extremamente regrada
+## 🎯 Sobre o Projeto
 
-**Filosofia:** Fitness sustentável, prazeroso e adaptado à SUA vida!
+GainYourMuscle é uma plataforma fitness que desmistifica a academia:
+
+- Treinos personalizados gerados por IA com base no seu perfil
+- Plano nutricional com macros, refeições e suplementação
+- Acompanhamento de peso e medidas corporais
+- Disponível na web, Android (APK) e iOS (PWA)
+
+---
 
 ## 🛠️ Stack Tecnológica
 
-### Backend
-- **Node.js** + **Express.js** - API REST
-- **MongoDB** + **Mongoose** - Banco de dados
-- **JWT** - Autenticação
-- **bcryptjs** - Criptografia de senhas
-
 ### Frontend
-- **React** - Interface do usuário
-- **React Router** - Navegação
-- **Axios** - Requisições HTTP
-- **CSS3** - Estilos
+- **React 19** — Interface do usuário
+- **React Router 7** — Navegação SPA
+- **Axios** — Requisições HTTP
+- **Capacitor 8** — Empacotamento Android/PWA
+- **CSS3** — Tema dark futurista responsivo
+
+### Backend
+- **Node.js + Express** — API REST
+- **MongoDB Atlas + Mongoose** — Banco de dados na nuvem
+- **JWT** — Autenticação stateless
+- **bcryptjs** — Criptografia de senhas
+
+### Deploy
+- **Vercel** — Frontend (CI/CD automático via GitHub)
+- **Render** — Backend (CI/CD automático via GitHub)
+
+---
+
+## ✅ Funcionalidades
+
+### Autenticação
+- Registro com dados pessoais e físicos
+- Login com JWT (token válido por 7 dias)
+- Atualização de senha
+- Recuperação de senha
+
+### Dashboard
+- Resumo do treino do dia
+- Ações rápidas
+- Frase motivacional
+- Estatísticas pessoais
+
+### Gerador de Treinos (IA)
+- Algoritmo personalizado por objetivo, frequência, ambiente e experiência
+- Divisões: ABC, ABCD, ABCDE, Full Body
+- Suporte a lesões e limitações físicas
+- Esportes específicos
+- Modo manual para treino personalizado
+
+### Meu Treino
+- Visualização completa do treino atual
+- Treino de hoje com tracking de séries/reps/carga
+- Check-in de conclusão
+- Histórico de treinos
+
+### Nutrição (IA)
+- Plano nutricional gerado por IA
+- Cálculo de calorias e macros (proteína, carbo, gordura)
+- Refeições detalhadas com alimentos e quantidades
+- Guia de suplementação
+- Dicas nutricionais personalizadas
+
+### Progresso
+- Registro de peso e medidas corporais (braço, peito, cintura, quadril, coxa)
+- Histórico completo de registros
+- Vinculação com treino do dia
+- Observações pessoais
+
+### Perfil
+- Dados pessoais e físicos
+- Cálculo de IMC automático
+- Edição de informações
+- Atualização de senha
+
+---
+
+## 📱 Mobile
+
+### Android (APK)
+Gera o APK via Android Studio:
+```bash
+cd frontend
+npm run build
+npx cap sync android
+# Abra o Android Studio → Build → Build APK(s)
+```
+
+### iOS / PWA
+1. Abra o Safari no iPhone
+2. Acesse https://gain-your-muscle-v2.vercel.app
+3. Toque em **Compartilhar → Adicionar à Tela de Início**
+
+---
 
 ## 📁 Estrutura do Projeto
 
 ```
 GainYourMuscle-v2/
 ├── backend/
-│   ├── config/          # Configurações (DB)
-│   ├── controllers/     # Lógica de negócio
-│   ├── middleware/      # Autenticação
-│   ├── models/          # Schemas MongoDB
-│   ├── routes/          # Rotas da API
-│   ├── utils/           # Gerador de treinos
-│   ├── server.js        # Entrada principal
-│   └── .env             # Variáveis de ambiente
+│   ├── config/           # Conexão MongoDB
+│   ├── controllers/      # Lógica: auth, user, workout, nutrition
+│   ├── middleware/       # Autenticação JWT
+│   ├── models/           # Schemas: User, Workout
+│   ├── routes/           # Rotas da API
+│   ├── utils/            # Gerador de treinos
+│   └── server.js         # Servidor Express
 │
 └── frontend/
+    ├── public/
+    │   ├── manifest.json  # PWA manifest
+    │   └── service-worker.js  # Cache offline
     ├── src/
-    │   ├── components/  # Componentes React
-    │   ├── pages/       # Páginas
-    │   ├── services/    # API calls
-    │   ├── context/     # Context API (Auth)
-    │   └── App.js       # App principal
-    └── package.json
+    │   ├── components/    # Navbar
+    │   ├── context/       # AuthContext (estado global)
+    │   ├── pages/         # Dashboard, Login, Perfil, Progresso...
+    │   ├── services/      # api.js (Axios)
+    │   └── styles/        # CSS por página
+    └── android/           # Projeto Capacitor Android
 ```
 
-## 🚀 Como Rodar
-
-### 1. Backend
-
-```bash
-cd backend
-
-# Instalar dependências
-npm install
-
-# Configurar .env (copie de .env.example e preencha)
-cp .env.example .env
-
-# Iniciar MongoDB local OU usar MongoDB Atlas
-
-# Rodar em desenvolvimento (auto-reload)
-npm run dev
-
-# OU rodar em produção
-npm start
-```
-
-**Backend estará em:** http://localhost:5000
-
-### 2. Frontend
-
-```bash
-cd frontend
-
-# Instalar dependências
-npm install
-
-# Rodar
-npm start
-```
-
-**Frontend estará em:** http://localhost:3000
+---
 
 ## 📡 API Endpoints
 
 ### Autenticação
-- `POST /api/auth/register` - Registrar
-- `POST /api/auth/login` - Login
-- `GET /api/auth/me` - Dados do usuário (privado)
-- `PUT /api/auth/update-password` - Mudar senha (privado)
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| POST | `/api/auth/register` | Criar conta |
+| POST | `/api/auth/login` | Login |
+| GET | `/api/auth/me` | Dados do usuário logado |
+| PUT | `/api/auth/update-password` | Alterar senha |
+| POST | `/api/auth/forgot-password` | Recuperar senha |
 
 ### Usuário
-- `GET /api/user/profile` - Ver perfil (privado)
-- `PUT /api/user/profile` - Atualizar perfil (privado)
-- `PUT /api/user/preferences` - Atualizar preferências (privado)
-- `POST /api/user/progress` - Adicionar progresso (privado)
-- `GET /api/user/progress` - Ver progresso (privado)
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/api/user/profile` | Ver perfil |
+| PUT | `/api/user/profile` | Atualizar perfil |
+| POST | `/api/user/progress` | Registrar progresso |
+| GET | `/api/user/progress` | Histórico de progresso |
+| DELETE | `/api/user/progress/:id` | Deletar registro |
 
 ### Treino
-- `POST /api/workout/generate` - Gerar treino (privado)
-- `GET /api/workout/current` - Treino atual (privado)
-- `GET /api/workout/today` - Treino de hoje (privado)
-- `GET /api/workout/history` - Histórico (privado)
-- `POST /api/workout/:id/complete` - Completar treino (privado)
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| POST | `/api/workout/generate` | Gerar treino com IA |
+| GET | `/api/workout/current` | Treino atual |
+| GET | `/api/workout/today` | Treino de hoje |
+| GET | `/api/workout/history` | Histórico |
+| POST | `/api/workout/:id/complete` | Marcar como concluído |
+| DELETE | `/api/workout/:id` | Deletar treino |
+| POST | `/api/workout/manual` | Salvar treino manual |
 
-## 🔐 Autenticação
-
-O sistema usa **JWT (JSON Web Tokens)**:
-
-1. Usuário faz login → recebe token
-2. Token é salvo no localStorage
-3. Todas as requisições privadas enviam o token no header:
-   ```
-   Authorization: Bearer SEU_TOKEN_AQUI
-   ```
-
-## 💾 MongoDB
-
-### Local
-```bash
-# Instalar MongoDB Community Edition
-# https://www.mongodb.com/try/download/community
-
-# Rodar
-mongod
-```
-
-### Cloud (MongoDB Atlas) - Recomendado
-1. Criar conta: https://www.mongodb.com/cloud/atlas/register
-2. Criar cluster gratuito
-3. Pegar string de conexão
-4. Adicionar no `.env`:
-   ```
-   MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/gainyourmuscle
-   ```
-
-## 🏋️ Features
-
-### ✅ Implementado
-
-**Backend:**
-- ✅ Sistema completo de autenticação (JWT)
-- ✅ CRUD de usuários
-- ✅ Gerador inteligente de treinos personalizados
-- ✅ Sistema de progresso e histórico
-- ✅ API REST documentada
-
-**Frontend:**
-- ⏳ Em desenvolvimento (estrutura criada)
-
-### 🔮 Próximas Features
-
-- [ ] Seção de Mobilidade
-- [ ] Plano alimentar personalizado
-- [ ] Upload de fotos de progresso
-- [ ] Gráficos de evolução
-- [ ] Sistema de conquistas/badges
-- [ ] Comunidade (feed social)
-- [ ] App mobile (React Native)
-
-## 🎨 Design
-
-Mantém a identidade visual motivacional:
-- Cores vibrantes e energéticas
-- Mensagens motivacionais
-- Interface limpa e intuitiva
-- Mobile-first (responsivo)
-
-## 📚 Como Funciona o Gerador de Treinos
-
-O algoritmo considera:
-
-1. **Dias disponíveis** (3-6 dias/semana) → Define divisão (ABC, ABCD, etc)
-2. **Experiência** → Seleciona exercícios apropriados
-3. **Ambiente** (casa/academia) → Filtra por equipamento
-4. **Tolerância à fadiga** → Ajusta séries e descanso
-5. **Limitações físicas** → Evita exercícios complexos
-6. **Duração preferida** → Ajusta volume de treino
-7. **Disciplina** → Adapta frequência
-8. **Variedade** → Rotaciona exercícios
-
-**Resultado:** Treino 100% personalizado! 💪
-
-## 🤝 Contribuindo
-
-1. Fork o projeto
-2. Crie uma branch (`git checkout -b feature/NovaFeature`)
-3. Commit (`git commit -m 'Adiciona NovaFeature'`)
-4. Push (`git push origin feature/NovaFeature`)
-5. Abra um Pull Request
-
-## 📝 Licença
-
-MIT License - Sinta-se livre para usar e modificar!
-
-## 👨‍💻 Autor
-
-Desenvolvido com 💪 por Joao fanticheli
+### Nutrição
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| POST | `/api/nutrition/generate` | Gerar plano nutricional com IA |
+| GET | `/api/nutrition/plan` | Ver plano salvo |
 
 ---
 
-**Lembre-se:** O objetivo não é perfeição, é PROGRESSO!
-Cada treino completo é uma vitória! 🎉
+## 🚀 Como Rodar Localmente
+
+### 1. Backend
+```bash
+cd backend
+npm install
+
+# Criar arquivo .env
+cp .env.example .env
+# Preencher: MONGO_URI, JWT_SECRET, FRONTEND_URL
+
+npm run dev
+# Servidor em http://localhost:5000
+```
+
+### 2. Frontend
+```bash
+cd frontend
+npm install
+npm start
+# App em http://localhost:3000
+```
+
+---
+
+## 🔐 Variáveis de Ambiente (Backend)
+
+```env
+PORT=5000
+MONGO_URI=mongodb+srv://...
+JWT_SECRET=sua_chave_secreta
+JWT_EXPIRE=7d
+FRONTEND_URL=https://gain-your-muscle-v2.vercel.app
+NODE_ENV=production
+```
+
+---
+
+## 👨‍💻 Autor
+
+Desenvolvido por **Joao Fanticheli**
+
+---
+
+> O objetivo não é perfeição, é **PROGRESSO**! Cada treino completo é uma vitória! 🎉
