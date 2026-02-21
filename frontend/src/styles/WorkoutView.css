@@ -31,6 +31,22 @@
   pointer-events: none;
 }
 
+.workout-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.workout-novo-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 0.82em !important;
+  padding: 7px 14px !important;
+}
+
 .workout-header h1 {
   font-size: 2em;
   font-weight: 800;
@@ -39,6 +55,7 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   position: relative;
+  text-align: left;
 }
 
 .workout-description {
@@ -46,6 +63,7 @@
   color: var(--muted);
   font-size: 0.9em;
   position: relative;
+  text-align: left;
 }
 
 .workout-badges {

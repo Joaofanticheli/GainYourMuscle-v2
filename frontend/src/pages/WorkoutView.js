@@ -126,8 +126,15 @@ const WorkoutView = () => {
 
         {/* Header do programa */}
         <header className="workout-header">
-          <h1>{workout.nome}</h1>
-          <p className="workout-description">{workout.descricao}</p>
+          <div className="workout-header-top">
+            <div>
+              <h1>{workout.nome}</h1>
+              <p className="workout-description">{workout.descricao}</p>
+            </div>
+            <a href="/gerar-treino" className="btn btn-outline btn-sm workout-novo-btn">
+              + Novo Treino
+            </a>
+          </div>
           <div className="workout-badges">
             <span className="badge">📅 {workout.diasPorSemana} dias/semana</span>
             <span className="badge">📊 {workout.divisao}</span>

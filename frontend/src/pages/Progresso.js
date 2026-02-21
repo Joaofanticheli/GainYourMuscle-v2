@@ -33,6 +33,7 @@ const Progresso = () => {
   const [mostrarForm, setMostrarForm] = useState(false);
   const [diaDoprojeto, setDiaDoprojeto] = useState(null);
   const [ocultarDados, setOcultarDados] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null); // id do registro a deletar
 
   const [formData, setFormData] = useState({
     peso: '',
@@ -105,10 +106,29 @@ const Progresso = () => {
     });
   };
 
+  const handleDelete = async (id) => {
+    try {
+      await userAPI.deleteProgress(id);
+      setHistorico(prev => prev.filter(r => r._id !== id));
+      setConfirmDelete(null);
+    } catch (err) {
+      setError('Erro ao remover registro.');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSucesso('');
     setError('');
+
+    // Não salva registro completamente vazio
+    const temAlgumDado = formData.peso || formData.notas ||
+      Object.values(formData.medidas).some(v => v);
+    if (!temAlgumDado) {
+      setError('Adicione pelo menos peso, uma medida ou observação antes de salvar.');
+      return;
+    }
+
     setSalvando(true);
 
     try {
@@ -283,6 +303,7 @@ const Progresso = () => {
 
             {historico.map((registro, index) => {
               const treinoFeito = treinoDodia(registro.data);
+              const isConfirmando = confirmDelete === registro._id;
               return (
                 <div className="card registro-card" key={registro._id || index}>
                   <div className="registro-header">
@@ -291,11 +312,34 @@ const Progresso = () => {
                         day: '2-digit', month: 'long', year: 'numeric'
                       })}
                     </span>
-                    {registro.peso && (
-                      <span className={`registro-peso ${ocultarDados ? 'dado-oculto' : ''}`}>
-                        {mascarar(registro.peso, ' kg')}
-                      </span>
-                    )}
+                    <div className="registro-header-right">
+                      {registro.peso && (
+                        <span className={`registro-peso ${ocultarDados ? 'dado-oculto' : ''}`}>
+                          {mascarar(registro.peso, ' kg')}
+                        </span>
+                      )}
+                      {!isConfirmando ? (
+                        <button
+                          className="btn-delete-registro"
+                          onClick={() => setConfirmDelete(registro._id)}
+                          title="Remover registro"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                            <path d="M10 11v6"/>
+                            <path d="M14 11v6"/>
+                            <path d="M9 6V4h6v2"/>
+                          </svg>
+                        </button>
+                      ) : (
+                        <div className="registro-confirm-delete">
+                          <span>Remover?</span>
+                          <button className="btn-confirm-sim" onClick={() => handleDelete(registro._id)}>Sim</button>
+                          <button className="btn-confirm-nao" onClick={() => setConfirmDelete(null)}>Não</button>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {registro.medidas && Object.values(registro.medidas).some(v => v) && (

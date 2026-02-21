@@ -218,11 +218,40 @@ const getProgress = async (req, res) => {
   }
 };
 
+/**
+ * @route   DELETE /api/user/progress/:id
+ * @desc    Deletar um registro de progresso
+ * @access  Private
+ */
+const deleteProgress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+    }
+
+    const registro = user.progresso.id(req.params.id);
+    if (!registro) {
+      return res.status(404).json({ success: false, message: 'Registro não encontrado' });
+    }
+
+    registro.deleteOne();
+    await user.save();
+
+    res.json({ success: true, message: 'Registro removido.' });
+  } catch (error) {
+    console.error('Erro ao deletar progresso:', error);
+    res.status(500).json({ success: false, message: 'Erro ao remover registro' });
+  }
+};
+
 // Exporta todas as funções
 module.exports = {
   getProfile,
   updateProfile,
   updatePreferences,
   addProgress,
-  getProgress
+  getProgress,
+  deleteProgress
 };

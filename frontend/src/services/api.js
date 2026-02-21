@@ -66,7 +66,10 @@ export const userAPI = {
   addProgress: (progressData) => api.post('/user/progress', progressData),
 
   // Obter progresso
-  getProgress: () => api.get('/user/progress')
+  getProgress: () => api.get('/user/progress'),
+
+  // Deletar registro de progresso
+  deleteProgress: (id) => api.delete(`/user/progress/${id}`)
 };
 
 // ============================================================================

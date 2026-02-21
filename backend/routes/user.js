@@ -11,7 +11,8 @@ const {
   updateProfile,
   updatePreferences,
   addProgress,
-  getProgress
+  getProgress,
+  deleteProgress
 } = require('../controllers/userController');
 
 // Importa o middleware de proteção
@@ -53,6 +54,12 @@ router.post('/progress', addProgress);
  * Obter histórico de progresso
  */
 router.get('/progress', getProgress);
+
+/**
+ * DELETE /api/user/progress/:id
+ * Deletar um registro de progresso
+ */
+router.delete('/progress/:id', deleteProgress);
 
 // Exporta o router
 module.exports = router;
