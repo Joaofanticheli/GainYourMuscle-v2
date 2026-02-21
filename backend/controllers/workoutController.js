@@ -5,6 +5,7 @@
 const Workout = require('../models/Workout');
 const User = require('../models/User');
 const { gerarTreinoPersonalizado } = require('../utils/workoutGenerator');
+const { gerarTreinoComIA }         = require('../utils/workoutGeneratorAI');
 
 /**
  * @route   POST /api/workout/generate
@@ -24,8 +25,22 @@ const generateWorkout = async (req, res) => {
       });
     }
 
-    // Gera o treino usando a função do workoutGenerator
-    const treinoGerado = gerarTreinoPersonalizado(params);
+    // Tenta gerar com IA; se falhar, usa o gerador manual como fallback
+    let treinoGerado;
+    let geradoPorIA = false;
+
+    if (process.env.GROQ_API_KEY) {
+      try {
+        treinoGerado = await gerarTreinoComIA(params);
+        geradoPorIA = true;
+        console.log('✅ Treino gerado com IA (Groq)');
+      } catch (iaErr) {
+        console.warn('⚠️  Groq falhou, usando gerador manual:', iaErr.message);
+        treinoGerado = gerarTreinoPersonalizado(params);
+      }
+    } else {
+      treinoGerado = gerarTreinoPersonalizado(params);
+    }
 
     // Cria o treino no banco de dados
     const workout = await Workout.create({
@@ -41,7 +56,9 @@ const generateWorkout = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Treino gerado com sucesso! 💪',
+      message: geradoPorIA
+        ? 'Treino gerado com IA! 🤖💪'
+        : 'Treino gerado com sucesso! 💪',
       workout
     });
 
