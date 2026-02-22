@@ -159,21 +159,50 @@ router.post('/nutrition/modify', protect, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Plano e pedido obrigatórios' });
     }
 
-    const systemPrompt = `Você é um nutricionista especialista em nutrição esportiva.
-O usuário vai te pedir modificações no plano alimentar dele.
+    const systemPrompt = `Você é um Nutricionista Esportivo de elite especializado em modificações de planos alimentares.
 
-REGRAS OBRIGATÓRIAS:
-- Retorne APENAS um JSON válido, sem texto antes ou depois
-- Mantenha EXATAMENTE a mesma estrutura do plano original
-- Faça a modificação solicitada mantendo o equilíbrio nutricional
-- Ajuste calorias e macros se necessário após a modificação
-- Use o formato:
+REGRAS DE CÁLCULO — NUNCA VIOLE:
+- Calorias = (proteína × 4) + (carboidrato × 4) + (gordura × 9)
+- Ao trocar um alimento: use os valores reais da tabela TACO (Brasil)
+- Após trocar: recalcule calorias e macros do ALIMENTO → da REFEIÇÃO → do PLANO TOTAL
+- calorias da refeição = soma das calorias de todos os alimentos dela
+- macros da refeição = soma dos macros de todos os alimentos dela
+- calorias totais do plano = soma das calorias de todas as refeições
+- macros totais do plano = soma dos macros de todas as refeições
+
+TABELA TACO — VALORES POR 100g (use como referência):
+Frango grelhado: 159kcal P:31 C:0 G:3.5 | Carne bovina magra: 163kcal P:28 C:0 G:5
+Atum em água: 130kcal P:29 C:0 G:1 | Salmão: 208kcal P:20 C:0 G:13
+Ovo inteiro (50g=1und): 78kcal P:6.5 C:0.6 G:5.5 | Clara (33g): 17kcal P:3.6 C:0.2 G:0
+Arroz branco cozido: 130kcal P:2.7 C:28 G:0.3 | Arroz integral cozido: 124kcal P:2.6 C:26 G:1
+Batata-doce cozida: 77kcal P:1.4 C:18 G:0.1 | Mandioca cozida: 125kcal P:1 C:30 G:0.3
+Macarrão cozido: 149kcal P:5 C:30 G:1.2 | Pão integral (50g): 134kcal P:5 C:25 G:2
+Aveia em flocos: 394kcal P:14 C:67 G:9 | Banana (100g): 98kcal P:1.3 C:26 G:0.1
+Maçã (150g): 87kcal P:0.4 C:23 G:0.2 | Laranja (180g): 85kcal P:1.7 C:20 G:0.2
+Feijão cozido: 76kcal P:4.5 C:14 G:0.5 | Lentilha cozida: 93kcal P:6.3 C:17 G:0.4
+Brócolis cozido: 34kcal P:2.9 C:5 G:0.4 | Espinafre cozido: 28kcal P:2.9 C:3.4 G:0.4
+Tomate (100g): 15kcal P:0.9 C:3.5 G:0.2 | Cenoura cozida: 41kcal P:0.9 C:9.6 G:0.3
+Queijo cottage (100g): 98kcal P:11 C:3.4 G:4.5 | Iogurte grego (100g): 97kcal P:9 C:4 G:5
+Whey protein (30g): 120kcal P:24 C:3 G:1.5 | Leite desnatado (200ml): 68kcal P:6.8 C:9.6 G:0.2
+Azeite (10ml): 88kcal P:0 C:0 G:10 | Abacate (100g): 160kcal P:1.5 C:9 G:15
+Castanha-do-pará (20g): 135kcal P:2.9 C:0.6 G:14 | Amendoim (30g): 176kcal P:8 C:5 G:15
+Tofu (100g): 76kcal P:8 C:1.9 G:4.8 | Grão-de-bico cozido: 129kcal P:7 C:22 G:2
+
+REGRAS DO PLANO:
+- Proteína nunca abaixo de 1.6g/kg de peso corporal
+- Gordura nunca abaixo de 20% das calorias totais
+- Fibras mínimo 25g/dia
+- Respeite restrições alimentares do plano original (vegetariano, vegano, etc.)
+- Só mude o que foi pedido — mantenha tudo o resto igual
+- A estrutura JSON deve ser IDÊNTICA ao plano original
+
+Responda SOMENTE com JSON válido neste formato:
 {
-  "plano": { /* plano completo com as modificações */ },
-  "mensagem": "Explicação curta e amigável das mudanças feitas (2-3 frases)"
+  "plano": { /* plano completo e atualizado, mesma estrutura do original */ },
+  "mensagem": "2 frases explicando o que mudou e o impacto nos macros"
 }`;
 
-    const userMsg = `Plano atual:\n${JSON.stringify(plano)}\n\nModificação solicitada: ${pedido}`;
+    const userMsg = `Plano atual (JSON completo):\n${JSON.stringify(plano)}\n\nModificação solicitada pelo usuário: "${pedido}"\n\nIMPORTANTE: Recalcule todos os macros e calorias afetados pela mudança, do alimento até os totais do plano.`;
 
     const completion = await groq.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
@@ -181,20 +210,30 @@ REGRAS OBRIGATÓRIAS:
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userMsg },
       ],
-      temperature: 0.3,
-      max_tokens: 4096,
+      temperature: 0.2,
+      max_tokens: 6000,
+      response_format: { type: 'json_object' },
     });
 
-    const resposta = completion.choices[0]?.message?.content || '';
+    const content = completion.choices[0]?.message?.content || '';
+    let resultado;
+    try {
+      resultado = JSON.parse(content);
+    } catch {
+      const match = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').match(/\{[\s\S]*\}/);
+      if (!match) throw new Error('IA não retornou JSON válido');
+      resultado = JSON.parse(match[0]);
+    }
 
-    // Remove possível markdown code block
-    const limpa = resposta.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-    const jsonMatch = limpa.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('IA não retornou JSON válido');
-
-    const resultado = JSON.parse(jsonMatch[0]);
     const planoModificado = resultado.plano;
     const mensagem = resultado.mensagem || 'Plano atualizado com sucesso!';
+
+    if (!planoModificado || !planoModificado.refeicoes) {
+      throw new Error('Plano modificado inválido — estrutura incorreta');
+    }
+
+    // Garante que geradoEm é preservado
+    planoModificado.geradoEm = plano.geradoEm || new Date().toISOString();
 
     // Salva o plano modificado no banco
     const User = require('../models/User');

@@ -188,7 +188,12 @@ INSTRUÇÕES PARA O PLANO NUTRICIONAL:
 9. Suplementação: recomende APENAS o que tem evidência forte. Explique dose, horário e motivo
 10. Inclua dicas de micronutrientes relevantes para o objetivo
 11. A proteína total deve bater no target calculado — verifique somando todas as refeições
-12. Inclua um aviso profissional ao final`;
+12. Inclua um aviso profissional ao final
+13. PARA CADA ALIMENTO inclua proteina, carboidrato E gordura individuais — use a tabela TACO brasileira
+14. REGRA DE OURO: calorias do alimento = (proteina×4) + (carboidrato×4) + (gordura×9)
+15. Total de calorias da refeição = soma das calorias de todos os alimentos
+16. Macros da refeição (proteina/carbo/gordura) = soma dos macros de todos os alimentos da refeição
+17. Total do plano (calorias e macros) = soma de todas as refeições — verifique a consistência`;
 }
 
 // ── Schema JSON esperado ──────────────────────────────────────────────────────
@@ -210,7 +215,14 @@ const JSON_SCHEMA = `{
       "calorias": number,
       "macros": { "proteina": number, "carbo": number, "gordura": number },
       "alimentos": [
-        { "item": "nome do alimento", "quantidade": "3 unidades / 150g", "calorias": number, "proteina": number }
+        {
+          "item": "nome do alimento",
+          "quantidade": "3 unidades / 150g",
+          "calorias": number,
+          "proteina": number,
+          "carboidrato": number,
+          "gordura": number
+        }
       ],
       "opcaoSubstituta": "string com opção alternativa prática e de sabor diferente"
     }
