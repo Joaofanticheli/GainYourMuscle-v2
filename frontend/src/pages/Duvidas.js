@@ -71,9 +71,14 @@ const Duvidas = () => {
 
         {historico.length === 0 && (
           <div className="duvidas-inicio">
-            <div className="duvidas-inicio-icon">🏋️</div>
-            <h2>Sobre o que você tem dúvida?</h2>
-            <p>Pergunte qualquer coisa sobre treino, alimentação, suplementação ou recuperação. Respondemos com base no seu perfil e plano atual.</p>
+            <div className="duvidas-ai-card">
+              <div className="duvidas-ai-avatar">🤖</div>
+              <div className="duvidas-ai-info">
+                <h2>Especialista em Fitness & Nutrição</h2>
+                <p>Respondo com base no seu perfil e plano atual. Pergunte sobre treino, alimentação, suplementação ou recuperação.</p>
+              </div>
+            </div>
+            <span className="duvidas-sugestoes-titulo">Sugestões de perguntas</span>
             <div className="sugestoes-grid">
               {SUGESTOES.map((s, i) => (
                 <button key={i} className="sugestao-btn" onClick={() => enviar(s)}>
@@ -92,7 +97,7 @@ const Duvidas = () => {
                   {msg.role === 'user' ? '👤' : '🤖'}
                 </div>
                 <div className="chat-msg-content">
-                  {msg.content.split('\n').map((linha, j) => (
+                  {msg.content.split('\n').filter(l => l.trim()).map((linha, j) => (
                     <p key={j}>{linha}</p>
                   ))}
                 </div>

@@ -20,7 +20,6 @@ const Navbar = () => {
   const navItems = [
     { to: '/dashboard', label: 'Home', icon: '🏠' },
     { to: '/meu-treino', label: 'Treino', icon: '💪' },
-    { to: '/gerar-treino', label: 'Gerar', icon: '⚡' },
     { to: '/nutricao', label: 'Nutrição', icon: '🥗' },
     { to: '/duvidas', label: 'Dúvidas', icon: '💬' },
     { to: '/perfil', label: 'Perfil', icon: '👤' },

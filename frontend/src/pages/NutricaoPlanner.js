@@ -3,7 +3,7 @@
 // ============================================================================
 
 import React, { useState, useEffect } from 'react';
-import { nutritionAPI, extrasAPI } from '../services/api';
+import { nutritionAPI } from '../services/api';
 import Navbar from '../components/Navbar';
 import '../styles/NutricaoPlanner.css';
 
@@ -39,6 +39,7 @@ const NutricaoPlanner = () => {
   const [etapa, setEtapa] = useState('questionario'); // 'questionario' | 'gerando' | 'plano'
   const [planoSalvo, setPlanoSalvo] = useState(null);
   const [plano, setPlano] = useState(null);
+  const [loadingPlano, setLoadingPlano] = useState(true);
   const [error, setError] = useState('');
   const [refeicaoAberta, setRefeicaoAberta] = useState(0);
 
@@ -70,7 +71,8 @@ const NutricaoPlanner = () => {
           setEtapa('plano');
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoadingPlano(false));
   }, []);
 
   const handleChange = (e) => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
@@ -101,15 +103,28 @@ const NutricaoPlanner = () => {
     setChatMsgs(novasMsgs);
     setChatLoading(true);
     try {
-      const historico = novasMsgs.slice(-10).map(m => ({ role: m.role, content: m.content }));
-      const res = await extrasAPI.chat(msg, historico.slice(0, -1));
-      setChatMsgs([...novasMsgs, { role: 'assistant', content: res.data.resposta }]);
+      const res = await nutritionAPI.modify(plano, msg);
+      setPlano(res.data.plano);
+      setPlanoSalvo(res.data.plano);
+      setChatMsgs([...novasMsgs, { role: 'assistant', content: res.data.mensagem }]);
     } catch {
-      setChatMsgs([...novasMsgs, { role: 'assistant', content: 'Erro ao processar. Tente novamente.' }]);
+      setChatMsgs([...novasMsgs, { role: 'assistant', content: 'Erro ao modificar plano. Tente novamente.' }]);
     } finally {
       setChatLoading(false);
     }
   };
+
+  // ── Loading inicial ────────────────────────────────────────────────────────
+  if (loadingPlano) {
+    return (
+      <div>
+        <Navbar />
+        <div className="nutricao-container">
+          <div className="loading">Carregando seu plano nutricional...</div>
+        </div>
+      </div>
+    );
+  }
 
   // ── Tela gerando ──────────────────────────────────────────────────────────
   if (etapa === 'gerando') {

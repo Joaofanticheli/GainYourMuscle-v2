@@ -51,7 +51,8 @@ const generateWorkout = async (req, res) => {
     // Atualiza o usuário para apontar para este treino como atual
     await User.findByIdAndUpdate(req.user.id, {
       treinoAtual: workout._id,
-      preferencias: params  // Salva as preferências também
+      preferencias: params,
+      frequencia: params.diasTreino  // Sincroniza frequência com o plano gerado
     });
 
     res.status(201).json({

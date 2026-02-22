@@ -109,6 +109,9 @@ export const nutritionAPI = {
 
   // Obter plano salvo
   getPlan: () => api.get('/nutrition/plan'),
+
+  // Modificar plano via chat IA
+  modify: (plano, pedido) => api.post('/nutrition/modify', { plano, pedido }),
 };
 
 // ============================================================================

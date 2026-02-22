@@ -57,12 +57,9 @@ ${nutricaoCtx}
 
 REGRAS:
 - Responda em português brasileiro, de forma clara e direta
-- Seja educativo: explique o PORQUÊ, não apenas o QUE fazer
-- Use exemplos concretos e práticos
-- Quando falar de exercícios, mencione biomecânica e execução correta
-- Quando falar de nutrição, explique o impacto no corpo
-- Se não souber algo específico do aluno, pergunte
-- Mantenha respostas entre 3 e 8 parágrafos — completo mas sem enrolação
+- Seja conciso: máximo 3 parágrafos curtos — vá direto ao ponto
+- Explique o PORQUÊ de forma rápida, sem enrolação
+- Use exemplos práticos quando necessário
 - Nunca dê diagnósticos médicos — para dores persistentes, oriente a buscar profissional`;
 
     const messages = [
@@ -75,7 +72,7 @@ REGRAS:
       model: 'llama-3.3-70b-versatile',
       messages,
       temperature: 0.7,
-      max_tokens: 1024,
+      max_tokens: 512,
     });
 
     const resposta = completion.choices[0]?.message?.content || 'Não consegui processar sua dúvida. Tente novamente.';
@@ -83,6 +80,65 @@ REGRAS:
   } catch (err) {
     console.error('Erro chat dúvidas:', err.message);
     res.status(500).json({ success: false, message: 'Erro ao processar dúvida' });
+  }
+});
+
+// ── Nutrição: modificar plano via IA ─────────────────────────────────────────
+router.post('/nutrition/modify', protect, async (req, res) => {
+  try {
+    const { plano, pedido } = req.body;
+    if (!plano || !pedido) {
+      return res.status(400).json({ success: false, message: 'Plano e pedido obrigatórios' });
+    }
+
+    const systemPrompt = `Você é um nutricionista especialista em nutrição esportiva.
+O usuário vai te pedir modificações no plano alimentar dele.
+
+REGRAS OBRIGATÓRIAS:
+- Retorne APENAS um JSON válido, sem texto antes ou depois
+- Mantenha EXATAMENTE a mesma estrutura do plano original
+- Faça a modificação solicitada mantendo o equilíbrio nutricional
+- Ajuste calorias e macros se necessário após a modificação
+- Use o formato:
+{
+  "plano": { /* plano completo com as modificações */ },
+  "mensagem": "Explicação curta e amigável das mudanças feitas (2-3 frases)"
+}`;
+
+    const userMsg = `Plano atual:\n${JSON.stringify(plano)}\n\nModificação solicitada: ${pedido}`;
+
+    const completion = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMsg },
+      ],
+      temperature: 0.3,
+      max_tokens: 4096,
+    });
+
+    const resposta = completion.choices[0]?.message?.content || '';
+
+    // Remove possível markdown code block
+    const limpa = resposta.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    const jsonMatch = limpa.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('IA não retornou JSON válido');
+
+    const resultado = JSON.parse(jsonMatch[0]);
+    const planoModificado = resultado.plano;
+    const mensagem = resultado.mensagem || 'Plano atualizado com sucesso!';
+
+    // Salva o plano modificado no banco
+    const User = require('../models/User');
+    const user = await User.findById(req.user._id);
+    user.planoNutricional = planoModificado;
+    user.markModified('planoNutricional');
+    await user.save();
+
+    res.json({ success: true, plano: planoModificado, mensagem });
+  } catch (err) {
+    console.error('Erro ao modificar plano nutricional:', err.message);
+    res.status(500).json({ success: false, message: 'Erro ao modificar plano nutricional' });
   }
 });
 
