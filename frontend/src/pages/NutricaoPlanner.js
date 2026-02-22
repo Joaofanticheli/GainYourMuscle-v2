@@ -3,7 +3,7 @@
 // ============================================================================
 
 import React, { useState, useEffect } from 'react';
-import { nutritionAPI } from '../services/api';
+import { nutritionAPI, extrasAPI } from '../services/api';
 import Navbar from '../components/Navbar';
 import '../styles/NutricaoPlanner.css';
 
@@ -42,6 +42,11 @@ const NutricaoPlanner = () => {
   const [error, setError] = useState('');
   const [refeicaoAberta, setRefeicaoAberta] = useState(0);
 
+  // Chat IA
+  const [chatMsgs, setChatMsgs] = useState([]);
+  const [chatInput, setChatInput] = useState('');
+  const [chatLoading, setChatLoading] = useState(false);
+
   const [form, setForm] = useState({
     objetivo:      '',
     restricao:     'nenhuma',
@@ -55,10 +60,16 @@ const NutricaoPlanner = () => {
     dietaAnterior: 'nunca',
   });
 
-  // Carrega plano salvo ao montar
+  // Carrega plano salvo ao montar — se existir, mostra direto
   useEffect(() => {
     nutritionAPI.getPlan()
-      .then(r => { if (r.data.plano) setPlanoSalvo(r.data.plano); })
+      .then(r => {
+        if (r.data.plano) {
+          setPlanoSalvo(r.data.plano);
+          setPlano(r.data.plano);
+          setEtapa('plano');
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -78,6 +89,25 @@ const NutricaoPlanner = () => {
     } catch (err) {
       setError(err.response?.data?.message || 'Erro ao gerar plano. Tente novamente.');
       setEtapa('questionario');
+    }
+  };
+
+  const handleChatSubmit = async (e) => {
+    e.preventDefault();
+    if (!chatInput.trim() || chatLoading) return;
+    const msg = chatInput.trim();
+    setChatInput('');
+    const novasMsgs = [...chatMsgs, { role: 'user', content: msg }];
+    setChatMsgs(novasMsgs);
+    setChatLoading(true);
+    try {
+      const historico = novasMsgs.slice(-10).map(m => ({ role: m.role, content: m.content }));
+      const res = await extrasAPI.chat(msg, historico.slice(0, -1));
+      setChatMsgs([...novasMsgs, { role: 'assistant', content: res.data.resposta }]);
+    } catch {
+      setChatMsgs([...novasMsgs, { role: 'assistant', content: 'Erro ao processar. Tente novamente.' }]);
+    } finally {
+      setChatLoading(false);
     }
   };
 
@@ -282,6 +312,54 @@ const NutricaoPlanner = () => {
           <div className="nutricao-aviso-medico">
             <span>⚕️</span>
             <p>{plano.avisoMedico}</p>
+          </div>
+
+          {/* Chat IA — ajuste de dieta */}
+          <div className="nutricao-chat-section">
+            <div className="nutricao-chat-header">
+              <h3>💬 Ajustar minha dieta</h3>
+              <p>Peça ao seu nutricionista IA para fazer mudanças no plano</p>
+            </div>
+
+            {chatMsgs.length > 0 && (
+              <div className="nutricao-chat-msgs">
+                {chatMsgs.map((msg, i) => (
+                  <div key={i} className={`nutricao-chat-msg nutricao-chat-msg-${msg.role}`}>
+                    <div className="nutricao-chat-bubble">{msg.content}</div>
+                  </div>
+                ))}
+                {chatLoading && (
+                  <div className="nutricao-chat-msg nutricao-chat-msg-assistant">
+                    <div className="nutricao-chat-bubble nutricao-chat-typing">
+                      <span></span><span></span><span></span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <form className="nutricao-chat-form" onSubmit={handleChatSubmit}>
+              <div className="nutricao-chat-sugestoes">
+                {['Substituir frango por ovo', 'Opção vegetariana para o almoço', 'Mais calorias no pré-treino', 'Remover laticínios'].map(s => (
+                  <button key={s} type="button" className="nutricao-chat-sugestao"
+                    onClick={() => setChatInput(s)}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+              <div className="nutricao-chat-input-row">
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={e => setChatInput(e.target.value)}
+                  placeholder="Ex: Quero trocar o arroz por batata-doce..."
+                  disabled={chatLoading}
+                />
+                <button type="submit" className="btn btn-primary" disabled={chatLoading || !chatInput.trim()}>
+                  {chatLoading ? '...' : 'Enviar'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

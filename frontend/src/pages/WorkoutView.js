@@ -2,9 +2,10 @@
 // PÁGINA VISUALIZAR TREINO - Duas abas: Treino de Hoje / Meu Plano
 // ============================================================================
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { workoutAPI, extrasAPI } from '../services/api';
 import Navbar from '../components/Navbar';
+import WorkoutGenerator from './WorkoutGenerator';
 import '../styles/WorkoutView.css';
 
 // ── Modal de vídeo nativo ──────────────────────────────────────────────────────
@@ -94,7 +95,6 @@ const WorkoutView = () => {
   // Estado por exercício: { [ordem]: { concluido, peso, obs } }
   const [exercStatus, setExercStatus] = useState({});
   const [videoExercicio, setVideoExercicio] = useState(null);
-  const [eduAberto, setEduAberto] = useState({});
 
   // Check-in (conclusão do dia)
   const [humor, setHumor] = useState('');
@@ -211,9 +211,9 @@ const WorkoutView = () => {
               <h1>{workout.nome}</h1>
               <p className="workout-description">{workout.descricao}</p>
             </div>
-            <a href="/gerar-treino" className="btn btn-outline btn-sm workout-novo-btn">
+            <button className="btn btn-outline btn-sm workout-novo-btn" onClick={() => setAbaAtiva('gerar')}>
               + Novo Treino
-            </a>
+            </button>
           </div>
           <div className="workout-badges">
             <span className="badge">📅 {workout.diasPorSemana} dias/semana</span>
@@ -236,6 +236,12 @@ const WorkoutView = () => {
             onClick={() => setAbaAtiva('plano')}
           >
             Meu Plano
+          </button>
+          <button
+            className={`workout-tab ${abaAtiva === 'gerar' ? 'tab-ativa' : ''}`}
+            onClick={() => setAbaAtiva('gerar')}
+          >
+            Gerar Novo
           </button>
         </div>
 
@@ -451,6 +457,14 @@ const WorkoutView = () => {
               </ul>
             </div>
           </>
+        )}
+
+        {/* ── ABA: GERAR NOVO TREINO ── */}
+        {abaAtiva === 'gerar' && (
+          <WorkoutGenerator
+            embedded
+            onSuccess={() => { loadData(); setAbaAtiva('hoje'); }}
+          />
         )}
 
       </div>

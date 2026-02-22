@@ -34,7 +34,7 @@ const lesaoLocais = [
 ];
 
 // ── Componente principal ─────────────────────────────────────────────────────
-const WorkoutGenerator = () => {
+const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -111,8 +111,12 @@ const WorkoutGenerator = () => {
       };
       const response = await workoutAPI.generate(params);
       if (response.data.success) {
-        setDadosCelebracao({ objetivo: formData.objetivo, esporte: formData.esporte, posicao: formData.posicao });
-        setCelebrando(true);
+        if (embedded && onSuccess) {
+          onSuccess();
+        } else {
+          setDadosCelebracao({ objetivo: formData.objetivo, esporte: formData.esporte, posicao: formData.posicao });
+          setCelebrando(true);
+        }
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Erro ao gerar treino. Tente novamente.');
@@ -170,56 +174,56 @@ const WorkoutGenerator = () => {
   }
 
   // ── Formulário ─────────────────────────────────────────────────────────────
-  return (
-    <div>
-      <Navbar />
-      <div className="workout-generator-container">
+  const formContent = (
+    <>
+      {/* ── ABAS ── */}
+      <div className="generator-tabs">
+        <button
+          className={`generator-tab ${abaAtiva === 'gerar' ? 'active' : ''}`}
+          onClick={() => setAbaAtiva('gerar')}
+        >
+          Gerar Treino
+        </button>
+        <button
+          className={`generator-tab ${abaAtiva === 'manual' ? 'active' : ''}`}
+          onClick={() => setAbaAtiva('manual')}
+        >
+          Criar Manual
+        </button>
+      </div>
 
-        {/* ── ABAS ── */}
-        <div className="generator-tabs">
-          <button
-            className={`generator-tab ${abaAtiva === 'gerar' ? 'active' : ''}`}
-            onClick={() => setAbaAtiva('gerar')}
-          >
-            Gerar Treino
-          </button>
-          <button
-            className={`generator-tab ${abaAtiva === 'manual' ? 'active' : ''}`}
-            onClick={() => setAbaAtiva('manual')}
-          >
-            Criar Manual
-          </button>
-        </div>
+      {abaAtiva === 'manual' ? (
+        <WorkoutManual embedded />
+      ) : (
+        <>
+          {!embedded && (
+            <header className="generator-header">
+              <h1>Gerar Treino Personalizado</h1>
+              <p>Responda o questionário para criarmos seu treino ideal!</p>
+            </header>
+          )}
 
-        {abaAtiva === 'manual' ? (
-          <WorkoutManual embedded />
-        ) : (
-          <>
-        <header className="generator-header">
-          <h1>Gerar Treino Personalizado</h1>
-          <p>Responda o questionário para criarmos seu treino ideal!</p>
-        </header>
+          <div className="generator-content">
+            {!embedded && (
+              <div className="generator-info">
+                <h2>Por que este questionário?</h2>
+                <p>
+                  Coletamos informações detalhadas sobre você para montar um treino
+                  realmente ideal, pensado de forma individual.
+                </p>
+                <p>
+                  O objetivo é garantir que o treino seja compatível com o seu nível
+                  físico, suas preferências, sua rotina e seus objetivos.
+                </p>
+                <p>
+                  Quando você começa a notar evolução, a motivação aumenta naturalmente,
+                  tornando o treino mais prazeroso e sustentável!
+                </p>
+                <p className="generator-trust"><strong>Confie na gente!</strong></p>
+              </div>
+            )}
 
-        <div className="generator-content">
-          {/* Painel lateral de info */}
-          <div className="generator-info">
-            <h2>Por que este questionário?</h2>
-            <p>
-              Coletamos informações detalhadas sobre você para montar um treino
-              realmente ideal, pensado de forma individual.
-            </p>
-            <p>
-              O objetivo é garantir que o treino seja compatível com o seu nível
-              físico, suas preferências, sua rotina e seus objetivos.
-            </p>
-            <p>
-              Quando você começa a notar evolução, a motivação aumenta naturalmente,
-              tornando o treino mais prazeroso e sustentável!
-            </p>
-            <p className="generator-trust"><strong>Confie na gente!</strong></p>
-          </div>
-
-          <form className="generator-form" onSubmit={handleSubmit}>
+            <form className="generator-form" onSubmit={handleSubmit}>
             {error && <div className="alert alert-error">{error}</div>}
 
             {/* ── OBJETIVO (pergunta principal) ── */}
@@ -438,10 +442,22 @@ const WorkoutGenerator = () => {
                 {loading ? '⏳ Gerando seu treino...' : '🚀 Gerar Meu Treino'}
               </button>
             </fieldset>
-          </form>
-        </div>
-          </>
-        )}
+            </form>
+          </div>
+        </>
+      )}
+    </>
+  );
+
+  if (embedded) {
+    return <div className="workout-generator-container">{formContent}</div>;
+  }
+
+  return (
+    <div>
+      <Navbar />
+      <div className="workout-generator-container">
+        {formContent}
       </div>
     </div>
   );
