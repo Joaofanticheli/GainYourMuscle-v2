@@ -22,7 +22,7 @@ const Navbar = () => {
     { to: '/meu-treino', label: 'Treino', icon: '💪' },
     { to: '/gerar-treino', label: 'Gerar', icon: '⚡' },
     { to: '/nutricao', label: 'Nutrição', icon: '🥗' },
-    { to: '/progresso', label: 'Progresso', icon: '📊' },
+    { to: '/duvidas', label: 'Dúvidas', icon: '💬' },
     { to: '/perfil', label: 'Perfil', icon: '👤' },
   ];
 

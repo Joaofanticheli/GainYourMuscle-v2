@@ -190,7 +190,9 @@ function buildPrompt(params) {
     : 'Sem limitações físicas';
 
   const divisaoSugerida = { 3: 'ABC', 4: 'ABCD', 5: 'ABCDE', 6: 'ABCDEF' }[diasTreino] || 'ABCD';
-  const diasSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].slice(0, diasTreino);
+  const diasSemana = params.diasSelecionados?.length === diasTreino
+    ? params.diasSelecionados
+    : ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].slice(0, diasTreino);
 
   return `PERFIL COMPLETO DO ALUNO:
 - Objetivo: ${linhaObjetivo}
@@ -214,7 +216,7 @@ INSTRUÇÕES PARA GERAÇÃO DO TREINO:
 3. Sempre termine cada dia com 2-3 exercícios de mobilidade (grupoMuscular: "mobilidade")
 4. Respeite a sequência: compostos pesados → compostos leves → isoladores → mobilidade
 5. Adapte tudo ao ambiente: ${LABELS.ambiente[ambiente] || ambiente}
-6. Para cada exercício, gere a URL do YouTube: "https://www.youtube.com/results?search_query=NOME_DO_EXERCICIO+fabricio+pacholok" (substitua NOME_DO_EXERCICIO pelo nome real do exercício com + no lugar de espaços, em português)
+6. Para cada exercício, deixe o campo videoUrl como string vazia "" — o app buscará o vídeo automaticamente
 7. Nas observações, seja específico: mencione biomecânica, ponto de máxima contração, RIR recomendado, e dica técnica principal
 8. Se houver lesão, adapte APENAS os exercícios da região afetada — o restante treina normalmente com intensidade total
 9. Séries: inteiro de 2 a 6 | Repetições: string (ex: "6-10", "12-15", "3-5") | Descanso: inteiro em segundos
@@ -246,7 +248,14 @@ const JSON_SCHEMA = `{
           "descanso": number,
           "observacoes": "dica biomecânica específica + RIR recomendado + ponto de atenção",
           "videoUrl": "https://www.youtube.com/results?search_query=nome+do+exercicio+fabricio+pacholok",
-          "ordem": number
+          "ordem": number,
+          "motivacao": "Por que este exercício está no plano deste aluno específico — relacione com o objetivo e nível dele",
+          "educacao": {
+            "musculosAtivados": "músculos primários e secundários ativados e como",
+            "execucaoCorreta": "passo a passo da execução correta com pontos de atenção biomecânicos",
+            "errosComuns": "2-3 erros mais comuns e como evitar",
+            "dicaExtra": "dica de Fabrício Pacholok sobre este exercício ou padrão de movimento"
+          }
         }
       ]
     }
@@ -278,6 +287,8 @@ function validarTreino(treino, diasEsperados) {
         ex.videoUrl = `https://www.youtube.com/results?search_query=${query}+fabricio+pacholok`;
       }
       if (!ex.observacoes) ex.observacoes = '';
+      if (!ex.motivacao) ex.motivacao = '';
+      if (!ex.educacao) ex.educacao = { musculosAtivados: '', execucaoCorreta: '', errosComuns: '', dicaExtra: '' };
     });
     if (!dia.focoPrincipal) dia.focoPrincipal = [];
     if (!dia.duracaoEstimada) dia.duracaoEstimada = 60;

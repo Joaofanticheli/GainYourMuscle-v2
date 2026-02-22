@@ -2,10 +2,88 @@
 // PÁGINA VISUALIZAR TREINO - Duas abas: Treino de Hoje / Meu Plano
 // ============================================================================
 
-import React, { useState, useEffect } from 'react';
-import { workoutAPI } from '../services/api';
+import React, { useState, useEffect, useCallback } from 'react';
+import { workoutAPI, extrasAPI } from '../services/api';
 import Navbar from '../components/Navbar';
 import '../styles/WorkoutView.css';
+
+// ── Modal de vídeo nativo ──────────────────────────────────────────────────────
+const VideoModal = ({ exercicio, onClose }) => {
+  const [videoId, setVideoId] = useState(null);
+  const [carregando, setCarregando] = useState(true);
+
+  useEffect(() => {
+    extrasAPI.getVideo(exercicio.nome)
+      .then(r => setVideoId(r.data.videoId || null))
+      .catch(() => setVideoId(null))
+      .finally(() => setCarregando(false));
+  }, [exercicio.nome]);
+
+  return (
+    <div className="video-modal-overlay" onClick={onClose}>
+      <div className="video-modal" onClick={e => e.stopPropagation()}>
+        <div className="video-modal-header">
+          <h3>{exercicio.nome}</h3>
+          <button className="video-modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="video-modal-body">
+          {carregando ? (
+            <div className="video-loading">Buscando vídeo de demonstração...</div>
+          ) : videoId ? (
+            <iframe
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+              title={exercicio.nome}
+              frameBorder="0"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+              className="video-iframe"
+            />
+          ) : (
+            <div className="video-not-found">
+              <p>Vídeo não encontrado automaticamente.</p>
+              <a
+                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(exercicio.nome + ' execução correta')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline btn-sm"
+              >
+                Buscar no YouTube
+              </a>
+            </div>
+          )}
+        </div>
+        {exercicio.educacao && (
+          <div className="video-educacao">
+            {exercicio.educacao.musculosAtivados && (
+              <div className="edu-item">
+                <strong>💪 Músculos ativados</strong>
+                <p>{exercicio.educacao.musculosAtivados}</p>
+              </div>
+            )}
+            {exercicio.educacao.execucaoCorreta && (
+              <div className="edu-item">
+                <strong>✅ Execução correta</strong>
+                <p>{exercicio.educacao.execucaoCorreta}</p>
+              </div>
+            )}
+            {exercicio.educacao.errosComuns && (
+              <div className="edu-item">
+                <strong>⚠️ Erros comuns</strong>
+                <p>{exercicio.educacao.errosComuns}</p>
+              </div>
+            )}
+            {exercicio.educacao.dicaExtra && (
+              <div className="edu-item edu-dica">
+                <strong>💡 Dica do Pacholok</strong>
+                <p>{exercicio.educacao.dicaExtra}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const WorkoutView = () => {
   const [workout, setWorkout] = useState(null);
@@ -15,6 +93,8 @@ const WorkoutView = () => {
 
   // Estado por exercício: { [ordem]: { concluido, peso, obs } }
   const [exercStatus, setExercStatus] = useState({});
+  const [videoExercicio, setVideoExercicio] = useState(null);
+  const [eduAberto, setEduAberto] = useState({});
 
   // Check-in (conclusão do dia)
   const [humor, setHumor] = useState('');
@@ -208,18 +288,19 @@ const WorkoutView = () => {
                             <div className="exercise-content">
                               <div className="exercise-nome-row">
                                 <h3>{exercicio.nome}</h3>
-                                {exercicio.videoUrl && (
-                                  <a
-                                    href={exercicio.videoUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="btn-video"
-                                    title="Ver demonstração — Fabricio Pacholok"
-                                  >
-                                    ▶ Vídeo
-                                  </a>
-                                )}
+                                <button
+                                  className="btn-video"
+                                  onClick={() => setVideoExercicio(exercicio)}
+                                  title="Ver vídeo e dicas — Fabrício Pacholok"
+                                >
+                                  ▶ Vídeo
+                                </button>
                               </div>
+                              {exercicio.motivacao && (
+                                <div className="exercise-motivacao">
+                                  <span>🎯 {exercicio.motivacao}</span>
+                                </div>
+                              )}
                               <div className="exercise-details">
                                 <span className="muscle-group">{exercicio.grupoMuscular}</span>
                                 <span className="sets-reps">
@@ -328,18 +409,19 @@ const WorkoutView = () => {
                         <div className="exercise-content">
                           <div className="exercise-nome-row">
                             <h3>{exercicio.nome}</h3>
-                            {exercicio.videoUrl && (
-                              <a
-                                href={exercicio.videoUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn-video"
-                                title="Ver demonstração — Fabricio Pacholok"
-                              >
-                                ▶ Vídeo
-                              </a>
-                            )}
+                            <button
+                              className="btn-video"
+                              onClick={() => setVideoExercicio(exercicio)}
+                              title="Ver vídeo e dicas — Fabrício Pacholok"
+                            >
+                              ▶ Vídeo
+                            </button>
                           </div>
+                          {exercicio.motivacao && (
+                            <div className="exercise-motivacao">
+                              <span>🎯 {exercicio.motivacao}</span>
+                            </div>
+                          )}
                           <div className="exercise-details">
                             <span className="muscle-group">{exercicio.grupoMuscular}</span>
                             <span className="sets-reps">
@@ -372,6 +454,10 @@ const WorkoutView = () => {
         )}
 
       </div>
+
+      {videoExercicio && (
+        <VideoModal exercicio={videoExercicio} onClose={() => setVideoExercicio(null)} />
+      )}
     </div>
   );
 };

@@ -42,21 +42,33 @@ const WorkoutGenerator = () => {
   const [dadosCelebracao, setDadosCelebracao] = useState({});
   const [abaAtiva, setAbaAtiva] = useState('gerar');
 
+  const DIAS_SEMANA = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'];
+
   const [formData, setFormData] = useState({
-    objetivo:    '',
-    esporte:     '',
-    posicao:     '',
-    diasTreino:  '',
-    experiencia: '',
-    fadiga:      '',
-    lesao:       '',
-    localLesao:  '',
-    duracao:     '',
-    disciplina:  '',
-    variedade:   '',
-    ambiente:    '',
-    muscular:    '',
+    objetivo:       '',
+    esporte:        '',
+    posicao:        '',
+    diasSelecionados: [],
+    experiencia:    '',
+    fadiga:         '',
+    lesao:          '',
+    localLesao:     '',
+    duracao:        '',
+    disciplina:     '',
+    variedade:      '',
+    ambiente:       '',
+    muscular:       '',
   });
+
+  const toggleDia = (dia) => {
+    setFormData(prev => {
+      const atual = prev.diasSelecionados;
+      const novo = atual.includes(dia)
+        ? atual.filter(d => d !== dia)
+        : [...atual, dia];
+      return { ...prev, diasSelecionados: novo };
+    });
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -85,9 +97,18 @@ const WorkoutGenerator = () => {
       return;
     }
 
+    if (formData.diasSelecionados.length < 3 || formData.diasSelecionados.length > 6) {
+      setError('Selecione entre 3 e 6 dias de treino.');
+      return;
+    }
+
     setLoading(true);
     try {
-      const params = { ...formData, diasTreino: parseInt(formData.diasTreino) };
+      const params = {
+        ...formData,
+        diasTreino: formData.diasSelecionados.length,
+        diasSelecionados: formData.diasSelecionados,
+      };
       const response = await workoutAPI.generate(params);
       if (response.data.success) {
         setDadosCelebracao({ objetivo: formData.objetivo, esporte: formData.esporte, posicao: formData.posicao });
@@ -283,14 +304,25 @@ const WorkoutGenerator = () => {
               <p className="fieldset-desc">Personalizamos os detalhes para o seu dia a dia.</p>
 
               <div className="form-group">
-                <label htmlFor="diasTreino">Frequência semanal realista (dias/semana):</label>
-                <select id="diasTreino" name="diasTreino" value={formData.diasTreino} onChange={handleChange} required disabled={loading}>
-                  <option value="">Selecione</option>
-                  <option value="3">3 dias</option>
-                  <option value="4">4 dias</option>
-                  <option value="5">5 dias</option>
-                  <option value="6">6 dias</option>
-                </select>
+                <label>Quais dias você vai treinar? <span style={{color:'var(--text-muted)', fontWeight:'normal'}}>(selecione 3 a 6 dias)</span></label>
+                <div className="dias-selector">
+                  {DIAS_SEMANA.map(dia => (
+                    <button
+                      key={dia}
+                      type="button"
+                      className={`dia-btn ${formData.diasSelecionados.includes(dia) ? 'dia-btn-ativo' : ''}`}
+                      onClick={() => toggleDia(dia)}
+                      disabled={loading}
+                    >
+                      {dia}
+                    </button>
+                  ))}
+                </div>
+                {formData.diasSelecionados.length > 0 && (
+                  <p className="dias-selecionados-info">
+                    {formData.diasSelecionados.length} dias selecionados: {formData.diasSelecionados.join(', ')}
+                  </p>
+                )}
               </div>
 
               <div className="form-group">

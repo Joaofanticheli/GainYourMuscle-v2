@@ -3,6 +3,8 @@ apply plugin: 'com.android.application'
 android {
     namespace = "com.gainyourmuscle.app"
     compileSdk = rootProject.ext.compileSdkVersion
+    archivesBaseName = "gainyourmuscle"
+
     defaultConfig {
         applicationId "com.gainyourmuscle.app"
         minSdkVersion rootProject.ext.minSdkVersion

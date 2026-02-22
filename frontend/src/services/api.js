@@ -111,4 +111,16 @@ export const nutritionAPI = {
   getPlan: () => api.get('/nutrition/plan'),
 };
 
+// ============================================================================
+// EXTRAS (Vídeo + Chat Dúvidas)
+// ============================================================================
+
+export const extrasAPI = {
+  // Buscar vídeo do exercício
+  getVideo: (nome) => api.get(`/youtube/video?nome=${encodeURIComponent(nome)}`),
+
+  // Chat de dúvidas fitness/nutrição
+  chat: (mensagem, historico) => api.post('/chat/duvidas', { mensagem, historico }),
+};
+
 export default api;

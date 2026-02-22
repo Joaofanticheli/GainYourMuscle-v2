@@ -19,6 +19,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import Perfil from './pages/Perfil';
 import Progresso from './pages/Progresso';
 import NutricaoPlanner from './pages/NutricaoPlanner';
+import Duvidas from './pages/Duvidas';
 
 // Estilos globais
 import './App.css';
@@ -104,6 +105,15 @@ function App() {
               element={
                 <PrivateRoute>
                   <NutricaoPlanner />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/duvidas"
+              element={
+                <PrivateRoute>
+                  <Duvidas />
                 </PrivateRoute>
               }
             />

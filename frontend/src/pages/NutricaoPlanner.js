@@ -124,6 +124,18 @@ const NutricaoPlanner = () => {
             </button>
           </div>
 
+          {/* Cálculo de água */}
+          {plano.aguaDiaria && (
+            <div className="card nutricao-agua-card">
+              <div className="nutricao-agua-icon">💧</div>
+              <div className="nutricao-agua-info">
+                <strong>{plano.aguaDiaria}ml</strong>
+                <span>de água por dia</span>
+                <p>{plano.aguaDicaContexto || `Baseado no seu peso corporal (35ml/kg). Aumente em dias de treino intenso.`}</p>
+              </div>
+            </div>
+          )}
+
           {/* Resumo calórico */}
           <div className="card nutricao-resumo-card">
             <div className="nutricao-calorias-total">

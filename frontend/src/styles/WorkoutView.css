@@ -585,3 +585,108 @@
   .exercise-track-inputs { flex-direction: column; }
   .track-input-group input { width: 100%; }
 }
+
+/* ── Modal de Vídeo ── */
+.video-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.video-modal {
+  background: var(--bg-secondary, #1a1a2e);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--border-color, #333);
+}
+
+.video-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-color, #333);
+}
+
+.video-modal-header h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #fff);
+}
+
+.video-modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted, #888);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.video-modal-close:hover { background: rgba(255,255,255,0.1); }
+
+.video-modal-body {
+  padding: 0;
+}
+
+.video-iframe {
+  width: 100%;
+  aspect-ratio: 16/9;
+  display: block;
+  border: none;
+}
+
+.video-loading, .video-not-found {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted, #888);
+}
+
+.video-educacao {
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-top: 1px solid var(--border-color, #333);
+}
+
+.edu-item {
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+}
+
+.edu-item strong {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--primary, #6c63ff);
+  margin-bottom: 0.35rem;
+}
+
+.edu-item p {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #ccc);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.edu-dica {
+  border-left: 3px solid var(--primary, #6c63ff);
+}
+
+/* ── Motivação do exercício ── */
+.exercise-motivacao {
+  font-size: 0.78rem;
+  color: var(--text-muted, #888);
+  margin-top: 4px;
+  font-style: italic;
+}

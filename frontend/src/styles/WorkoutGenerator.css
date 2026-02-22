@@ -342,3 +342,42 @@
   .objetivo-grid { grid-template-columns: 1fr 1fr; }
   .celebracao-card { padding: 32px 24px; margin: 20px auto; }
 }
+
+/* ── Seletor de dias ── */
+.dias-selector {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.dia-btn {
+  background: var(--bg-secondary, #1a1a2e);
+  border: 2px solid var(--border-color, #333);
+  border-radius: 10px;
+  padding: 0.5rem 0.9rem;
+  color: var(--text-secondary, #ccc);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 50px;
+  text-align: center;
+}
+
+.dia-btn:hover {
+  border-color: var(--primary, #6c63ff);
+  color: var(--primary, #6c63ff);
+}
+
+.dia-btn-ativo {
+  background: var(--primary, #6c63ff);
+  border-color: var(--primary, #6c63ff);
+  color: white;
+}
+
+.dias-selecionados-info {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--text-muted, #888);
+}

@@ -19,6 +19,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const workoutRoutes = require('./routes/workout');
 const nutritionRoutes = require('./routes/nutrition');
+const extrasRoutes = require('./routes/extras');
 
 // ============================================================================
 // CONFIGURAÇÃO DO SERVIDOR
@@ -73,6 +74,7 @@ app.use('/api/workout', workoutRoutes);
 
 // Rotas de nutrição (gerar plano nutricional com IA)
 app.use('/api/nutrition', nutritionRoutes);
+app.use('/api', extrasRoutes);
 
 // Rota 404 - quando a rota não existe
 app.use((req, res) => {
