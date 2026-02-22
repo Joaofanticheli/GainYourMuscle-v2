@@ -5,22 +5,47 @@ const Groq = require('groq-sdk');
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// ── YouTube: busca vídeo específico do Fabrício Pacholok ──────────────────────
+// ── Verifica se um vídeo pode ser embedado via oEmbed ─────────────────────────
+async function isEmbeddable(videoId) {
+  try {
+    const https = require('https');
+    return await new Promise((resolve) => {
+      const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+      https.get(url, (res) => {
+        resolve(res.statusCode === 200);
+        res.resume();
+      }).on('error', () => resolve(false));
+    });
+  } catch {
+    return false;
+  }
+}
+
+// ── YouTube: busca vídeo de demonstração de exercício ─────────────────────────
 router.get('/youtube/video', protect, async (req, res) => {
   try {
     const { nome } = req.query;
     if (!nome) return res.status(400).json({ success: false, message: 'Nome do exercício obrigatório' });
 
     const YouTube = require('youtube-sr').default;
-    const query = `${nome} execução correta musculação`;
-    const results = await YouTube.search(query, { limit: 5, type: 'video' });
-    const pacholokVideo = results[0];
+    const query = `${nome} execução correta musculação tutorial`;
+    const results = await YouTube.search(query, { limit: 12, type: 'video' });
 
-    if (!pacholokVideo) {
-      return res.json({ success: false, videoId: null });
+    // Filtra: duração entre 30s e 8 minutos
+    const candidatos = results.filter(v => {
+      const dur = v.duration || 0; // duração em ms
+      return dur >= 30000 && dur <= 480000;
+    });
+
+    // Tenta até 4 candidatos para achar um com embed habilitado
+    for (const video of candidatos.slice(0, 4)) {
+      const ok = await isEmbeddable(video.id);
+      if (ok) {
+        return res.json({ success: true, videoId: video.id, title: video.title });
+      }
     }
 
-    res.json({ success: true, videoId: pacholokVideo.id, title: pacholokVideo.title });
+    return res.json({ success: false, videoId: null });
   } catch (err) {
     console.error('Erro busca YouTube:', err.message);
     res.json({ success: false, videoId: null });

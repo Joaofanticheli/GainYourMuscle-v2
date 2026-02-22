@@ -196,14 +196,19 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
         <WorkoutManual embedded />
       ) : (
         <>
-          {!embedded && (
+          {embedded ? (
+            <div className="generator-header-embedded">
+              <h2>Gerar Novo Treino</h2>
+              <p>Responda o questionário e a IA monta seu treino do zero</p>
+            </div>
+          ) : (
             <header className="generator-header">
               <h1>Gerar Treino Personalizado</h1>
               <p>Responda o questionário para criarmos seu treino ideal!</p>
             </header>
           )}
 
-          <div className="generator-content">
+          <div className={`generator-content ${embedded ? 'generator-content-embedded' : ''}`}>
             {!embedded && (
               <div className="generator-info">
                 <h2>Por que este questionário?</h2>
