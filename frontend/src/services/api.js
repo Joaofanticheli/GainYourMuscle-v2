@@ -122,6 +122,9 @@ export const extrasAPI = {
   // Buscar vídeo do exercício
   getVideo: (nome) => api.get(`/youtube/video?nome=${encodeURIComponent(nome)}`),
 
+  // Buscar GIF do exercício via Giphy
+  getGif: (nome) => api.get(`/exercise-gif?nome=${encodeURIComponent(nome)}`),
+
   // Chat de dúvidas fitness/nutrição
   chat: (mensagem, historico) => api.post('/chat/duvidas', { mensagem, historico }),
 };

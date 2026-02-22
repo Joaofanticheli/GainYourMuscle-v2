@@ -8,15 +8,15 @@ import Navbar from '../components/Navbar';
 import WorkoutGenerator from './WorkoutGenerator';
 import '../styles/WorkoutView.css';
 
-// ── Modal de vídeo nativo ──────────────────────────────────────────────────────
-const VideoModal = ({ exercicio, onClose }) => {
-  const [videoId, setVideoId] = useState(null);
+// ── Modal de GIF de exercício ─────────────────────────────────────────────────
+const GifModal = ({ exercicio, onClose }) => {
+  const [gifUrl, setGifUrl] = useState(null);
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    extrasAPI.getVideo(exercicio.nome)
-      .then(r => setVideoId(r.data.videoId || null))
-      .catch(() => setVideoId(null))
+    extrasAPI.getGif(exercicio.nome)
+      .then(r => setGifUrl(r.data.gifUrl || null))
+      .catch(() => setGifUrl(null))
       .finally(() => setCarregando(false));
   }, [exercicio.nome]);
 
@@ -29,27 +29,32 @@ const VideoModal = ({ exercicio, onClose }) => {
         </div>
         <div className="video-modal-body">
           {carregando ? (
-            <div className="video-loading">Buscando vídeo de demonstração...</div>
-          ) : videoId ? (
-            <iframe
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
-              title={exercicio.nome}
-              frameBorder="0"
-              allow="autoplay; encrypted-media"
-              allowFullScreen
-              className="video-iframe"
+            <div className="video-loading">Buscando demonstração...</div>
+          ) : gifUrl ? (
+            <img
+              src={gifUrl}
+              alt={`Demonstração: ${exercicio.nome}`}
+              className="exercise-gif"
             />
           ) : (
             <div className="video-not-found">
-              <p>Vídeo não encontrado automaticamente.</p>
-              <a
-                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(exercicio.nome + ' execução correta')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-outline btn-sm"
-              >
-                Buscar no YouTube
-              </a>
+              <p>GIF não encontrado automaticamente.</p>
+              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <a
+                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(exercicio.nome + ' execução correta')}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="btn btn-outline btn-sm"
+                >
+                  Ver no YouTube
+                </a>
+                <a
+                  href={`https://giphy.com/search/${encodeURIComponent(exercicio.nome + ' exercise')}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="btn btn-outline btn-sm"
+                >
+                  Ver no Giphy
+                </a>
+              </div>
             </div>
           )}
         </div>
@@ -94,7 +99,7 @@ const WorkoutView = () => {
 
   // Estado por exercício: { [ordem]: { concluido, peso, obs } }
   const [exercStatus, setExercStatus] = useState({});
-  const [videoExercicio, setVideoExercicio] = useState(null);
+  const [gifExercicio, setGifExercicio] = useState(null);
 
   // Check-in (conclusão do dia)
   const [humor, setHumor] = useState('');
@@ -296,10 +301,10 @@ const WorkoutView = () => {
                                 <h3>{exercicio.nome}</h3>
                                 <button
                                   className="btn-video"
-                                  onClick={() => setVideoExercicio(exercicio)}
-                                  title="Ver vídeo e dicas — Fabrício Pacholok"
+                                  onClick={() => setGifExercicio(exercicio)}
+                                  title="Ver demonstração GIF"
                                 >
-                                  ▶ Vídeo
+                                  🎬 GIF
                                 </button>
                               </div>
                               {exercicio.motivacao && (
@@ -417,7 +422,7 @@ const WorkoutView = () => {
                             <h3>{exercicio.nome}</h3>
                             <button
                               className="btn-video"
-                              onClick={() => setVideoExercicio(exercicio)}
+                              onClick={() => setGifExercicio(exercicio)}
                               title="Ver vídeo e dicas — Fabrício Pacholok"
                             >
                               ▶ Vídeo
@@ -469,8 +474,8 @@ const WorkoutView = () => {
 
       </div>
 
-      {videoExercicio && (
-        <VideoModal exercicio={videoExercicio} onClose={() => setVideoExercicio(null)} />
+      {gifExercicio && (
+        <GifModal exercicio={gifExercicio} onClose={() => setGifExercicio(null)} />
       )}
     </div>
   );

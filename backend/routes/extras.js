@@ -5,6 +5,49 @@ const Groq = require('groq-sdk');
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
+// ── Helper HTTP GET JSON ──────────────────────────────────────────────────────
+function httpGet(url) {
+  const mod = url.startsWith('https') ? require('https') : require('http');
+  return new Promise((resolve, reject) => {
+    mod.get(url, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try { resolve({ status: res.statusCode, body: JSON.parse(data) }); }
+        catch { resolve({ status: res.statusCode, body: null }); }
+      });
+    }).on('error', reject);
+  });
+}
+
+// ── GIF de exercício via Giphy ────────────────────────────────────────────────
+router.get('/exercise-gif', protect, async (req, res) => {
+  try {
+    const { nome } = req.query;
+    if (!nome) return res.status(400).json({ success: false });
+
+    const apiKey = process.env.GIPHY_API_KEY;
+    if (!apiKey) return res.json({ success: false, gifUrl: null });
+
+    const query = encodeURIComponent(`${nome} exercise workout how to`);
+    const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${query}&limit=8&rating=g&lang=en`;
+    const { body } = await httpGet(url);
+
+    const gif = body?.data?.[0];
+    if (!gif) return res.json({ success: false, gifUrl: null });
+
+    const gifUrl = gif.images?.downsized_medium?.url
+      || gif.images?.fixed_height?.url
+      || gif.images?.original?.url
+      || null;
+
+    res.json({ success: true, gifUrl });
+  } catch (err) {
+    console.error('Erro busca GIF:', err.message);
+    res.json({ success: false, gifUrl: null });
+  }
+});
+
 // ── Verifica se um vídeo pode ser embedado via oEmbed ─────────────────────────
 async function isEmbeddable(videoId) {
   try {
