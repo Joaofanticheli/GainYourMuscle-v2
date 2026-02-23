@@ -1,0 +1,449 @@
+/* ============================================================================
+   ESTILOS — PÁGINAS DE PROFISSIONAL
+   ============================================================================ */
+
+/* ---- Página de cadastro ---- */
+.register-prof-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  padding: 2rem 1rem;
+}
+
+.register-prof-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 520px;
+  color: #fff;
+}
+
+.register-prof-card h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  text-align: center;
+  background: linear-gradient(90deg, #e94560, #f5a623);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.register-prof-card .subtitulo {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.register-prof-card .form-group {
+  margin-bottom: 1.2rem;
+}
+
+.register-prof-card label {
+  display: block;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.register-prof-card input,
+.register-prof-card select,
+.register-prof-card textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.register-prof-card input::placeholder,
+.register-prof-card textarea::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.register-prof-card input:focus,
+.register-prof-card select:focus,
+.register-prof-card textarea:focus {
+  outline: none;
+  border-color: #e94560;
+}
+
+.register-prof-card select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.register-prof-card textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.aviso-pendente {
+  background: rgba(245, 166, 35, 0.15);
+  border: 1px solid rgba(245, 166, 35, 0.4);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  font-size: 0.85rem;
+  color: #f5a623;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.btn-prof-primary {
+  width: 100%;
+  padding: 0.85rem;
+  background: linear-gradient(135deg, #e94560, #c23152);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-prof-primary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-prof-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.register-prof-footer {
+  text-align: center;
+  margin-top: 1.2rem;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.register-prof-footer a {
+  color: #e94560;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* ---- Dashboard do profissional ---- */
+.dash-prof-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem 5rem;
+}
+
+.dash-prof-header {
+  background: linear-gradient(135deg, #e94560, #f5a623);
+  border-radius: 14px;
+  padding: 1.8rem 2rem;
+  color: #fff;
+  margin-bottom: 2rem;
+}
+
+.dash-prof-header h1 {
+  font-size: 1.6rem;
+  margin: 0 0 0.3rem;
+}
+
+.dash-prof-header p {
+  margin: 0;
+  opacity: 0.85;
+  font-size: 0.95rem;
+}
+
+.badge-status {
+  display: inline-block;
+  padding: 0.25rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-top: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-pendente {
+  background: rgba(245, 166, 35, 0.25);
+  color: #f5a623;
+  border: 1px solid #f5a623;
+}
+
+.badge-ativo {
+  background: rgba(39, 174, 96, 0.2);
+  color: #27ae60;
+  border: 1px solid #27ae60;
+}
+
+.banner-pendente {
+  background: rgba(245, 166, 35, 0.1);
+  border: 1px solid rgba(245, 166, 35, 0.35);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  color: #f5a623;
+  font-size: 0.9rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+.dash-prof-section {
+  margin-bottom: 2.5rem;
+}
+
+.dash-prof-section h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary, #1a1a2e);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cliente-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.cliente-card-info h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+  color: #1a1a2e;
+}
+
+.cliente-card-info p {
+  margin: 0;
+  font-size: 0.83rem;
+  color: #666;
+}
+
+.solicitacao-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.solicitacao-acoes {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.btn-aceitar {
+  padding: 0.4rem 1rem;
+  background: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-recusar {
+  padding: 0.4rem 1rem;
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-aceitar:hover { opacity: 0.85; }
+.btn-recusar:hover { opacity: 0.85; }
+
+.empty-state {
+  text-align: center;
+  color: #999;
+  padding: 1.5rem;
+  font-size: 0.9rem;
+}
+
+/* ---- Busca de Profissionais ---- */
+.buscar-prof-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem 5rem;
+}
+
+.buscar-prof-container h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary, #1a1a2e);
+  margin-bottom: 0.3rem;
+}
+
+.buscar-prof-container .subtitulo {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 1.8rem;
+}
+
+.filtro-tipo {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.8rem;
+}
+
+.filtro-btn {
+  padding: 0.5rem 1.2rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 24px;
+  background: #fff;
+  color: #555;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.filtro-btn.ativo,
+.filtro-btn:hover {
+  border-color: #e94560;
+  color: #e94560;
+  background: rgba(233, 69, 96, 0.06);
+}
+
+.prof-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 1.4rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+}
+
+.prof-card-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e94560, #f5a623);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.prof-card-body {
+  flex: 1;
+}
+
+.prof-card-body h3 {
+  margin: 0 0 0.15rem;
+  font-size: 1.05rem;
+  color: #1a1a2e;
+}
+
+.prof-tipo-badge {
+  display: inline-block;
+  padding: 0.15rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.tipo-personal { background: #e8f5e9; color: #2e7d32; }
+.tipo-nutricionista { background: #e3f2fd; color: #1565c0; }
+.tipo-psicologo { background: #f3e5f5; color: #6a1b9a; }
+
+.prof-registro {
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+
+.prof-bio {
+  font-size: 0.88rem;
+  color: #555;
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+}
+
+.prof-especialidade {
+  font-size: 0.82rem;
+  color: #888;
+  margin-bottom: 0.8rem;
+}
+
+.prof-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.btn-vincular {
+  padding: 0.5rem 1.2rem;
+  background: #e94560;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-vincular:hover:not(:disabled) { opacity: 0.85; }
+.btn-vincular:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.vinculo-status {
+  font-size: 0.82rem;
+  color: #888;
+  font-style: italic;
+}
+
+.vinculo-status.pendente { color: #f5a623; }
+.vinculo-status.ativo { color: #27ae60; }
+
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+}
+
+@media (max-width: 600px) {
+  .prof-card {
+    flex-direction: column;
+  }
+
+  .solicitacao-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

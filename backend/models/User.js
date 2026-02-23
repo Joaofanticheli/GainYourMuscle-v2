@@ -177,10 +177,26 @@ const UserSchema = new mongoose.Schema({
     ref: 'Workout'  // Referência para o modelo de Treino
   },
 
+  // ========== DADOS DO PROFISSIONAL (apenas quando role === 'profissional') ==========
+  profissional: {
+    tipo: {
+      type: String,
+      enum: ['personal', 'nutricionista', 'psicologo']
+    },
+    registro: String,   // CREF / CRN / CRP
+    bio: String,        // Apresentação curta
+    especialidade: String,
+    status: {
+      type: String,
+      enum: ['pendente', 'ativo', 'rejeitado'],
+      default: 'pendente'
+    }
+  },
+
   // ========== METADADOS ==========
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'admin', 'profissional'],
     default: 'user'
   },
 
@@ -238,7 +254,7 @@ UserSchema.methods.compararSenha = async function(senhaFornecida) {
  * @returns {Object} - Objeto com dados públicos
  */
 UserSchema.methods.dadosPublicos = function() {
-  return {
+  const dados = {
     id: this._id,
     nome: this.nome,
     email: this.email,
@@ -250,8 +266,15 @@ UserSchema.methods.dadosPublicos = function() {
     frequencia: this.frequencia,
     preferencias: this.preferencias,
     treinoAtual: this.treinoAtual,
+    role: this.role,
     createdAt: this.createdAt
   };
+
+  if (this.role === 'profissional' && this.profissional) {
+    dados.profissional = this.profissional;
+  }
+
+  return dados;
 };
 
 // ============================================================================

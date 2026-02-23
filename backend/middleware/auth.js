@@ -89,5 +89,20 @@ const admin = (req, res, next) => {
   }
 };
 
+/**
+ * Middleware para verificar se o usuário é profissional
+ * Deve ser usado DEPOIS do middleware protect
+ */
+const isProfissional = (req, res, next) => {
+  if (req.user && req.user.role === 'profissional') {
+    next();
+  } else {
+    res.status(403).json({
+      success: false,
+      message: 'Acesso exclusivo para profissionais'
+    });
+  }
+};
+
 // Exporta os middlewares
-module.exports = { protect, admin };
+module.exports = { protect, admin, isProfissional };

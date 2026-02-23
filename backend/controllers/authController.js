@@ -279,11 +279,92 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+/**
+ * @route   POST /api/auth/register-profissional
+ * @desc    Registrar novo profissional (personal, nutricionista, psicólogo)
+ * @access  Public
+ */
+const registerProfissional = async (req, res) => {
+  try {
+    const { email, password, nome, tipo, registro, bio, especialidade } = req.body;
+
+    if (!email || !password || !nome || !tipo || !registro) {
+      return res.status(400).json({
+        success: false,
+        message: 'Por favor, preencha todos os campos obrigatórios'
+      });
+    }
+
+    const tiposValidos = ['personal', 'nutricionista', 'psicologo'];
+    if (!tiposValidos.includes(tipo)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Tipo de profissional inválido'
+      });
+    }
+
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email já cadastrado'
+      });
+    }
+
+    const user = await User.create({
+      email,
+      password,
+      nome,
+      // Campos físicos com valores padrão neutros para profissional
+      dataNascimento: new Date('1990-01-01'),
+      sexo: 'masculino',
+      peso: 70,
+      altura: 170,
+      frequencia: 0,
+      role: 'profissional',
+      profissional: {
+        tipo,
+        registro,
+        bio: bio || '',
+        especialidade: especialidade || '',
+        status: 'pendente'
+      }
+    });
+
+    const token = generateToken(user._id);
+
+    res.status(201).json({
+      success: true,
+      message: 'Cadastro realizado! Aguarde a aprovação do seu perfil.',
+      token,
+      user: user.dadosPublicos()
+    });
+
+  } catch (error) {
+    console.error('Erro no registro de profissional:', error);
+
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        success: false,
+        message: messages.join(', ')
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao criar profissional',
+      error: error.message
+    });
+  }
+};
+
 // Exporta todas as funções
 module.exports = {
   register,
   login,
   getMe,
   updatePassword,
-  forgotPassword
+  forgotPassword,
+  registerProfissional
 };

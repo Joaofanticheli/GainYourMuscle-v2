@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 
 // Páginas
@@ -20,9 +20,21 @@ import Perfil from './pages/Perfil';
 import Progresso from './pages/Progresso';
 import NutricaoPlanner from './pages/NutricaoPlanner';
 import Duvidas from './pages/Duvidas';
+import RegisterProfissional from './pages/RegisterProfissional';
+import DashboardProfissional from './pages/DashboardProfissional';
+import BuscarProfissional from './pages/BuscarProfissional';
 
 // Estilos globais
 import './App.css';
+
+// Rota exclusiva para profissionais
+const ProfissionalRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" />;
+  if (user.role !== 'profissional') return <Navigate to="/dashboard" />;
+  return children;
+};
 
 function App() {
   return (
@@ -34,6 +46,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/register-profissional" element={<RegisterProfissional />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
             {/* Rotas Privadas (precisam de autenticação) */}
@@ -114,6 +127,24 @@ function App() {
               element={
                 <PrivateRoute>
                   <Duvidas />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/dashboard-profissional"
+              element={
+                <ProfissionalRoute>
+                  <DashboardProfissional />
+                </ProfissionalRoute>
+              }
+            />
+
+            <Route
+              path="/profissionais"
+              element={
+                <PrivateRoute>
+                  <BuscarProfissional />
                 </PrivateRoute>
               }
             />

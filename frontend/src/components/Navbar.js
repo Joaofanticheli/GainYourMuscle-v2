@@ -17,20 +17,26 @@ const Navbar = () => {
     navigate('/');
   };
 
-  const navItems = [
-    { to: '/dashboard', label: 'Home', icon: '🏠' },
-    { to: '/meu-treino', label: 'Treino', icon: '💪' },
-    { to: '/nutricao', label: 'Nutrição', icon: '🥗' },
-    { to: '/duvidas', label: 'Dúvidas', icon: '💬' },
-    { to: '/perfil', label: 'Perfil', icon: '👤' },
-  ];
+  const navItems = user?.role === 'profissional'
+    ? [
+        { to: '/dashboard-profissional', label: 'Painel', icon: '🏠' },
+        { to: '/perfil', label: 'Perfil', icon: '👤' },
+      ]
+    : [
+        { to: '/dashboard', label: 'Home', icon: '🏠' },
+        { to: '/meu-treino', label: 'Treino', icon: '💪' },
+        { to: '/nutricao', label: 'Nutrição', icon: '🥗' },
+        { to: '/profissionais', label: 'Profissionais', icon: '🩺' },
+        { to: '/duvidas', label: 'Dúvidas', icon: '💬' },
+        { to: '/perfil', label: 'Perfil', icon: '👤' },
+      ];
 
   return (
     <>
       {/* Navbar desktop (topo) */}
       <nav className="navbar">
         <div className="navbar-container">
-          <Link to="/dashboard" className="navbar-brand">
+          <Link to={user?.role === 'profissional' ? '/dashboard-profissional' : '/dashboard'} className="navbar-brand">
             <h1>GainYourMuscle 💪</h1>
           </Link>
 

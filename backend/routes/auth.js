@@ -11,7 +11,8 @@ const {
   login,
   getMe,
   updatePassword,
-  forgotPassword
+  forgotPassword,
+  registerProfissional
 } = require('../controllers/authController');
 
 // Importa o middleware de proteção
@@ -38,6 +39,12 @@ router.post('/login', login);
  * Solicitar recuperação de senha
  */
 router.post('/forgot-password', forgotPassword);
+
+/**
+ * POST /api/auth/register-profissional
+ * Registrar novo profissional
+ */
+router.post('/register-profissional', registerProfissional);
 
 // ============================================================================
 // ROTAS PRIVADAS (precisam de autenticação)
