@@ -286,10 +286,154 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
             <form className="generator-form" onSubmit={handleSubmit}>
             {error && <div className="alert alert-error">{error}</div>}
 
-            {/* ── OBJETIVO (pergunta principal) ── */}
+            {/* ── 1. ANAMNESE DE SAÚDE (PRIMEIRO — conforme orientação do personal) ── */}
+            <fieldset className="fieldset-parq">
+              <legend>🏥 Anamnese de Saúde</legend>
+              <p className="fieldset-desc">
+                Preencha com honestidade. Estas informações são essenciais para garantir sua segurança
+                e montar um treino adequado à sua condição de saúde.
+              </p>
+
+              {/* PAR-Q */}
+              <div className="parq-secao-titulo">PAR-Q — Questionário de Prontidão para Atividade Física</div>
+              <p className="parq-secao-desc">Obrigatório por lei em academias do estado de SP e recomendado em todo o Brasil.</p>
+
+              {formData.parqRespostas.some(r => r === 'sim') && (
+                <div className="parq-aviso">
+                  <strong>Atenção:</strong> Você respondeu "Sim" a uma ou mais perguntas do PAR-Q.
+                  Recomendamos que consulte um médico antes de iniciar ou intensificar atividade física.
+                  Você ainda pode gerar o treino, mas leve esta informação ao seu profissional de saúde.
+                </div>
+              )}
+
+              <div className="parq-lista">
+                {PARQ_PERGUNTAS.map((pergunta, idx) => (
+                  <div key={idx} className="parq-item">
+                    <p className="parq-pergunta"><strong>{idx + 1}.</strong> {pergunta}</p>
+                    <div className="parq-opcoes">
+                      <label className={`parq-opcao ${formData.parqRespostas[idx] === 'nao' ? 'parq-selecionado' : ''}`}>
+                        <input
+                          type="radio"
+                          name={`parq_${idx}`}
+                          value="nao"
+                          checked={formData.parqRespostas[idx] === 'nao'}
+                          onChange={() => handleParq(idx, 'nao')}
+                          disabled={loading}
+                        />
+                        Não
+                      </label>
+                      <label className={`parq-opcao parq-sim ${formData.parqRespostas[idx] === 'sim' ? 'parq-selecionado parq-sim-selecionado' : ''}`}>
+                        <input
+                          type="radio"
+                          name={`parq_${idx}`}
+                          value="sim"
+                          checked={formData.parqRespostas[idx] === 'sim'}
+                          onChange={() => handleParq(idx, 'sim')}
+                          disabled={loading}
+                        />
+                        Sim
+                      </label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Doenças crônicas */}
+              <div className="parq-secao-titulo" style={{marginTop:'20px'}}>Doenças e Condições de Saúde</div>
+
+              <div className="form-group">
+                <label htmlFor="doencaCronica">Possui alguma doença crônica?</label>
+                <select id="doencaCronica" name="doencaCronica" value={formData.doencaCronica} onChange={handleChange} required disabled={loading}>
+                  <option value="nao">Não</option>
+                  <option value="sim">Sim</option>
+                </select>
+              </div>
+
+              {formData.doencaCronica === 'sim' && (
+                <div className="form-group">
+                  <label htmlFor="doencaDescricao">Qual(is) doença(s)? <span style={{color:'var(--text-muted)', fontWeight:'normal'}}>(ex: hipertensão, diabetes, cardiopatia…)</span></label>
+                  <input
+                    type="text"
+                    id="doencaDescricao"
+                    name="doencaDescricao"
+                    placeholder="Descreva as doenças crônicas"
+                    value={formData.doencaDescricao}
+                    onChange={handleChange}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+              )}
+
+              {/* Medicamentos */}
+              <div className="form-group">
+                <label htmlFor="medicamento">Faz uso de medicamento contínuo?</label>
+                <select id="medicamento" name="medicamento" value={formData.medicamento} onChange={handleChange} required disabled={loading}>
+                  <option value="nao">Não</option>
+                  <option value="sim">Sim</option>
+                </select>
+              </div>
+
+              {formData.medicamento === 'sim' && (
+                <div className="form-group">
+                  <label htmlFor="medicamentoDescricao">Qual(is) medicamento(s)?</label>
+                  <input
+                    type="text"
+                    id="medicamentoDescricao"
+                    name="medicamentoDescricao"
+                    placeholder="Ex: losartana, metformina, clonazepam…"
+                    value={formData.medicamentoDescricao}
+                    onChange={handleChange}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+              )}
+
+              {/* Limitação física */}
+              <div className="parq-secao-titulo" style={{marginTop:'20px'}}>Limitações Físicas e Ortopédicas</div>
+
+              <div className="form-group">
+                <label htmlFor="lesao">Possui alguma limitação física atualmente?</label>
+                <select id="lesao" name="lesao" value={formData.lesao} onChange={handleChange} required disabled={loading}>
+                  <option value="">Selecione</option>
+                  <option value="nenhuma">Não, estou bem</option>
+                  <option value="leve">Sim — leve desconforto / dor ocasional</option>
+                  <option value="pequena">Sim — lesão diagnosticada ou dor frequente</option>
+                </select>
+              </div>
+
+              {formData.lesao && formData.lesao !== 'nenhuma' && (
+                <div className="lesao-section">
+                  <div className="form-group">
+                    <label htmlFor="localLesao">Onde fica a limitação?</label>
+                    <select id="localLesao" name="localLesao" value={formData.localLesao} onChange={handleChange} required disabled={loading}>
+                      <option value="">Selecione a região</option>
+                      {lesaoLocais.map(({ value, label }) => (
+                        <option key={value} value={value}>{label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="lesaoDescricao">Qual é o problema? <span style={{color:'var(--text-muted)', fontWeight:'normal'}}>(ex: LCA rompido, tendinite, hérnia…)</span></label>
+                    <input
+                      type="text"
+                      id="lesaoDescricao"
+                      name="lesaoDescricao"
+                      placeholder="Descreva brevemente o problema ortopédico"
+                      value={formData.lesaoDescricao}
+                      onChange={handleChange}
+                      disabled={loading}
+                    />
+                  </div>
+                </div>
+              )}
+            </fieldset>
+
+            {/* ── 2. OBJETIVO ── */}
             <fieldset className="fieldset-objetivo">
               <legend>Qual é o seu objetivo?</legend>
-              <p className="fieldset-desc">Esta é a pergunta mais importante — ela define todo o seu programa.</p>
+              <p className="fieldset-desc">Esta escolha define toda a estrutura do seu programa.</p>
 
               <div className="objetivo-grid">
                 {[
@@ -319,38 +463,22 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
                 ))}
               </div>
 
-              {/* Seção de esporte (aparece quando "Esporte Específico" é selecionado) */}
               {formData.objetivo === 'esporte' && (
                 <div className="esporte-section">
                   <h4>Qual esporte você pratica?</h4>
                   <div className="form-group">
                     <label htmlFor="esporte">Selecione o esporte</label>
-                    <select
-                      id="esporte"
-                      name="esporte"
-                      value={formData.esporte}
-                      onChange={handleChange}
-                      required
-                      disabled={loading}
-                    >
+                    <select id="esporte" name="esporte" value={formData.esporte} onChange={handleChange} required disabled={loading}>
                       <option value="">Selecione...</option>
                       {Object.entries(esportesConfig).map(([key, cfg]) => (
                         <option key={key} value={key}>{cfg.label}</option>
                       ))}
                     </select>
                   </div>
-
                   {formData.esporte && (
                     <div className="form-group">
                       <label htmlFor="posicao">Qual é a sua posição?</label>
-                      <select
-                        id="posicao"
-                        name="posicao"
-                        value={formData.posicao}
-                        onChange={handleChange}
-                        required
-                        disabled={loading}
-                      >
+                      <select id="posicao" name="posicao" value={formData.posicao} onChange={handleChange} required disabled={loading}>
                         <option value="">Selecione...</option>
                         {esportesConfig[formData.esporte].posicoes.map(pos => (
                           <option key={pos} value={pos.toLowerCase()}>{pos}</option>
@@ -362,9 +490,9 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
               )}
             </fieldset>
 
-            {/* ── AJUSTE FINO ── */}
+            {/* ── 3. AJUSTE DO TREINO ── */}
             <fieldset>
-              <legend>Ajuste fino do seu treino</legend>
+              <legend>Detalhes do Treino</legend>
               <p className="fieldset-desc">Personalizamos os detalhes para o seu dia a dia.</p>
 
               <div className="form-group">
@@ -401,12 +529,9 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
                     </p>
                   </div>
                 </div>
-
                 <div className="avaliacao-dica">
-                  Faça cada teste antes de responder, ou estime com honestidade.
-                  Pare assim que a execução ficar incorreta.
+                  Faça cada teste antes de responder, ou estime com honestidade. Pare assim que a execução ficar incorreta.
                 </div>
-
                 <div className="form-group">
                   <label htmlFor="testeFlexoes">
                     💪 Flexões até a falha
@@ -421,7 +546,6 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
                     <option value="41mais">41 ou mais repetições</option>
                   </select>
                 </div>
-
                 <div className="form-group">
                   <label htmlFor="testeAgachamentos">
                     🦵 Agachamentos livres até a falha
@@ -436,7 +560,6 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
                     <option value="51mais">51 ou mais repetições</option>
                   </select>
                 </div>
-
                 <div className="form-group">
                   <label htmlFor="testePrancha">
                     🧱 Prancha isométrica (core)
@@ -450,7 +573,6 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
                     <option value="mais2min">Mais de 2 minutos</option>
                   </select>
                 </div>
-
                 <div className="form-group">
                   <label htmlFor="testeCardio">
                     🏃 Resistência cardiovascular
@@ -464,7 +586,6 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
                     <option value="mais30min">Mais de 30 minutos</option>
                   </select>
                 </div>
-
                 {nivelCalculado && (
                   <div className="nivel-calculado">
                     <span>Seu nível estimado:</span>
@@ -482,50 +603,6 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
                   <option value="nao">Gosto de me desafiar ao limite em cada treino</option>
                 </select>
               </div>
-
-              {/* Limitação física + localização + descrição */}
-              <div className="form-group">
-                <label htmlFor="lesao">Possui alguma limitação física atualmente?</label>
-                <select id="lesao" name="lesao" value={formData.lesao} onChange={handleChange} required disabled={loading}>
-                  <option value="">Selecione</option>
-                  <option value="nenhuma">Não, estou bem</option>
-                  <option value="leve">Sim — leve desconforto / dor ocasional</option>
-                  <option value="pequena">Sim — lesão diagnosticada ou dor frequente</option>
-                </select>
-              </div>
-
-              {formData.lesao && formData.lesao !== 'nenhuma' && (
-                <div className="lesao-section">
-                  <div className="lesao-context">
-                    <strong>Por que perguntamos isso?</strong>
-                    <p>
-                      Sabendo onde está o desconforto e qual é o problema, adaptamos os exercícios para
-                      evitar agravar a região — você treina com segurança e continua evoluindo!
-                    </p>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="localLesao">Onde fica a limitação?</label>
-                    <select id="localLesao" name="localLesao" value={formData.localLesao} onChange={handleChange} required disabled={loading}>
-                      <option value="">Selecione a região</option>
-                      {lesaoLocais.map(({ value, label }) => (
-                        <option key={value} value={value}>{label}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="lesaoDescricao">Qual é o problema? <span style={{color:'var(--text-muted)', fontWeight:'normal'}}>(ex: tendinite, hérnia, dor após impacto…)</span></label>
-                    <input
-                      type="text"
-                      id="lesaoDescricao"
-                      name="lesaoDescricao"
-                      placeholder="Descreva brevemente o problema"
-                      value={formData.lesaoDescricao}
-                      onChange={handleChange}
-                      disabled={loading}
-                    />
-                  </div>
-                </div>
-              )}
 
               <div className="form-group">
                 <label htmlFor="duracao">Preferência de duração do treino:</label>
@@ -567,56 +644,6 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
                 </select>
               </div>
 
-              {/* Doenças crônicas */}
-              <div className="form-group">
-                <label htmlFor="doencaCronica">Possui alguma doença crônica? <span style={{color:'var(--accent)', fontWeight:'normal'}}>(obrigatório)</span></label>
-                <select id="doencaCronica" name="doencaCronica" value={formData.doencaCronica} onChange={handleChange} required disabled={loading}>
-                  <option value="nao">Não</option>
-                  <option value="sim">Sim</option>
-                </select>
-              </div>
-
-              {formData.doencaCronica === 'sim' && (
-                <div className="form-group">
-                  <label htmlFor="doencaDescricao">Qual(is) doença(s)? <span style={{color:'var(--text-muted)', fontWeight:'normal'}}>(ex: hipertensão, diabetes, cardiopatia…)</span></label>
-                  <input
-                    type="text"
-                    id="doencaDescricao"
-                    name="doencaDescricao"
-                    placeholder="Descreva as doenças crônicas"
-                    value={formData.doencaDescricao}
-                    onChange={handleChange}
-                    required
-                    disabled={loading}
-                  />
-                </div>
-              )}
-
-              {/* Medicamentos de uso contínuo */}
-              <div className="form-group">
-                <label htmlFor="medicamento">Faz uso de medicamento contínuo? <span style={{color:'var(--accent)', fontWeight:'normal'}}>(obrigatório)</span></label>
-                <select id="medicamento" name="medicamento" value={formData.medicamento} onChange={handleChange} required disabled={loading}>
-                  <option value="nao">Não</option>
-                  <option value="sim">Sim</option>
-                </select>
-              </div>
-
-              {formData.medicamento === 'sim' && (
-                <div className="form-group">
-                  <label htmlFor="medicamentoDescricao">Qual(is) medicamento(s)?</label>
-                  <input
-                    type="text"
-                    id="medicamentoDescricao"
-                    name="medicamentoDescricao"
-                    placeholder="Ex: losartana, metformina, ritalina…"
-                    value={formData.medicamentoDescricao}
-                    onChange={handleChange}
-                    required
-                    disabled={loading}
-                  />
-                </div>
-              )}
-
               <button
                 type="submit"
                 className="btn btn-primary btn-block btn-large"
@@ -624,55 +651,6 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
               >
                 {loading ? '⏳ Gerando seu treino...' : '🚀 Gerar Meu Treino'}
               </button>
-            </fieldset>
-
-            {/* ── PAR-Q ── */}
-            <fieldset className="fieldset-parq">
-              <legend>PAR-Q — Prontidão para Atividade Física</legend>
-              <p className="fieldset-desc">
-                O PAR-Q é um questionário padrão internacional de segurança. Responda com honestidade —
-                suas respostas ajudam a montar um treino compatível com sua saúde.
-              </p>
-
-              {formData.parqRespostas.some(r => r === 'sim') && (
-                <div className="parq-aviso">
-                  <strong>Atenção:</strong> Você respondeu "Sim" a uma ou mais perguntas do PAR-Q.
-                  Recomendamos que consulte um médico antes de iniciar ou intensificar atividade física.
-                  Você ainda pode gerar o treino, mas leve esta informação ao seu profissional de saúde.
-                </div>
-              )}
-
-              <div className="parq-lista">
-                {PARQ_PERGUNTAS.map((pergunta, idx) => (
-                  <div key={idx} className="parq-item">
-                    <p className="parq-pergunta"><strong>{idx + 1}.</strong> {pergunta}</p>
-                    <div className="parq-opcoes">
-                      <label className={`parq-opcao ${formData.parqRespostas[idx] === 'nao' ? 'parq-selecionado' : ''}`}>
-                        <input
-                          type="radio"
-                          name={`parq_${idx}`}
-                          value="nao"
-                          checked={formData.parqRespostas[idx] === 'nao'}
-                          onChange={() => handleParq(idx, 'nao')}
-                          disabled={loading}
-                        />
-                        Não
-                      </label>
-                      <label className={`parq-opcao parq-sim ${formData.parqRespostas[idx] === 'sim' ? 'parq-selecionado parq-sim-selecionado' : ''}`}>
-                        <input
-                          type="radio"
-                          name={`parq_${idx}`}
-                          value="sim"
-                          checked={formData.parqRespostas[idx] === 'sim'}
-                          onChange={() => handleParq(idx, 'sim')}
-                          disabled={loading}
-                        />
-                        Sim
-                      </label>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </fieldset>
             </form>
           </div>

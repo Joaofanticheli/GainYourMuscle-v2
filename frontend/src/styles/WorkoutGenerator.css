@@ -464,6 +464,25 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ── TÍTULOS DE SEÇÃO DENTRO DO FIELDSET ── */
+.parq-secao-titulo {
+  font-size: 0.8em;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+}
+
+.parq-secao-desc {
+  font-size: 0.8em;
+  color: var(--muted);
+  margin: -10px 0 14px 0;
+  line-height: 1.5;
+}
+
 /* ── AVALIAÇÃO DE CONDICIONAMENTO ── */
 .avaliacao-bloco {
   background: rgba(0, 149, 255, 0.04);
