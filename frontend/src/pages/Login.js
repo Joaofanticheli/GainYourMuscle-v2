@@ -22,8 +22,9 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(email, senha);
-      navigate('/dashboard');
+      const data = await login(email, senha);
+      const role = data?.user?.role;
+      navigate(role === 'profissional' ? '/dashboard-profissional' : '/dashboard');
     } catch (error) {
       setError(
         error.response?.data?.message || 'Erro ao fazer login. Tente novamente.'
