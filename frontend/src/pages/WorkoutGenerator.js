@@ -66,7 +66,6 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
     lesaoDescricao:    '',
     duracao:           '',
     disciplina:        '',
-    variedade:         '',
     ambiente:          '',
     muscular:          '',
     parqRespostas:     Array(7).fill('nao'),
@@ -440,16 +439,6 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
                   <option value="frequentemente">Com frequência — é difícil manter</option>
                   <option value="intermediario">Às vezes</option>
                   <option value="raramente">Raramente — tenho boa consistência</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="variedade">Preferência por variedade nos exercícios:</label>
-                <select id="variedade" name="variedade" value={formData.variedade} onChange={handleChange} required disabled={loading}>
-                  <option value="">Selecione</option>
-                  <option value="gosto">Gosto de variar muito</option>
-                  <option value="nao">Prefiro sempre os mesmos</option>
-                  <option value="intermediario">Gosto que varie um pouco</option>
                 </select>
               </div>
 

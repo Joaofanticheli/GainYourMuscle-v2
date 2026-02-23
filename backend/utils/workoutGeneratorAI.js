@@ -177,7 +177,7 @@ PERIODIZAÇÃO RECOMENDADA:
 function buildPrompt(params) {
   const {
     objetivo, diasTreino, experiencia, fadiga, lesao, localLesao, lesaoDescricao,
-    duracao, disciplina, variedade, ambiente, muscular, esporte, posicao,
+    duracao, disciplina, ambiente, muscular, esporte, posicao,
     parqRespostas, doencaCronica, doencaDescricao, medicamento, medicamentoDescricao,
   } = params;
 
@@ -216,7 +216,6 @@ function buildPrompt(params) {
 - Limitação física: ${linhaLesao}
 - Duração das sessões: ${LABELS.duracao[duracao] || duracao}
 - Disciplina/consistência: ${LABELS.disciplina[disciplina] || disciplina}
-- Preferência de variedade: ${LABELS.variedade[variedade] || variedade}
 - Ambiente de treino: ${LABELS.ambiente[ambiente] || ambiente}
 - Tolerância a DOMS: ${LABELS.muscular[muscular] || muscular}
 - ${linhaParq}
