@@ -30,7 +30,7 @@ const register = async (req, res) => {
       email,
       password,
       nome,
-      idade,
+      dataNascimento,
       sexo,
       peso,
       altura,
@@ -38,11 +38,20 @@ const register = async (req, res) => {
     } = req.body;
 
     // 1. Validação básica dos campos obrigatórios
-    if (!email || !password || !nome || !idade || !sexo || !peso || !altura) {
+    if (!email || !password || !nome || !dataNascimento || !sexo || !peso || !altura) {
       return res.status(400).json({
         success: false,
         message: 'Por favor, preencha todos os campos obrigatórios'
       });
+    }
+
+    // Calcula idade a partir da data de nascimento
+    const nascimento = new Date(dataNascimento);
+    const hoje = new Date();
+    let idadeCalculada = hoje.getFullYear() - nascimento.getFullYear();
+    const mesAtual = hoje.getMonth() - nascimento.getMonth();
+    if (mesAtual < 0 || (mesAtual === 0 && hoje.getDate() < nascimento.getDate())) {
+      idadeCalculada--;
     }
 
     // 2. Verifica se o email já está cadastrado
@@ -61,7 +70,8 @@ const register = async (req, res) => {
       email,
       password,
       nome,
-      idade,
+      dataNascimento: nascimento,
+      idade: idadeCalculada,
       sexo,
       peso,
       altura,

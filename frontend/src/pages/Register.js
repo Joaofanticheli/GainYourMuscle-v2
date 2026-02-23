@@ -13,7 +13,7 @@ const Register = () => {
     email: '',
     password: '',
     confirmaPassword: '',
-    idade: '',
+    dataNascimento: '',
     peso: '',
     altura: '',
     sexo: '',
@@ -91,23 +91,21 @@ const Register = () => {
 
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="idade">Idade:</label>
+                <label htmlFor="dataNascimento">Data de Nascimento:</label>
                 <input
-                  type="number"
-                  id="idade"
-                  name="idade"
-                  placeholder="25"
-                  min="13"
-                  max="120"
-                  value={formData.idade}
+                  type="date"
+                  id="dataNascimento"
+                  name="dataNascimento"
+                  value={formData.dataNascimento}
                   onChange={handleChange}
+                  max={new Date(new Date().setFullYear(new Date().getFullYear() - 13)).toISOString().split('T')[0]}
                   required
                   disabled={loading}
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="sexo">Sexo Biológico:</label>
+                <label htmlFor="sexo">Sexo:</label>
                 <select
                   id="sexo"
                   name="sexo"

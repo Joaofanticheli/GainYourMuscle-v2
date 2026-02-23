@@ -43,7 +43,7 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     // Campos que podem ser atualizados
-    const allowedUpdates = ['nome', 'idade', 'peso', 'altura', 'frequencia'];
+    const allowedUpdates = ['nome', 'dataNascimento', 'peso', 'altura', 'frequencia'];
 
     // Filtra apenas os campos permitidos
     const updates = {};
@@ -52,6 +52,18 @@ const updateProfile = async (req, res) => {
         updates[key] = req.body[key];
       }
     });
+
+    // Recalcula idade se data de nascimento foi atualizada
+    if (updates.dataNascimento) {
+      const nascimento = new Date(updates.dataNascimento);
+      const hoje = new Date();
+      let idadeCalculada = hoje.getFullYear() - nascimento.getFullYear();
+      const mesAtual = hoje.getMonth() - nascimento.getMonth();
+      if (mesAtual < 0 || (mesAtual === 0 && hoje.getDate() < nascimento.getDate())) {
+        idadeCalculada--;
+      }
+      updates.idade = idadeCalculada;
+    }
 
     // Atualiza o usuário
     const user = await User.findByIdAndUpdate(

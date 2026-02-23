@@ -176,8 +176,9 @@ PERIODIZAÇÃO RECOMENDADA:
 // ── Monta o prompt completo ───────────────────────────────────────────────────
 function buildPrompt(params) {
   const {
-    objetivo, diasTreino, experiencia, fadiga, lesao, localLesao,
+    objetivo, diasTreino, experiencia, fadiga, lesao, localLesao, lesaoDescricao,
     duracao, disciplina, variedade, ambiente, muscular, esporte, posicao,
+    parqRespostas, doencaCronica, doencaDescricao, medicamento, medicamentoDescricao,
   } = params;
 
   const isEsporte = objetivo === 'esporte' && esporte && posicao;
@@ -186,8 +187,21 @@ function buildPrompt(params) {
     : (LABELS.objetivo[objetivo] || objetivo);
 
   const linhaLesao = lesao && lesao !== 'nenhuma'
-    ? `${LABELS.lesao[lesao]} — localizada no(a) ${LABELS.localLesao[localLesao] || localLesao || 'região não especificada'}`
+    ? `${LABELS.lesao[lesao]} — localizada no(a) ${LABELS.localLesao[localLesao] || localLesao || 'região não especificada'}${lesaoDescricao ? ` — problema: ${lesaoDescricao}` : ''}`
     : 'Sem limitações físicas';
+
+  const parqPositivo = Array.isArray(parqRespostas) && parqRespostas.some(r => r === 'sim');
+  const linhaParq = parqPositivo
+    ? 'ATENÇÃO: PAR-Q com resposta(s) positiva(s) — adaptar intensidade e evitar exercícios de alto impacto cardiovascular sem supervisão'
+    : 'PAR-Q negativo — sem contraindicações identificadas';
+
+  const linhaDoenca = doencaCronica === 'sim' && doencaDescricao
+    ? `Doença(s) crônica(s): ${doencaDescricao}`
+    : 'Sem doenças crônicas relatadas';
+
+  const linhaMedicamento = medicamento === 'sim' && medicamentoDescricao
+    ? `Medicamento(s) de uso contínuo: ${medicamentoDescricao}`
+    : 'Sem medicamentos de uso contínuo';
 
   const divisaoSugerida = { 3: 'ABC', 4: 'ABCD', 5: 'ABCDE', 6: 'ABCDEF' }[diasTreino] || 'ABCD';
   const diasSemana = params.diasSelecionados?.length === diasTreino
@@ -205,6 +219,9 @@ function buildPrompt(params) {
 - Preferência de variedade: ${LABELS.variedade[variedade] || variedade}
 - Ambiente de treino: ${LABELS.ambiente[ambiente] || ambiente}
 - Tolerância a DOMS: ${LABELS.muscular[muscular] || muscular}
+- ${linhaParq}
+- ${linhaDoenca}
+- ${linhaMedicamento}
 
 ${BIOMECANICA}
 

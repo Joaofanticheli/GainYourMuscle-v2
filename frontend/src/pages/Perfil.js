@@ -35,7 +35,7 @@ const Perfil = () => {
 
   const [formData, setFormData] = useState({
     nome: user?.nome || '',
-    idade: user?.idade || '',
+    dataNascimento: user?.dataNascimento ? new Date(user.dataNascimento).toISOString().split('T')[0] : '',
     peso: user?.peso || '',
     altura: user?.altura || '',
     frequencia: user?.frequencia || 0
@@ -65,7 +65,7 @@ const Perfil = () => {
   const cancelar = () => {
     setFormData({
       nome: user?.nome || '',
-      idade: user?.idade || '',
+      dataNascimento: user?.dataNascimento ? new Date(user.dataNascimento).toISOString().split('T')[0] : '',
       peso: user?.peso || '',
       altura: user?.altura || '',
       frequencia: user?.frequencia || 0
@@ -127,11 +127,15 @@ const Perfil = () => {
                   <span className="dado-valor">{user?.email}</span>
                 </div>
                 <div className="dado-item">
-                  <span className="dado-label">Idade</span>
-                  <span className="dado-valor">{user?.idade} anos</span>
+                  <span className="dado-label">Data de Nascimento</span>
+                  <span className="dado-valor">
+                    {user?.dataNascimento
+                      ? new Date(user.dataNascimento).toLocaleDateString('pt-BR')
+                      : user?.idade ? `${user.idade} anos` : '—'}
+                  </span>
                 </div>
                 <div className="dado-item">
-                  <span className="dado-label">Sexo Biológico</span>
+                  <span className="dado-label">Sexo</span>
                   <span className="dado-valor" style={{ textTransform: 'capitalize' }}>
                     {user?.sexo}
                   </span>
@@ -176,13 +180,13 @@ const Perfil = () => {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Idade</label>
+                    <label>Data de Nascimento</label>
                     <input
-                      type="number"
-                      name="idade"
-                      value={formData.idade}
+                      type="date"
+                      name="dataNascimento"
+                      value={formData.dataNascimento}
                       onChange={handleChange}
-                      min="13" max="120"
+                      max={new Date(new Date().setFullYear(new Date().getFullYear() - 13)).toISOString().split('T')[0]}
                       required
                       disabled={loading}
                     />

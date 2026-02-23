@@ -37,16 +37,20 @@ const UserSchema = new mongoose.Schema({
     trim: true
   },
 
+  dataNascimento: {
+    type: Date,
+    required: [true, 'Data de nascimento é obrigatória'],
+  },
+
   idade: {
     type: Number,
-    required: [true, 'Idade é obrigatória'],
     min: [13, 'Idade mínima é 13 anos'],
     max: [120, 'Idade máxima é 120 anos']
   },
 
   sexo: {
     type: String,
-    required: [true, 'Sexo biológico é obrigatório'],
+    required: [true, 'Sexo é obrigatório'],
     enum: {
       values: ['masculino', 'feminino'],
       message: 'Sexo deve ser masculino ou feminino'
@@ -238,6 +242,7 @@ UserSchema.methods.dadosPublicos = function() {
     id: this._id,
     nome: this.nome,
     email: this.email,
+    dataNascimento: this.dataNascimento,
     idade: this.idade,
     sexo: this.sexo,
     peso: this.peso,
