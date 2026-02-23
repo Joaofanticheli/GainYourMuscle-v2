@@ -179,6 +179,7 @@ function buildPrompt(params) {
     objetivo, diasTreino, experiencia, fadiga, lesao, localLesao, lesaoDescricao,
     duracao, disciplina, ambiente, muscular, esporte, posicao,
     parqRespostas, doencaCronica, doencaDescricao, medicamento, medicamentoDescricao,
+    testeFlexoes, testeAgachamentos, testePrancha, testeCardio,
   } = params;
 
   const isEsporte = objetivo === 'esporte' && esporte && posicao;
@@ -212,6 +213,11 @@ function buildPrompt(params) {
 - Objetivo: ${linhaObjetivo}
 - Dias de treino/semana: ${diasTreino} → divisão ${divisaoSugerida} | Dias: ${diasSemana.join(', ')}
 - Nível de experiência: ${LABELS.experiencia[experiencia] || experiencia}
+- Avaliação física objetiva (testes ACSM):
+  * Flexões até a falha: ${testeFlexoes || 'não informado'}
+  * Agachamentos livres até a falha: ${testeAgachamentos || 'não informado'}
+  * Prancha isométrica: ${testePrancha || 'não informado'}
+  * Resistência cardiovascular: ${testeCardio || 'não informado'}
 - Intensidade preferida: ${LABELS.fadiga[fadiga] || fadiga}
 - Limitação física: ${linhaLesao}
 - Duração das sessões: ${LABELS.duracao[duracao] || duracao}

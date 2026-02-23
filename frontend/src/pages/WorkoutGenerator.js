@@ -59,7 +59,10 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
     esporte:           '',
     posicao:           '',
     diasSelecionados:  [],
-    experiencia:       '',
+    testeFlexoes:      '',
+    testeAgachamentos: '',
+    testePrancha:      '',
+    testeCardio:       '',
     fadiga:            '',
     lesao:             '',
     localLesao:        '',
@@ -98,6 +101,30 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
     }
   };
 
+  const calcularNivel = (flexoes, agachamentos, prancha, cardio) => {
+    const ptsFlex = { '0a10': 0, '11a20': 1, '21a30': 2, '31a40': 3, '41mais': 4 };
+    const ptsAq   = { '0a15': 0, '16a25': 1, '26a35': 2, '36a50': 3, '51mais': 4 };
+    const ptsPr   = { 'menos30s': 0, '30a60s': 1, '1a2min': 2, 'mais2min': 3 };
+    const ptsCa   = { 'menos5min': 0, '5a15min': 1, '15a30min': 2, 'mais30min': 3 };
+    const total = (ptsFlex[flexoes] ?? 0) + (ptsAq[agachamentos] ?? 0) + (ptsPr[prancha] ?? 0) + (ptsCa[cardio] ?? 0);
+    if (total >= 11) return 'avancada';
+    if (total >= 6)  return 'intermediaria';
+    if (total >= 2)  return 'novato';
+    return 'nunca';
+  };
+
+  const NIVEL_LABELS = {
+    nunca:        '🟡 Iniciante',
+    novato:       '🟢 Novato',
+    intermediaria:'🔵 Intermediário',
+    avancada:     '🔴 Avançado',
+  };
+
+  const nivelCalculado =
+    formData.testeFlexoes && formData.testeAgachamentos && formData.testePrancha && formData.testeCardio
+      ? calcularNivel(formData.testeFlexoes, formData.testeAgachamentos, formData.testePrancha, formData.testeCardio)
+      : null;
+
   const handleParq = (index, valor) => {
     setFormData(prev => {
       const novas = [...prev.parqRespostas];
@@ -127,8 +154,13 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
 
     setLoading(true);
     try {
+      const experiencia = calcularNivel(
+        formData.testeFlexoes, formData.testeAgachamentos,
+        formData.testePrancha, formData.testeCardio
+      );
       const params = {
         ...formData,
+        experiencia,
         diasTreino: formData.diasSelecionados.length,
         diasSelecionados: formData.diasSelecionados,
       };
@@ -357,15 +389,88 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
                 )}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="experiencia">Experiência com musculação:</label>
-                <select id="experiencia" name="experiencia" value={formData.experiencia} onChange={handleChange} required disabled={loading}>
-                  <option value="">Selecione</option>
-                  <option value="nunca">Nunca fiz</option>
-                  <option value="novato">Novato (menos de 1 ano)</option>
-                  <option value="intermediaria">Intermediário (1-3 anos)</option>
-                  <option value="avancada">Avançado (mais de 3 anos)</option>
-                </select>
+              {/* ── AVALIAÇÃO DE CONDICIONAMENTO (testes científicos ACSM) ── */}
+              <div className="avaliacao-bloco">
+                <div className="avaliacao-header">
+                  <span className="avaliacao-titulo-icone">📊</span>
+                  <div>
+                    <strong>Avaliação de Condicionamento Físico</strong>
+                    <p className="avaliacao-subtitulo">
+                      Testes validados cientificamente (ACSM) para medir seu nível real.
+                      Resultados objetivos geram um treino muito mais preciso.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="avaliacao-dica">
+                  Faça cada teste antes de responder, ou estime com honestidade.
+                  Pare assim que a execução ficar incorreta.
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="testeFlexoes">
+                    💪 Flexões até a falha
+                    <span className="avaliacao-instrucao">Homens: apoio nas palmas e pés | Mulheres: apoio nos joelhos é válido</span>
+                  </label>
+                  <select id="testeFlexoes" name="testeFlexoes" value={formData.testeFlexoes} onChange={handleChange} required disabled={loading}>
+                    <option value="">Selecione</option>
+                    <option value="0a10">0 a 10 repetições</option>
+                    <option value="11a20">11 a 20 repetições</option>
+                    <option value="21a30">21 a 30 repetições</option>
+                    <option value="31a40">31 a 40 repetições</option>
+                    <option value="41mais">41 ou mais repetições</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="testeAgachamentos">
+                    🦵 Agachamentos livres até a falha
+                    <span className="avaliacao-instrucao">Pés na largura dos ombros, descer até coxa paralela ao chão, costas retas</span>
+                  </label>
+                  <select id="testeAgachamentos" name="testeAgachamentos" value={formData.testeAgachamentos} onChange={handleChange} required disabled={loading}>
+                    <option value="">Selecione</option>
+                    <option value="0a15">0 a 15 repetições</option>
+                    <option value="16a25">16 a 25 repetições</option>
+                    <option value="26a35">26 a 35 repetições</option>
+                    <option value="36a50">36 a 50 repetições</option>
+                    <option value="51mais">51 ou mais repetições</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="testePrancha">
+                    🧱 Prancha isométrica (core)
+                    <span className="avaliacao-instrucao">Apoio nos antebraços e pontas dos pés, corpo reto — pare quando a postura ceder</span>
+                  </label>
+                  <select id="testePrancha" name="testePrancha" value={formData.testePrancha} onChange={handleChange} required disabled={loading}>
+                    <option value="">Selecione</option>
+                    <option value="menos30s">Menos de 30 segundos</option>
+                    <option value="30a60s">30 a 60 segundos</option>
+                    <option value="1a2min">1 a 2 minutos</option>
+                    <option value="mais2min">Mais de 2 minutos</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="testeCardio">
+                    🏃 Resistência cardiovascular
+                    <span className="avaliacao-instrucao">Quanto tempo você consegue correr ou caminhar rápido sem parar?</span>
+                  </label>
+                  <select id="testeCardio" name="testeCardio" value={formData.testeCardio} onChange={handleChange} required disabled={loading}>
+                    <option value="">Selecione</option>
+                    <option value="menos5min">Menos de 5 minutos</option>
+                    <option value="5a15min">5 a 15 minutos</option>
+                    <option value="15a30min">15 a 30 minutos</option>
+                    <option value="mais30min">Mais de 30 minutos</option>
+                  </select>
+                </div>
+
+                {nivelCalculado && (
+                  <div className="nivel-calculado">
+                    <span>Seu nível estimado:</span>
+                    <strong>{NIVEL_LABELS[nivelCalculado]}</strong>
+                  </div>
+                )}
               </div>
 
               <div className="form-group">
