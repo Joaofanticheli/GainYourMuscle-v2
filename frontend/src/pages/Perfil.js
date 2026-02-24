@@ -61,22 +61,30 @@ const ImcDisplay = ({ peso, altura, oculto }) => {
   );
 };
 
+const tipoLabelMap = { personal: 'Personal Trainer', nutricionista: 'Nutricionista', psicologo: 'Psicólogo' };
+
 // ── Aba Perfil ──────────────────────────────────────────────────────────────
 const PerfilConteudo = () => {
   const { user } = useAuth();
+  const isProfissional = user?.role === 'profissional';
+
   const [editando, setEditando] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sucesso, setSucesso] = useState('');
   const [error, setError] = useState('');
   const [ocultarPeso, setOcultarPeso] = useState(true);
 
-  const [formData, setFormData] = useState({
-    nome: user?.nome || '',
-    dataNascimento: user?.dataNascimento ? new Date(user.dataNascimento).toISOString().split('T')[0] : '',
-    peso: user?.peso || '',
-    altura: user?.altura || '',
-    frequencia: user?.frequencia || 0
-  });
+  const [formData, setFormData] = useState(
+    isProfissional
+      ? { nome: user?.nome || '', bio: user?.profissional?.bio || '', contato: user?.contato || '' }
+      : {
+          nome: user?.nome || '',
+          dataNascimento: user?.dataNascimento ? new Date(user.dataNascimento).toISOString().split('T')[0] : '',
+          peso: user?.peso || '',
+          altura: user?.altura || '',
+          frequencia: user?.frequencia || 0
+        }
+  );
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -99,13 +107,17 @@ const PerfilConteudo = () => {
   };
 
   const cancelar = () => {
-    setFormData({
-      nome: user?.nome || '',
-      dataNascimento: user?.dataNascimento ? new Date(user.dataNascimento).toISOString().split('T')[0] : '',
-      peso: user?.peso || '',
-      altura: user?.altura || '',
-      frequencia: user?.frequencia || 0
-    });
+    setFormData(
+      isProfissional
+        ? { nome: user?.nome || '', bio: user?.profissional?.bio || '', contato: user?.contato || '' }
+        : {
+            nome: user?.nome || '',
+            dataNascimento: user?.dataNascimento ? new Date(user.dataNascimento).toISOString().split('T')[0] : '',
+            peso: user?.peso || '',
+            altura: user?.altura || '',
+            frequencia: user?.frequencia || 0
+          }
+    );
     setEditando(false);
     setError('');
   };
@@ -114,7 +126,7 @@ const PerfilConteudo = () => {
     <div className="perfil-container">
       <header className="perfil-header">
         <h1>Meu Perfil</h1>
-        <p>Suas informações pessoais e físicas</p>
+        <p>{isProfissional ? 'Seus dados profissionais' : 'Suas informações pessoais e físicas'}</p>
       </header>
 
       {sucesso && <div className="alert alert-success">{sucesso}</div>}
@@ -128,6 +140,11 @@ const PerfilConteudo = () => {
           </div>
           <h2>{user?.nome}</h2>
           <p className="perfil-email">{user?.email}</p>
+          {isProfissional && (
+            <p className="perfil-email" style={{ color: '#e94560', fontWeight: 600 }}>
+              {tipoLabelMap[user?.profissional?.tipo] || 'Profissional'}
+            </p>
+          )}
           <p className="perfil-membro">
             Membro desde {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('pt-BR') : '—'}
           </p>
@@ -136,7 +153,7 @@ const PerfilConteudo = () => {
         {/* Formulário de dados */}
         <div className="card">
           <div className="perfil-form-header">
-            <h2>Dados Pessoais</h2>
+            <h2>{isProfissional ? 'Dados Profissionais' : 'Dados Pessoais'}</h2>
             <div className="perfil-form-actions">
               {!editando && (
                 <button className="btn btn-outline btn-sm" onClick={() => setEditando(true)}>
@@ -156,43 +173,67 @@ const PerfilConteudo = () => {
                 <span className="dado-label">Email</span>
                 <span className="dado-valor">{user?.email}</span>
               </div>
-              <div className="dado-item">
-                <span className="dado-label">Data de Nascimento</span>
-                <span className="dado-valor">
-                  {user?.dataNascimento
-                    ? new Date(user.dataNascimento).toLocaleDateString('pt-BR')
-                    : user?.idade ? `${user.idade} anos` : '—'}
-                </span>
-              </div>
-              <div className="dado-item">
-                <span className="dado-label">Sexo</span>
-                <span className="dado-valor" style={{ textTransform: 'capitalize' }}>
-                  {user?.sexo}
-                </span>
-              </div>
-              <div className="dado-item">
-                <span className="dado-label">Peso</span>
-                <div className="dado-peso-wrap">
-                  <button
-                    className="btn-peso-olho"
-                    onClick={() => setOcultarPeso(!ocultarPeso)}
-                    title={ocultarPeso ? 'Mostrar peso' : 'Ocultar peso'}
-                  >
-                    <EyeIcon visivel={!ocultarPeso} />
-                  </button>
-                  <span className={`dado-valor ${ocultarPeso ? 'dado-oculto' : ''}`}>
-                    {ocultarPeso ? '•••' : `${user?.peso} kg`}
-                  </span>
-                </div>
-              </div>
-              <div className="dado-item">
-                <span className="dado-label">Altura</span>
-                <span className="dado-valor">{user?.altura} cm</span>
-              </div>
-              <div className="dado-item">
-                <span className="dado-label">Frequência Atual</span>
-                <span className="dado-valor">{user?.frequencia}x por semana</span>
-              </div>
+
+              {isProfissional ? (
+                <>
+                  <div className="dado-item">
+                    <span className="dado-label">Tipo</span>
+                    <span className="dado-valor">{tipoLabelMap[user?.profissional?.tipo] || '—'}</span>
+                  </div>
+                  <div className="dado-item">
+                    <span className="dado-label">Registro</span>
+                    <span className="dado-valor">{user?.profissional?.registro || '—'}</span>
+                  </div>
+                  <div className="dado-item">
+                    <span className="dado-label">Bio</span>
+                    <span className="dado-valor" style={{ textAlign: 'right', maxWidth: '60%' }}>
+                      {user?.profissional?.bio || '—'}
+                    </span>
+                  </div>
+                  <div className="dado-item">
+                    <span className="dado-label">WhatsApp / Telefone</span>
+                    <span className="dado-valor">{user?.contato || '—'}</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="dado-item">
+                    <span className="dado-label">Data de Nascimento</span>
+                    <span className="dado-valor">
+                      {user?.dataNascimento
+                        ? new Date(user.dataNascimento).toLocaleDateString('pt-BR')
+                        : user?.idade ? `${user.idade} anos` : '—'}
+                    </span>
+                  </div>
+                  <div className="dado-item">
+                    <span className="dado-label">Sexo</span>
+                    <span className="dado-valor" style={{ textTransform: 'capitalize' }}>{user?.sexo}</span>
+                  </div>
+                  <div className="dado-item">
+                    <span className="dado-label">Peso</span>
+                    <div className="dado-peso-wrap">
+                      <button
+                        className="btn-peso-olho"
+                        onClick={() => setOcultarPeso(!ocultarPeso)}
+                        title={ocultarPeso ? 'Mostrar peso' : 'Ocultar peso'}
+                      >
+                        <EyeIcon visivel={!ocultarPeso} />
+                      </button>
+                      <span className={`dado-valor ${ocultarPeso ? 'dado-oculto' : ''}`}>
+                        {ocultarPeso ? '•••' : `${user?.peso} kg`}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="dado-item">
+                    <span className="dado-label">Altura</span>
+                    <span className="dado-valor">{user?.altura} cm</span>
+                  </div>
+                  <div className="dado-item">
+                    <span className="dado-label">Frequência Atual</span>
+                    <span className="dado-valor">{user?.frequencia}x por semana</span>
+                  </div>
+                </>
+              )}
             </div>
           ) : (
             <form className="perfil-edit-form" onSubmit={handleSubmit}>
@@ -208,58 +249,86 @@ const PerfilConteudo = () => {
                 />
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Data de Nascimento</label>
-                  <input
-                    type="date"
-                    name="dataNascimento"
-                    value={formData.dataNascimento}
-                    onChange={handleChange}
-                    max={new Date(new Date().setFullYear(new Date().getFullYear() - 13)).toISOString().split('T')[0]}
-                    required
-                    disabled={loading}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Frequência (dias/semana)</label>
-                  <input
-                    type="number"
-                    name="frequencia"
-                    value={formData.frequencia}
-                    onChange={handleChange}
-                    min="0" max="7"
-                    disabled={loading}
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Peso (kg)</label>
-                  <input
-                    type="number"
-                    name="peso"
-                    value={formData.peso}
-                    onChange={handleChange}
-                    min="30" max="300"
-                    required
-                    disabled={loading}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Altura (cm)</label>
-                  <input
-                    type="number"
-                    name="altura"
-                    value={formData.altura}
-                    onChange={handleChange}
-                    min="100" max="250"
-                    required
-                    disabled={loading}
-                  />
-                </div>
-              </div>
+              {isProfissional ? (
+                <>
+                  <div className="form-group">
+                    <label>Bio / Apresentação</label>
+                    <textarea
+                      name="bio"
+                      value={formData.bio}
+                      onChange={handleChange}
+                      rows={3}
+                      disabled={loading}
+                      style={{ width: '100%', resize: 'vertical' }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>WhatsApp / Telefone</label>
+                    <input
+                      type="tel"
+                      name="contato"
+                      value={formData.contato}
+                      onChange={handleChange}
+                      placeholder="(11) 99999-9999"
+                      disabled={loading}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Data de Nascimento</label>
+                      <input
+                        type="date"
+                        name="dataNascimento"
+                        value={formData.dataNascimento}
+                        onChange={handleChange}
+                        max={new Date(new Date().setFullYear(new Date().getFullYear() - 13)).toISOString().split('T')[0]}
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Frequência (dias/semana)</label>
+                      <input
+                        type="number"
+                        name="frequencia"
+                        value={formData.frequencia}
+                        onChange={handleChange}
+                        min="0" max="7"
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Peso (kg)</label>
+                      <input
+                        type="number"
+                        name="peso"
+                        value={formData.peso}
+                        onChange={handleChange}
+                        min="30" max="300"
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Altura (cm)</label>
+                      <input
+                        type="number"
+                        name="altura"
+                        value={formData.altura}
+                        onChange={handleChange}
+                        min="100" max="250"
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div className="perfil-edit-actions">
                 <button type="submit" className="btn btn-primary" disabled={loading}>
@@ -274,11 +343,13 @@ const PerfilConteudo = () => {
         </div>
       </div>
 
-      {/* IMC calculado */}
-      <div className="card imc-card">
-        <h2>Seu IMC</h2>
-        <ImcDisplay peso={user?.peso} altura={user?.altura} oculto={ocultarPeso} />
-      </div>
+      {/* IMC calculado — apenas para usuários comuns */}
+      {!isProfissional && (
+        <div className="card imc-card">
+          <h2>Seu IMC</h2>
+          <ImcDisplay peso={user?.peso} altura={user?.altura} oculto={ocultarPeso} />
+        </div>
+      )}
     </div>
   );
 };
@@ -590,27 +661,35 @@ const ProgressoConteudo = () => {
 
 // ── Componente principal com abas ─────────────────────────────────────────────
 const Perfil = () => {
+  const { user } = useAuth();
+  const isProfissional = user?.role === 'profissional';
   const [abaAtiva, setAbaAtiva] = useState('perfil');
 
   return (
     <div>
       <Navbar />
-      <div className="perfil-abas-nav">
-        <button
-          className={`perfil-aba-btn ${abaAtiva === 'perfil' ? 'ativa' : ''}`}
-          onClick={() => setAbaAtiva('perfil')}
-        >
-          Perfil
-        </button>
-        <button
-          className={`perfil-aba-btn ${abaAtiva === 'progresso' ? 'ativa' : ''}`}
-          onClick={() => setAbaAtiva('progresso')}
-        >
-          Progresso
-        </button>
-      </div>
 
-      {abaAtiva === 'perfil' ? <PerfilConteudo /> : <ProgressoConteudo />}
+      {/* Aba Progresso só aparece para usuários comuns */}
+      {!isProfissional && (
+        <div className="perfil-abas-nav">
+          <button
+            className={`perfil-aba-btn ${abaAtiva === 'perfil' ? 'ativa' : ''}`}
+            onClick={() => setAbaAtiva('perfil')}
+          >
+            Perfil
+          </button>
+          <button
+            className={`perfil-aba-btn ${abaAtiva === 'progresso' ? 'ativa' : ''}`}
+            onClick={() => setAbaAtiva('progresso')}
+          >
+            Progresso
+          </button>
+        </div>
+      )}
+
+      {abaAtiva === 'perfil' || isProfissional
+        ? <PerfilConteudo />
+        : <ProgressoConteudo />}
     </div>
   );
 };

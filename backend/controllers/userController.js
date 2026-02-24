@@ -43,7 +43,7 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     // Campos que podem ser atualizados
-    const allowedUpdates = ['nome', 'dataNascimento', 'peso', 'altura', 'frequencia'];
+    const allowedUpdates = ['nome', 'dataNascimento', 'peso', 'altura', 'frequencia', 'contato'];
 
     // Filtra apenas os campos permitidos
     const updates = {};
@@ -52,6 +52,11 @@ const updateProfile = async (req, res) => {
         updates[key] = req.body[key];
       }
     });
+
+    // Profissionais podem atualizar bio
+    if (req.body.bio !== undefined) {
+      updates['profissional.bio'] = req.body.bio;
+    }
 
     // Recalcula idade se data de nascimento foi atualizada
     if (updates.dataNascimento) {
