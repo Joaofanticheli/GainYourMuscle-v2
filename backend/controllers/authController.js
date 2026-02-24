@@ -148,9 +148,8 @@ const login = async (req, res) => {
       });
     }
 
-    // 5. Atualiza data do último login
-    user.lastLogin = Date.now();
-    await user.save();
+    // 5. Atualiza data do último login (sem disparar validação completa)
+    await User.findByIdAndUpdate(user._id, { lastLogin: Date.now() });
 
     // 6. Gera token
     const token = generateToken(user._id);
