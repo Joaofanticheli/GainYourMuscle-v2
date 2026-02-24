@@ -6,7 +6,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { workoutAPI } from '../services/api';
 import Navbar from '../components/Navbar';
-import WorkoutManual from './WorkoutManual';
+import { WorkoutManual } from './WorkoutManual';
+import ProfissionalGate from '../components/ProfissionalGate';
 import '../styles/WorkoutGenerator.css';
 
 // ── Configuração de esportes e posições ─────────────────────────────────────
@@ -673,4 +674,10 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
   );
 };
 
-export default WorkoutGenerator;
+const WorkoutGeneratorGated = () => (
+  <ProfissionalGate tipo="treino">
+    <WorkoutGenerator />
+  </ProfissionalGate>
+);
+
+export default WorkoutGeneratorGated;

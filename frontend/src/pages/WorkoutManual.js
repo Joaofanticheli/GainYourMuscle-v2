@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { workoutAPI } from '../services/api';
 import Navbar from '../components/Navbar';
+import ProfissionalGate from '../components/ProfissionalGate';
 import '../styles/WorkoutManual.css';
 
 const GRUPOS = [
@@ -386,4 +387,12 @@ const WorkoutManual = ({ embedded = false }) => {
   );
 };
 
-export default WorkoutManual;
+export { WorkoutManual };
+
+const WorkoutManualGated = () => (
+  <ProfissionalGate tipo="treino">
+    <WorkoutManual />
+  </ProfissionalGate>
+);
+
+export default WorkoutManualGated;
