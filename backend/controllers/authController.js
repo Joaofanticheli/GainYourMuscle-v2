@@ -328,7 +328,7 @@ const registerProfissional = async (req, res) => {
         tipo,
         registro,
         bio: bio || '',
-        status: 'pendente'
+        status: 'ativo'
       }
     });
 

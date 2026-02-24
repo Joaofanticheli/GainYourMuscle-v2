@@ -76,18 +76,8 @@ const DashboardProfissional = () => {
         <div className="dash-prof-header">
           <h1>Olá, {user?.nome}!</h1>
           <p>{tipoLabel[prof.tipo] || 'Profissional'}</p>
-          <span className={`badge-status badge-${prof.status || 'pendente'}`}>
-            {prof.status === 'ativo' ? 'Aprovado' : prof.status === 'rejeitado' ? 'Rejeitado' : 'Em análise'}
-          </span>
+          <span className="badge-status badge-ativo">Ativo</span>
         </div>
-
-        {/* Banner pendente */}
-        {prof.status !== 'ativo' && (
-          <div className="banner-pendente">
-            Seu cadastro está em análise. Enquanto isso, você pode explorar o painel,
-            mas algumas funcionalidades estarão disponíveis após a aprovação.
-          </div>
-        )}
 
         {loading ? (
           <div className="loading-state">Carregando...</div>

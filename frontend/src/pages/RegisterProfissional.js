@@ -94,10 +94,6 @@ const RegisterProfissional = () => {
 
         {erro && <div className="alert alert-error">{erro}</div>}
 
-        <div className="alert alert-info" style={{ marginBottom: '1rem', fontSize: '0.88rem' }}>
-          Seu cadastro sera analisado pela nossa equipe. Voce tera acesso completo apos a aprovacao.
-        </div>
-
         <form className="auth-form" onSubmit={handleSubmit}>
           <fieldset className="form-fieldset">
             <legend>Dados Profissionais</legend>

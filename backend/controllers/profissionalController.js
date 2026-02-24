@@ -103,13 +103,6 @@ const solicitarVinculo = async (req, res) => {
       });
     }
 
-    if (profissional.profissional.status !== 'ativo') {
-      return res.status(400).json({
-        success: false,
-        message: 'Este profissional ainda não está aprovado na plataforma'
-      });
-    }
-
     const vinculoExistente = await Vinculo.findOne({
       profissional: profissionalId,
       cliente: req.user._id
