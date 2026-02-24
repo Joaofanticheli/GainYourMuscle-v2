@@ -4,6 +4,7 @@
 
 const Workout = require('../models/Workout');
 const User = require('../models/User');
+const Vinculo = require('../models/Vinculo');
 const { gerarTreinoPersonalizado } = require('../utils/workoutGenerator');
 const { gerarTreinoComIA }         = require('../utils/workoutGeneratorAI');
 
@@ -14,15 +15,28 @@ const { gerarTreinoComIA }         = require('../utils/workoutGeneratorAI');
  */
 const generateWorkout = async (req, res) => {
   try {
-    // Pega os parâmetros do corpo da requisição
-    const params = req.body;
+    const { clienteId, ...params } = req.body;
 
-    // Valida se os parâmetros obrigatórios foram fornecidos
+    // Validação básica
     if (!params.diasTreino || !params.experiencia || !params.ambiente) {
       return res.status(400).json({
         success: false,
         message: 'Parâmetros incompletos. Preencha todo o questionário.'
       });
+    }
+
+    // Determina para qual usuário o treino será criado
+    let targetUserId = req.user.id;
+    if (clienteId) {
+      // Profissional criando treino para cliente — verifica vínculo ativo
+      if (req.user.role !== 'profissional') {
+        return res.status(403).json({ success: false, message: 'Apenas profissionais podem criar treinos para clientes.' });
+      }
+      const vinculo = await Vinculo.findOne({ profissional: req.user.id, cliente: clienteId, status: 'ativo' });
+      if (!vinculo) {
+        return res.status(403).json({ success: false, message: 'Você não tem vínculo ativo com este cliente.' });
+      }
+      targetUserId = clienteId;
     }
 
     // Tenta gerar com IA; se falhar, usa o gerador manual como fallback
@@ -42,24 +56,20 @@ const generateWorkout = async (req, res) => {
       treinoGerado = gerarTreinoPersonalizado(params);
     }
 
-    // Cria o treino no banco de dados
     const workout = await Workout.create({
-      usuario: req.user.id,
+      usuario: targetUserId,
       ...treinoGerado
     });
 
-    // Atualiza o usuário para apontar para este treino como atual
-    await User.findByIdAndUpdate(req.user.id, {
+    await User.findByIdAndUpdate(targetUserId, {
       treinoAtual: workout._id,
       preferencias: params,
-      frequencia: params.diasTreino  // Sincroniza frequência com o plano gerado
+      frequencia: params.diasTreino
     });
 
     res.status(201).json({
       success: true,
-      message: geradoPorIA
-        ? 'Treino gerado com IA! 🤖💪'
-        : 'Treino gerado com sucesso! 💪',
+      message: geradoPorIA ? 'Treino gerado com IA! 🤖💪' : 'Treino gerado com sucesso! 💪',
       workout
     });
 
@@ -287,7 +297,7 @@ const deleteWorkout = async (req, res) => {
  */
 const saveManualWorkout = async (req, res) => {
   try {
-    const { nome, descricao, tipo, nivel, divisao, diasPorSemana, dias } = req.body;
+    const { nome, descricao, tipo, nivel, divisao, diasPorSemana, dias, clienteId } = req.body;
 
     if (!nome || !dias || !Array.isArray(dias) || dias.length === 0) {
       return res.status(400).json({
@@ -296,14 +306,26 @@ const saveManualWorkout = async (req, res) => {
       });
     }
 
-    // Normaliza a ordem dos exercícios em cada dia
+    // Determina para qual usuário o treino será criado
+    let targetUserId = req.user.id;
+    if (clienteId) {
+      if (req.user.role !== 'profissional') {
+        return res.status(403).json({ success: false, message: 'Apenas profissionais podem criar treinos para clientes.' });
+      }
+      const vinculo = await Vinculo.findOne({ profissional: req.user.id, cliente: clienteId, status: 'ativo' });
+      if (!vinculo) {
+        return res.status(403).json({ success: false, message: 'Você não tem vínculo ativo com este cliente.' });
+      }
+      targetUserId = clienteId;
+    }
+
     const diasNormalizados = dias.map(dia => ({
       ...dia,
       exercicios: (dia.exercicios || []).map((ex, i) => ({ ...ex, ordem: i + 1 }))
     }));
 
     const workout = await Workout.create({
-      usuario: req.user.id,
+      usuario: targetUserId,
       nome,
       descricao: descricao || 'Treino criado manualmente.',
       tipo: tipo || 'hipertrofia',
@@ -314,7 +336,7 @@ const saveManualWorkout = async (req, res) => {
       parametros: { manual: true }
     });
 
-    await User.findByIdAndUpdate(req.user.id, { treinoAtual: workout._id });
+    await User.findByIdAndUpdate(targetUserId, { treinoAtual: workout._id });
 
     res.status(201).json({
       success: true,

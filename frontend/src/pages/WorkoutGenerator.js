@@ -3,7 +3,7 @@
 // ============================================================================
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { workoutAPI } from '../services/api';
 import Navbar from '../components/Navbar';
 import { WorkoutManual } from './WorkoutManual';
@@ -37,6 +37,9 @@ const lesaoLocais = [
 // ── Componente principal ─────────────────────────────────────────────────────
 const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const clienteId   = searchParams.get('cliente');
+  const clienteNome = searchParams.get('clienteNome');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [celebrando, setCelebrando] = useState(false);
@@ -164,10 +167,13 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
         experiencia,
         diasTreino: formData.diasSelecionados.length,
         diasSelecionados: formData.diasSelecionados,
+        ...(clienteId ? { clienteId } : {}),
       };
       const response = await workoutAPI.generate(params);
       if (response.data.success) {
-        if (embedded && onSuccess) {
+        if (clienteId) {
+          navigate('/dashboard-profissional');
+        } else if (embedded && onSuccess) {
           onSuccess();
         } else {
           setDadosCelebracao({ objetivo: formData.objetivo, esporte: formData.esporte, posicao: formData.posicao });
@@ -247,6 +253,12 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
           Criar Manual
         </button>
       </div>
+
+      {clienteNome && (
+        <div className="banner-cliente-prof">
+          👤 Montando treino para <strong>{clienteNome}</strong>
+        </div>
+      )}
 
       {abaAtiva === 'manual' ? (
         <WorkoutManual embedded />

@@ -20,14 +20,33 @@
 }
 
 .prof-aba-btn.ativa {
-  color: #e94560;
-  border-bottom-color: #e94560;
+  color: #a78bfa;
+  border-bottom-color: #a78bfa;
 }
 
 .cliente-card-acoes {
   display: flex;
   gap: 0.5rem;
   flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.btn-montar-treino {
+  padding: 0.4rem 0.9rem;
+  background: rgba(139,92,246,0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(139,92,246,0.4);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-montar-treino:hover {
+  background: rgba(139,92,246,0.28);
+  border-color: rgba(139,92,246,0.7);
 }
 
 .btn-whats-cliente {
@@ -82,7 +101,7 @@
 .agenda-form input:focus,
 .agenda-form textarea:focus {
   outline: none;
-  border-color: #e94560;
+  border-color: #8b5cf6;
 }
 
 .agenda-form-row {
@@ -110,7 +129,7 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 }
 
-.consulta-card.status-agendada { border-left-color: #e94560; }
+.consulta-card.status-agendada { border-left-color: #8b5cf6; }
 .consulta-card.status-realizada { border-left-color: #27ae60; }
 .consulta-card.status-cancelada { border-left-color: #bbb; opacity: 0.6; }
 

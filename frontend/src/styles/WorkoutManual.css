@@ -1,5 +1,18 @@
 /* ── TREINO MANUAL ── */
 
+/* Banner profissional criando para cliente */
+.banner-cliente-prof {
+  max-width: 860px;
+  margin: 0 auto 20px;
+  padding: 12px 20px;
+  background: rgba(139,92,246,0.12);
+  border: 1px solid rgba(139,92,246,0.35);
+  border-radius: 10px;
+  color: #c4b5fd;
+  font-size: 0.9em;
+}
+
+
 .manual-container {
   max-width: 860px;
   margin: 0 auto;

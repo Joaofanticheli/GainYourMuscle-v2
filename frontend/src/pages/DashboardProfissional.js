@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import '../styles/Profissional.css';
@@ -10,6 +11,7 @@ const tipoLabel = { personal: 'Personal Trainer', nutricionista: 'Nutricionista'
 
 const DashboardProfissional = () => {
   const { user, token } = useAuth();
+  const navigate = useNavigate();
   const [clientes, setClientes] = useState([]);
   const [pendentes, setPendentes] = useState([]);
   const [consultas, setConsultas] = useState([]);
@@ -155,6 +157,14 @@ const DashboardProfissional = () => {
                         <p>Último acesso: {formatarData(c.lastLogin)}</p>
                       </div>
                       <div className="cliente-card-acoes">
+                        {prof.tipo !== 'psicologo' && (
+                          <button
+                            className="btn-montar-treino"
+                            onClick={() => navigate(`/treino-manual?cliente=${c._id}&clienteNome=${encodeURIComponent(c.nome)}`)}
+                          >
+                            Montar Treino
+                          </button>
+                        )}
                         {c.contato && (
                           <button className="btn-whats-cliente" onClick={() => abrirWhatsApp(c)}>
                             WhatsApp

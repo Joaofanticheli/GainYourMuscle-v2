@@ -14,6 +14,9 @@ const ProfissionalGate = ({ tipo, children }) => {
   const { token, user } = useAuth();
   const { temIA, temProfissional, profissionalHumano, loading } = useProfissional(token);
 
+  // Profissionais acessam tudo diretamente
+  if (user?.role === 'profissional') return children;
+
   if (loading) return <div className="gate-loading">Carregando...</div>;
 
   // Tem IA vinculada → mostra o conteúdo normal

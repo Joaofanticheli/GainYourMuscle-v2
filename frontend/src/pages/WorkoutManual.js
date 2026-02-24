@@ -3,7 +3,7 @@
 // ============================================================================
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { workoutAPI } from '../services/api';
 import Navbar from '../components/Navbar';
 import ProfissionalGate from '../components/ProfissionalGate';
@@ -39,6 +39,9 @@ const diaVazio = (dia) => ({
 
 const WorkoutManual = ({ embedded = false }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const clienteId   = searchParams.get('cliente');
+  const clienteNome = searchParams.get('clienteNome');
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState(false);
@@ -146,6 +149,7 @@ const WorkoutManual = ({ embedded = false }) => {
         ...info,
         diasPorSemana: Number(info.diasPorSemana),
         dias,
+        ...(clienteId ? { clienteId } : {}),
       });
       setSucesso(true);
     } catch (err) {
@@ -161,11 +165,17 @@ const WorkoutManual = ({ embedded = false }) => {
       <div className="manual-sucesso">
         <div className="manual-sucesso-icon">💪</div>
         <h1>Treino salvo!</h1>
-        <p>Seu treino personalizado foi criado com sucesso.</p>
+        <p>{clienteNome ? `Treino de ${clienteNome} criado com sucesso!` : 'Seu treino personalizado foi criado com sucesso.'}</p>
         <div className="manual-sucesso-acoes">
-          <button className="btn btn-primary btn-large" onClick={() => navigate('/meu-treino')}>
-            Ver Meu Treino
-          </button>
+          {clienteId ? (
+            <button className="btn btn-primary btn-large" onClick={() => navigate('/dashboard-profissional')}>
+              Voltar ao Painel
+            </button>
+          ) : (
+            <button className="btn btn-primary btn-large" onClick={() => navigate('/meu-treino')}>
+              Ver Meu Treino
+            </button>
+          )}
           <button className="btn btn-outline" onClick={() => { setSucesso(false); }}>
             Criar Outro
           </button>
@@ -187,6 +197,12 @@ const WorkoutManual = ({ embedded = false }) => {
         <h1>Criar Treino Manual</h1>
         <p>Monte seu programa do zero — exercício por exercício</p>
       </header>
+
+      {clienteNome && (
+        <div className="banner-cliente-prof">
+          👤 Montando treino para <strong>{clienteNome}</strong>
+        </div>
+      )}
 
         <form onSubmit={handleSubmit}>
           {erro && <div className="alert alert-error">{erro}</div>}
