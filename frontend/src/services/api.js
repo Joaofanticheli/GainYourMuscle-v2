@@ -69,7 +69,10 @@ export const userAPI = {
   getProgress: () => api.get('/user/progress'),
 
   // Deletar registro de progresso
-  deleteProgress: (id) => api.delete(`/user/progress/${id}`)
+  deleteProgress: (id) => api.delete(`/user/progress/${id}`),
+
+  // Salvar ficha de anamnese
+  saveAnamnese: (data) => api.put('/user/anamnese', data)
 };
 
 // ============================================================================

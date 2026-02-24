@@ -44,7 +44,7 @@ const meusClientes = async (req, res) => {
     const vinculos = await Vinculo.find({
       profissional: req.user._id,
       status: 'ativo'
-    }).populate('cliente', 'nome email idade peso altura frequencia treinoAtual lastLogin');
+    }).populate('cliente', 'nome email idade peso altura frequencia treinoAtual lastLogin anamnese contato');
 
     res.json({ success: true, clientes: vinculos.map(v => v.cliente) });
   } catch (error) {

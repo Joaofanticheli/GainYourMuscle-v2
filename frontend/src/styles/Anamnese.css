@@ -1,0 +1,316 @@
+/* ── FICHA DE ANAMNESE ── */
+
+.anamnese-container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 30px 20px 60px;
+}
+
+/* Cabeçalho */
+.anamnese-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.anamnese-header h1 {
+  font-size: 1.9em;
+  font-weight: 800;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.anamnese-header p {
+  color: var(--muted);
+  margin-top: 8px;
+  font-size: 0.88em;
+}
+
+/* Banner "já preenchida" */
+.anamnese-ja-preenchida {
+  background: rgba(0,255,136,0.07);
+  border: 1px solid rgba(0,255,136,0.25);
+  border-radius: 10px;
+  padding: 12px 18px;
+  color: #6ee37b;
+  font-size: 0.88em;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Seções do formulário */
+.anamnese-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.anamnese-secao {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.anamnese-secao-titulo {
+  font-size: 0.95em;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.anamnese-secao-desc {
+  color: var(--muted);
+  font-size: 0.84em;
+  margin-bottom: 20px;
+}
+
+/* Grid de objetivos */
+.anamnese-objetivo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.anamnese-objetivo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.anamnese-objetivo-card input { display: none; }
+
+.anamnese-objetivo-card.selecionado {
+  border-color: var(--primary);
+  background: rgba(139,92,246,0.12);
+}
+
+.anamnese-objetivo-card .obj-icon { font-size: 1.6em; }
+.anamnese-objetivo-card .obj-label {
+  font-size: 0.78em;
+  font-weight: 600;
+  color: var(--dark);
+  text-align: center;
+}
+
+/* PAR-Q — reutilizando classes do WorkoutGenerator.css quando disponíveis */
+.parq-aviso {
+  background: rgba(255,177,66,0.1);
+  border: 1px solid rgba(255,177,66,0.35);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.84em;
+  color: #fbbf24;
+  margin-bottom: 16px;
+}
+
+.parq-lista { display: flex; flex-direction: column; gap: 14px; }
+
+.parq-item {
+  background: rgba(0,0,0,0.15);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.parq-pergunta {
+  font-size: 0.88em;
+  color: var(--dark);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.parq-opcoes { display: flex; gap: 10px; }
+
+.parq-opcao {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--muted);
+  background: rgba(255,255,255,0.03);
+  transition: all 0.15s;
+}
+
+.parq-opcao input { display: none; }
+
+.parq-opcao.parq-selecionado {
+  border-color: rgba(100,200,100,0.6);
+  background: rgba(100,200,100,0.1);
+  color: #6ee37b;
+}
+
+.parq-opcao.parq-sim-selecionado {
+  border-color: rgba(255,100,100,0.6);
+  background: rgba(255,100,100,0.1);
+  color: #f87171;
+}
+
+/* Seletor de dias */
+.dias-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.dia-btn {
+  padding: 8px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 0.85em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.dia-btn-ativo {
+  background: rgba(139,92,246,0.2);
+  border-color: var(--primary);
+  color: #c4b5fd;
+}
+
+.dias-selecionados-info {
+  font-size: 0.8em;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+/* Tela de sucesso */
+.anamnese-sucesso {
+  max-width: 480px;
+  margin: 60px auto;
+  text-align: center;
+  background: var(--card);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 20px;
+  padding: 48px 36px;
+  box-shadow: 0 0 40px rgba(0,255,136,0.07);
+}
+
+.anamnese-sucesso-icon { font-size: 3.5em; margin-bottom: 16px; }
+
+.anamnese-sucesso h1 {
+  font-size: 1.8em;
+  font-weight: 800;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+.anamnese-sucesso p {
+  color: var(--muted);
+  font-size: 0.92em;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.anamnese-sucesso-acoes { display: flex; flex-direction: column; gap: 12px; }
+
+/* ── Onboarding card no Dashboard ── */
+.card-anamnese-cta {
+  border-color: rgba(139,92,246,0.35) !important;
+  background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.06)) !important;
+}
+
+.card-anamnese-cta h2 { color: #c4b5fd !important; }
+
+/* ── Ficha do aluno no DashboardProfissional ── */
+.ficha-aluno {
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+}
+
+.ficha-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ficha-label {
+  font-size: 0.72em;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-weight: 600;
+}
+
+.ficha-valor {
+  font-size: 0.88em;
+  color: var(--dark);
+  font-weight: 500;
+}
+
+.ficha-parq {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+}
+
+.ficha-parq-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.ficha-parq-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82em;
+  color: var(--muted);
+}
+
+.ficha-parq-sim { color: #f87171; font-weight: 600; }
+.ficha-parq-nao { color: var(--muted); }
+
+.btn-ver-ficha {
+  padding: 0.4rem 0.9rem;
+  background: rgba(59,130,246,0.12);
+  color: #93c5fd;
+  border: 1px solid rgba(59,130,246,0.35);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-ver-ficha:hover { background: rgba(59,130,246,0.22); }
+
+.ficha-vazia {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 0.85em;
+  font-style: italic;
+  text-align: center;
+  padding: 8px;
+}
+
+@media (max-width: 600px) {
+  .anamnese-objetivo-grid { grid-template-columns: repeat(2, 1fr); }
+  .ficha-aluno { grid-template-columns: 1fr; }
+}

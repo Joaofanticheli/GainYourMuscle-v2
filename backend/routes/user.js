@@ -12,7 +12,8 @@ const {
   updatePreferences,
   addProgress,
   getProgress,
-  deleteProgress
+  deleteProgress,
+  salvarAnamnese
 } = require('../controllers/userController');
 
 // Importa o middleware de proteção
@@ -60,6 +61,12 @@ router.get('/progress', getProgress);
  * Deletar um registro de progresso
  */
 router.delete('/progress/:id', deleteProgress);
+
+/**
+ * PUT /api/user/anamnese
+ * Salvar ficha de anamnese do aluno
+ */
+router.put('/anamnese', salvarAnamnese);
 
 // Exporta o router
 module.exports = router;

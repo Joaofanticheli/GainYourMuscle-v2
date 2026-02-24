@@ -263,6 +263,30 @@ const deleteProgress = async (req, res) => {
   }
 };
 
+/**
+ * @route   PUT /api/user/anamnese
+ * @desc    Salvar ficha de anamnese do aluno (sem gerar treino)
+ * @access  Private
+ */
+const salvarAnamnese = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { anamnese: { ...req.body, atualizadoEm: new Date() } },
+      { new: true }
+    );
+
+    res.json({
+      success: true,
+      message: 'Ficha salva com sucesso!',
+      anamnese: user.anamnese
+    });
+  } catch (error) {
+    console.error('Erro ao salvar anamnese:', error);
+    res.status(500).json({ success: false, message: 'Erro ao salvar ficha.' });
+  }
+};
+
 // Exporta todas as funções
 module.exports = {
   getProfile,
@@ -270,5 +294,6 @@ module.exports = {
   updatePreferences,
   addProgress,
   getProgress,
-  deleteProgress
+  deleteProgress,
+  salvarAnamnese
 };

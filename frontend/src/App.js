@@ -25,6 +25,7 @@ import RegisterProfissional from './pages/RegisterProfissional';
 import DashboardProfissional from './pages/DashboardProfissional';
 import BuscarProfissional from './pages/BuscarProfissional';
 import EscolherConta from './pages/EscolherConta';
+import Anamnese from './pages/Anamnese';
 
 // Estilos globais
 import './App.css';
@@ -157,6 +158,15 @@ function App() {
               element={
                 <PrivateRoute>
                   <BuscarProfissional />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/minha-anamnese"
+              element={
+                <PrivateRoute>
+                  <Anamnese />
                 </PrivateRoute>
               }
             />

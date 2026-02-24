@@ -165,6 +165,14 @@ const UserSchema = new mongoose.Schema({
     notas: String
   }],
 
+  // ========== ANAMNESE (ficha de saúde e perfil físico do aluno) ==========
+  // Preenchida pelo aluno antes de ter um profissional
+  // O profissional usa esses dados para montar o treino/plano
+  anamnese: {
+    type: mongoose.Schema.Types.Mixed,
+    default: null
+  },
+
   // ========== PLANO NUTRICIONAL ==========
   planoNutricional: {
     type: mongoose.Schema.Types.Mixed,
