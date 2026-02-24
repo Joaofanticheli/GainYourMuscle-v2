@@ -88,12 +88,12 @@ const Dashboard = () => {
               </div>
             ) : (
               <div>
-                <p>Você ainda não tem um treino configurado</p>
+                <p>Seu profissional irá montar seu treino. Preencha sua ficha para que ele possa começar!</p>
                 <button
-                  className="btn btn-primary"
-                  onClick={() => navigate('/gerar-treino')}
+                  className="btn btn-outline"
+                  onClick={() => navigate('/minha-anamnese')}
                 >
-                  Gerar Meu Treino
+                  Preencher Ficha de Saúde
                 </button>
               </div>
             )}
@@ -105,21 +105,21 @@ const Dashboard = () => {
             <div className="quick-actions">
               <button
                 className="btn btn-outline"
-                onClick={() => navigate('/gerar-treino')}
-              >
-                📋 Gerar Novo Treino
-              </button>
-              <button
-                className="btn btn-outline"
                 onClick={() => navigate('/meu-treino')}
               >
-                👀 Ver Meu Treino
+                💪 Ver Meu Treino
               </button>
               <button
                 className="btn btn-outline"
-                onClick={() => navigate('/perfil')}
+                onClick={() => navigate('/profissionais')}
               >
-                📈 Registrar Progresso
+                🩺 Buscar Profissional
+              </button>
+              <button
+                className="btn btn-outline"
+                onClick={() => navigate('/minha-anamnese')}
+              >
+                📋 Minha Ficha de Saúde
               </button>
               <button
                 className="btn btn-outline"

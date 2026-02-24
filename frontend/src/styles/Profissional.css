@@ -143,7 +143,8 @@
 }
 
 .dash-prof-header {
-  background: linear-gradient(135deg, #e94560, #f5a623);
+  background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(59,130,246,0.15));
+  border: 1px solid rgba(139,92,246,0.3);
   border-radius: 14px;
   padding: 1.8rem 2rem;
   color: #fff;
@@ -153,11 +154,15 @@
 .dash-prof-header h1 {
   font-size: 1.6rem;
   margin: 0 0 0.3rem;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .dash-prof-header p {
   margin: 0;
-  opacity: 0.85;
+  color: var(--muted);
   font-size: 0.95rem;
 }
 
@@ -202,7 +207,7 @@
 .dash-prof-section h2 {
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--text-primary, #1a1a2e);
+  color: var(--dark);
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
@@ -210,40 +215,45 @@
 }
 
 .cliente-card {
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   padding: 1rem 1.2rem;
   margin-bottom: 0.8rem;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  transition: border-color 0.2s;
+}
+
+.cliente-card:hover {
+  border-color: rgba(139,92,246,0.35);
 }
 
 .cliente-card-info h3 {
   margin: 0 0 0.2rem;
   font-size: 1rem;
-  color: #1a1a2e;
+  color: var(--dark);
 }
 
 .cliente-card-info p {
   margin: 0;
   font-size: 0.83rem;
-  color: #666;
+  color: var(--muted);
 }
 
 .solicitacao-card {
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   padding: 1rem 1.2rem;
   margin-bottom: 0.8rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 }
 
 .solicitacao-acoes {
@@ -278,7 +288,7 @@
 
 .empty-state {
   text-align: center;
-  color: #999;
+  color: var(--muted);
   padding: 1.5rem;
   font-size: 0.9rem;
 }
