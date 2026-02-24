@@ -230,6 +230,7 @@ const Register = () => {
 
         <div className="auth-links">
           <Link to="/login">Já tem conta? Fazer login</Link>
+          <Link to="/escolher-conta">← Voltar à escolha de conta</Link>
         </div>
 
         <div className="auth-back">

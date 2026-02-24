@@ -23,6 +23,7 @@ import Duvidas from './pages/Duvidas';
 import RegisterProfissional from './pages/RegisterProfissional';
 import DashboardProfissional from './pages/DashboardProfissional';
 import BuscarProfissional from './pages/BuscarProfissional';
+import EscolherConta from './pages/EscolherConta';
 
 // Estilos globais
 import './App.css';
@@ -45,6 +46,7 @@ function App() {
             {/* Rotas Públicas */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/escolher-conta" element={<EscolherConta />} />
             <Route path="/register" element={<Register />} />
             <Route path="/register-profissional" element={<RegisterProfissional />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

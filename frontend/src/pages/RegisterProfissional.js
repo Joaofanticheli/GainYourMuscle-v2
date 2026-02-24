@@ -234,7 +234,7 @@ const RegisterProfissional = () => {
 
         <div className="auth-links">
           <Link to="/login">Ja tem conta? Fazer login</Link>
-          <Link to="/register">Cadastro de usuario comum</Link>
+          <Link to="/escolher-conta">&#8592; Voltar a escolha de conta</Link>
         </div>
 
         <div className="auth-back">

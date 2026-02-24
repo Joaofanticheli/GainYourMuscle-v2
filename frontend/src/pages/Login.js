@@ -79,9 +79,8 @@ const Login = () => {
         </form>
 
         <div className="auth-links">
-          <Link to="/register">Não tem conta? Criar conta</Link>
+          <Link to="/escolher-conta">Não tem conta? Criar conta</Link>
           <Link to="/forgot-password">Esqueceu a senha?</Link>
-          <Link to="/register-profissional">Sou profissional (Personal/Nutricionista/Psicólogo)</Link>
         </div>
 
         <div className="auth-back">
