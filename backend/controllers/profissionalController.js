@@ -122,15 +122,18 @@ const solicitarVinculo = async (req, res) => {
       });
     }
 
+    const isAI = profissional.profissional.isAI === true;
+
     const vinculo = await Vinculo.create({
       profissional: profissionalId,
       cliente: req.user._id,
-      tipoProfissional: profissional.profissional.isAI ? 'ia' : profissional.profissional.tipo
+      tipoProfissional: isAI ? 'ia' : profissional.profissional.tipo,
+      status: isAI ? 'ativo' : 'pendente'
     });
 
     res.status(201).json({
       success: true,
-      message: 'Solicitação enviada! Aguarde a aprovação do profissional.',
+      message: isAI ? 'IA vinculada com sucesso!' : 'Solicitação enviada! Aguarde a aprovação do profissional.',
       vinculo
     });
   } catch (error) {
