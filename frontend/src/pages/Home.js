@@ -44,7 +44,7 @@ const Home = () => {
               <button className="btn btn-primary btn-large" onClick={() => navigate('/login')}>
                 Fazer Login
               </button>
-              <button className="btn btn-outline" onClick={() => navigate('/register')}>
+              <button className="btn btn-outline" onClick={() => navigate('/escolher-conta')}>
                 Nova Conta
               </button>
             </div>
@@ -103,7 +103,7 @@ const Home = () => {
             <div className="home-actions">
               <button
                 className="btn btn-primary btn-large"
-                onClick={() => navigate('/register')}
+                onClick={() => navigate('/escolher-conta')}
               >
                 Criar Minha Conta
               </button>
