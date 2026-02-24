@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/Profissional.css';
+import '../styles/Auth.css';
 
 const TIPOS = [
   { value: 'personal', label: 'Personal Trainer', registro: 'CREF' },
@@ -13,7 +13,6 @@ const TIPOS = [
 ];
 
 const RegisterProfissional = () => {
-
   const [form, setForm] = useState({
     nome: '',
     email: '',
@@ -56,7 +55,7 @@ const RegisterProfissional = () => {
 
     setLoading(true);
     try {
-      const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const API = process.env.REACT_APP_API_URL || 'https://gainyourmuscle-v2.onrender.com';
       const res = await fetch(`${API}/api/auth/register-profissional`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -88,121 +87,159 @@ const RegisterProfissional = () => {
   };
 
   return (
-    <div className="register-prof-container">
-      <div className="register-prof-card">
-        <h2>Cadastro Profissional</h2>
-        <p className="subtitulo">
-          Personal Trainer · Nutricionista · Psicólogo
-        </p>
+    <div className="auth-container">
+      <div className="auth-box register-box">
+        <h1 className="auth-title">GainYourMuscle</h1>
+        <h2 className="auth-subtitle">Cadastro Profissional</h2>
 
-        <div className="aviso-pendente">
-          Seu cadastro será analisado pela nossa equipe. Você terá acesso completo
-          ao painel após a aprovação.
+        {erro && <div className="alert alert-error">{erro}</div>}
+
+        <div className="alert alert-info" style={{ marginBottom: '1rem', fontSize: '0.88rem' }}>
+          Seu cadastro sera analisado pela nossa equipe. Voce tera acesso completo apos a aprovacao.
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Nome completo *</label>
-            <input
-              name="nome"
-              value={form.nome}
-              onChange={handleChange}
-              placeholder="Seu nome completo"
-            />
-          </div>
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <fieldset className="form-fieldset">
+            <legend>Dados Profissionais</legend>
 
-          <div className="form-group">
-            <label>E-mail *</label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="email@exemplo.com"
-            />
-          </div>
+            <div className="form-group">
+              <label htmlFor="tipo">Tipo de profissional *</label>
+              <select
+                id="tipo"
+                name="tipo"
+                value={form.tipo}
+                onChange={handleChange}
+                required
+                disabled={loading}
+              >
+                <option value="">Selecione...</option>
+                {TIPOS.map(t => (
+                  <option key={t.value} value={t.value}>{t.label}</option>
+                ))}
+              </select>
+            </div>
 
-          <div className="form-group">
-            <label>Tipo de profissional *</label>
-            <select name="tipo" value={form.tipo} onChange={handleChange}>
-              <option value="">Selecione...</option>
-              {TIPOS.map(t => (
-                <option key={t.value} value={t.value}>{t.label}</option>
-              ))}
-            </select>
-          </div>
+            <div className="form-group">
+              <label htmlFor="registro">
+                Numero de registro{tipoSelecionado ? ` (${tipoSelecionado.registro})` : ''} *
+              </label>
+              <input
+                type="text"
+                id="registro"
+                name="registro"
+                placeholder={tipoSelecionado ? `Numero do ${tipoSelecionado.registro}` : 'Selecione o tipo primeiro'}
+                value={form.registro}
+                onChange={handleChange}
+                required
+                disabled={!form.tipo || loading}
+              />
+            </div>
 
-          <div className="form-group">
-            <label>
-              Número de registro{tipoSelecionado ? ` (${tipoSelecionado.registro})` : ''} *
-            </label>
-            <input
-              name="registro"
-              value={form.registro}
-              onChange={handleChange}
-              placeholder={tipoSelecionado ? `Número do ${tipoSelecionado.registro}` : 'Selecione o tipo primeiro'}
-              disabled={!form.tipo}
-            />
-          </div>
+            <div className="form-group">
+              <label htmlFor="especialidade">Especialidade</label>
+              <input
+                type="text"
+                id="especialidade"
+                name="especialidade"
+                placeholder="Ex: Musculacao e emagrecimento"
+                value={form.especialidade}
+                onChange={handleChange}
+                disabled={loading}
+              />
+            </div>
 
-          <div className="form-group">
-            <label>Especialidade</label>
-            <input
-              name="especialidade"
-              value={form.especialidade}
-              onChange={handleChange}
-              placeholder="Ex: Musculação e emagrecimento"
-            />
-          </div>
+            <div className="form-group">
+              <label htmlFor="bio">Apresentacao / Bio</label>
+              <textarea
+                id="bio"
+                name="bio"
+                placeholder="Fale um pouco sobre voce e sua experiencia..."
+                value={form.bio}
+                onChange={handleChange}
+                disabled={loading}
+                rows={3}
+                style={{ width: '100%', resize: 'vertical' }}
+              />
+            </div>
+          </fieldset>
 
-          <div className="form-group">
-            <label>Apresentação / Bio</label>
-            <textarea
-              name="bio"
-              value={form.bio}
-              onChange={handleChange}
-              placeholder="Fale um pouco sobre você e sua experiência..."
-            />
-          </div>
+          <fieldset className="form-fieldset">
+            <legend>Informacoes Pessoais</legend>
 
-          <div className="form-group">
-            <label>Senha *</label>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              placeholder="Mínimo 6 caracteres"
-            />
-          </div>
+            <div className="form-group">
+              <label htmlFor="nome">Nome completo *</label>
+              <input
+                type="text"
+                id="nome"
+                name="nome"
+                placeholder="Seu nome completo"
+                value={form.nome}
+                onChange={handleChange}
+                required
+                disabled={loading}
+              />
+            </div>
 
-          <div className="form-group">
-            <label>Confirmar senha *</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              placeholder="Repita a senha"
-            />
-          </div>
+            <div className="form-group">
+              <label htmlFor="email">E-mail *</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="email@exemplo.com"
+                value={form.email}
+                onChange={handleChange}
+                required
+                disabled={loading}
+              />
+            </div>
 
-          {erro && (
-            <p style={{ color: '#e94560', fontSize: '0.88rem', marginBottom: '1rem' }}>
-              {erro}
-            </p>
-          )}
+            <div className="form-group">
+              <label htmlFor="password">Senha *</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Minimo 6 caracteres"
+                value={form.password}
+                onChange={handleChange}
+                required
+                disabled={loading}
+              />
+            </div>
 
-          <button type="submit" className="btn-prof-primary" disabled={loading}>
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirmar senha *</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="Repita a senha"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                required
+                disabled={loading}
+              />
+            </div>
+          </fieldset>
+
+          <button
+            type="submit"
+            className="btn btn-primary btn-block"
+            disabled={loading}
+          >
             {loading ? 'Cadastrando...' : 'Criar cadastro'}
           </button>
         </form>
 
-        <p className="register-prof-footer">
-          Já tem conta? <Link to="/login">Entrar</Link>
-          {' · '}
-          <Link to="/register">Cadastro de usuário</Link>
-        </p>
+        <div className="auth-links">
+          <Link to="/login">Ja tem conta? Fazer login</Link>
+          <Link to="/register">Cadastro de usuario comum</Link>
+        </div>
+
+        <div className="auth-back">
+          <Link to="/">&#8592; Voltar para home</Link>
+        </div>
       </div>
     </div>
   );
