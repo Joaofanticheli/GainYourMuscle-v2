@@ -24,9 +24,9 @@ const Navbar = () => {
       ]
     : [
         { to: '/dashboard', label: 'Home', icon: '🏠' },
+        { to: '/profissionais', label: 'Profissionais', icon: '🩺' },
         { to: '/meu-treino', label: 'Treino', icon: '💪' },
         { to: '/nutricao', label: 'Nutrição', icon: '🥗' },
-        { to: '/profissionais', label: 'Profissionais', icon: '🩺' },
         { to: '/psicologo', label: 'Psicólogo', icon: '🧠' },
         { to: '/perfil', label: 'Perfil', icon: '👤' },
       ];
