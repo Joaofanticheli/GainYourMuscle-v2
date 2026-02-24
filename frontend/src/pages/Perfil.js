@@ -141,7 +141,7 @@ const PerfilConteudo = () => {
           <h2>{user?.nome}</h2>
           <p className="perfil-email">{user?.email}</p>
           {isProfissional && (
-            <p className="perfil-email" style={{ color: '#e94560', fontWeight: 600 }}>
+            <p className="perfil-email" style={{ color: '#a78bfa', fontWeight: 600 }}>
               {tipoLabelMap[user?.profissional?.tipo] || 'Profissional'}
             </p>
           )}
