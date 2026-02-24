@@ -21,7 +21,7 @@ const RegisterProfissional = () => {
     tipo: '',
     registro: '',
     bio: '',
-    especialidade: '',
+    contato: '',
   });
 
   const [loading, setLoading] = useState(false);
@@ -66,7 +66,7 @@ const RegisterProfissional = () => {
           tipo: form.tipo,
           registro: form.registro,
           bio: form.bio,
-          especialidade: form.especialidade,
+          contato: form.contato,
         }),
       });
 
@@ -136,19 +136,6 @@ const RegisterProfissional = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="especialidade">Especialidade</label>
-              <input
-                type="text"
-                id="especialidade"
-                name="especialidade"
-                placeholder="Ex: Musculacao e emagrecimento"
-                value={form.especialidade}
-                onChange={handleChange}
-                disabled={loading}
-              />
-            </div>
-
-            <div className="form-group">
               <label htmlFor="bio">Apresentacao / Bio</label>
               <textarea
                 id="bio"
@@ -165,6 +152,19 @@ const RegisterProfissional = () => {
 
           <fieldset className="form-fieldset">
             <legend>Informacoes Pessoais</legend>
+
+            <div className="form-group">
+              <label htmlFor="contato">WhatsApp / Telefone:</label>
+              <input
+                type="tel"
+                id="contato"
+                name="contato"
+                placeholder="(11) 99999-9999"
+                value={form.contato}
+                onChange={handleChange}
+                disabled={loading}
+              />
+            </div>
 
             <div className="form-group">
               <label htmlFor="nome">Nome completo *</label>

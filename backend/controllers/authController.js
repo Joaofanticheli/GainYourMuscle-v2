@@ -34,7 +34,8 @@ const register = async (req, res) => {
       sexo,
       peso,
       altura,
-      frequencia
+      frequencia,
+      contato
     } = req.body;
 
     // 1. Validação básica dos campos obrigatórios
@@ -75,7 +76,8 @@ const register = async (req, res) => {
       sexo,
       peso,
       altura,
-      frequencia: frequencia || 0
+      frequencia: frequencia || 0,
+      contato: contato || ''
     });
 
     // 4. Gera token JWT para o usuário
@@ -285,7 +287,7 @@ const forgotPassword = async (req, res) => {
  */
 const registerProfissional = async (req, res) => {
   try {
-    const { email, password, nome, tipo, registro, bio, especialidade } = req.body;
+    const { email, password, nome, tipo, registro, bio, contato } = req.body;
 
     if (!email || !password || !nome || !tipo || !registro) {
       return res.status(400).json({
@@ -320,12 +322,12 @@ const registerProfissional = async (req, res) => {
       peso: 70,
       altura: 170,
       frequencia: 0,
+      contato: contato || '',
       role: 'profissional',
       profissional: {
         tipo,
         registro,
         bio: bio || '',
-        especialidade: especialidade || '',
         status: 'pendente'
       }
     });

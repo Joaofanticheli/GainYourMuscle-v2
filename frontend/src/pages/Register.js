@@ -17,7 +17,8 @@ const Register = () => {
     peso: '',
     altura: '',
     sexo: '',
-    frequencia: 0
+    frequencia: 0,
+    contato: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -175,6 +176,19 @@ const Register = () => {
 
           <fieldset className="form-fieldset">
             <legend>Dados de Login</legend>
+
+            <div className="form-group">
+              <label htmlFor="contato">WhatsApp / Telefone:</label>
+              <input
+                type="tel"
+                id="contato"
+                name="contato"
+                placeholder="(11) 99999-9999"
+                value={formData.contato}
+                onChange={handleChange}
+                disabled={loading}
+              />
+            </div>
 
             <div className="form-group">
               <label htmlFor="email">Email:</label>

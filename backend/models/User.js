@@ -185,12 +185,17 @@ const UserSchema = new mongoose.Schema({
     },
     registro: String,   // CREF / CRN / CRP
     bio: String,        // Apresentação curta
-    especialidade: String,
     status: {
       type: String,
       enum: ['pendente', 'ativo', 'rejeitado'],
       default: 'pendente'
     }
+  },
+
+  // ========== CONTATO / COMUNICAÇÃO ==========
+  contato: {
+    type: String,
+    trim: true   // WhatsApp ou telefone para comunicação
   },
 
   // ========== METADADOS ==========
@@ -266,6 +271,7 @@ UserSchema.methods.dadosPublicos = function() {
     frequencia: this.frequencia,
     preferencias: this.preferencias,
     treinoAtual: this.treinoAtual,
+    contato: this.contato,
     role: this.role,
     createdAt: this.createdAt
   };
