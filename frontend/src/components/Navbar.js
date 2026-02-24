@@ -43,11 +43,16 @@ const Navbar = () => {
           <ul className="navbar-menu">
             {navItems.map((item) => (
               <li key={item.to}>
-                <Link to={item.to}>{item.label}</Link>
+                <Link
+                  to={item.to}
+                  className={location.pathname === item.to ? 'nav-link-ativo' : ''}
+                >
+                  {item.label}
+                </Link>
               </li>
             ))}
             <li className="navbar-user">
-              <span>Olá, {user?.nome}!</span>
+              <span>{user?.nome?.split(' ')[0]}</span>
             </li>
             <li>
               <button className="btn btn-logout" onClick={handleLogout}>

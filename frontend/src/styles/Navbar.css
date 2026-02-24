@@ -1,33 +1,35 @@
 /* ── NAVBAR ── */
 
 .navbar {
-  background: rgba(7, 7, 15, 0.92);
+  background: rgba(7, 7, 15, 0.95);
   border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 0 24px rgba(139, 92, 246, 0.08);
   padding-top: env(safe-area-inset-top);
 }
 
 .navbar-container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
+  height: 60px;
+  gap: 16px;
 }
 
+/* Marca */
 .navbar-brand {
   text-decoration: none;
-  color: white;
+  flex-shrink: 0;
 }
 
 .navbar-brand h1 {
-  font-size: 1.25em;
+  font-size: 1.15em;
   font-weight: 800;
   background: var(--gradient);
   -webkit-background-clip: text;
@@ -35,56 +37,68 @@
   background-clip: text;
   letter-spacing: -0.5px;
   text-shadow: none;
-  filter: drop-shadow(0 0 8px rgba(139,92,246,0.5));
+  filter: drop-shadow(0 0 10px rgba(124, 58, 237, 0.5));
 }
 
+/* Menu desktop */
 .navbar-menu {
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 4px;
-  flex-wrap: wrap;
+  gap: 2px;
 }
 
 .navbar-menu li a {
   color: var(--muted);
   text-decoration: none;
-  padding: 7px 12px;
-  border-radius: 7px;
-  font-size: 0.88em;
+  padding: 6px 13px;
+  border-radius: 8px;
+  font-size: 0.87em;
   font-weight: 500;
-  transition: all 0.2s;
-  border: 1px solid transparent;
+  transition: color 0.2s, background 0.2s;
+  display: block;
 }
 
 .navbar-menu li a:hover {
-  color: var(--primary);
-  background: rgba(139, 92, 246, 0.08);
-  border-color: var(--border);
+  color: #c4b5fd;
+  background: rgba(124, 58, 237, 0.1);
 }
 
+/* Link ativo */
+.navbar-menu li a.nav-link-ativo {
+  color: #a78bfa;
+  background: rgba(124, 58, 237, 0.15);
+  font-weight: 600;
+}
+
+/* Nome do usuário */
 .navbar-user span {
   font-size: 0.82em;
   color: var(--muted);
-  padding: 0 8px;
+  padding: 0 10px;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
 }
 
+/* Botão sair */
 .btn-logout {
-  background: rgba(255, 68, 102, 0.1);
-  color: #ff6688;
-  border: 1px solid rgba(255, 68, 102, 0.25);
-  padding: 7px 16px;
-  border-radius: 7px;
-  font-size: 0.85em;
-  font-weight: 600;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.84em;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  white-space: nowrap;
 }
 
 .btn-logout:hover {
-  background: rgba(255, 68, 102, 0.2);
-  border-color: rgba(255, 68, 102, 0.5);
-  box-shadow: 0 0 16px rgba(255, 68, 102, 0.3);
+  color: #ff6688;
+  border-color: rgba(255, 68, 102, 0.4);
+  background: rgba(255, 68, 102, 0.08);
 }
 
 /* ── BOTTOM NAV (mobile) ── */
@@ -93,7 +107,6 @@
 }
 
 @media (max-width: 768px) {
-  /* Esconde menu superior no mobile */
   .navbar-menu {
     display: none;
   }
@@ -103,7 +116,6 @@
     padding: 0 16px;
   }
 
-  /* Mostra bottom nav */
   .bottom-nav {
     display: flex;
     position: fixed;
@@ -111,9 +123,10 @@
     left: 0;
     right: 0;
     z-index: 200;
-    background: rgba(7, 7, 15, 0.97);
+    background: rgba(7, 7, 15, 0.98);
     border-top: 1px solid var(--border);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     padding-bottom: env(safe-area-inset-bottom);
   }
 
@@ -127,20 +140,33 @@
     text-decoration: none;
     color: var(--muted);
     transition: color 0.2s;
-    gap: 2px;
+    gap: 3px;
+    position: relative;
   }
 
   .bottom-nav-item.active {
-    color: var(--primary);
+    color: #a78bfa;
+  }
+
+  /* Indicador no topo do item ativo */
+  .bottom-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: var(--gradient);
+    border-radius: 0 0 2px 2px;
   }
 
   .bottom-nav-icon {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     line-height: 1;
   }
 
   .bottom-nav-label {
-    font-size: 0.62rem;
+    font-size: 0.6rem;
     font-weight: 500;
     letter-spacing: 0.2px;
   }
