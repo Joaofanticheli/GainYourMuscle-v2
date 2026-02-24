@@ -185,6 +185,7 @@ const UserSchema = new mongoose.Schema({
     },
     registro: String,   // CREF / CRN / CRP
     bio: String,        // Apresentação curta
+    isAI: { type: Boolean, default: false },
     status: {
       type: String,
       enum: ['pendente', 'ativo', 'rejeitado'],

@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { workoutAPI, extrasAPI } from '../services/api';
 import Navbar from '../components/Navbar';
 import WorkoutGenerator from './WorkoutGenerator';
+import ProfissionalGate from '../components/ProfissionalGate';
 import '../styles/WorkoutView.css';
 
 // ── Modal de GIF de exercício ─────────────────────────────────────────────────
@@ -481,4 +482,10 @@ const WorkoutView = () => {
   );
 };
 
-export default WorkoutView;
+const WorkoutViewGated = () => (
+  <ProfissionalGate tipo="treino">
+    <WorkoutView />
+  </ProfissionalGate>
+);
+
+export default WorkoutViewGated;

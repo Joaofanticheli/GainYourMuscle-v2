@@ -14,6 +14,9 @@ dotenv.config();
 // Importa a configuração do banco de dados
 const connectDB = require('./config/db');
 
+// Importa modelos para seeds
+const User = require('./models/User');
+
 // Importa as rotas da API
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -21,6 +24,7 @@ const workoutRoutes = require('./routes/workout');
 const nutritionRoutes = require('./routes/nutrition');
 const extrasRoutes = require('./routes/extras');
 const profissionalRoutes = require('./routes/profissional');
+const consultaRoutes = require('./routes/consulta');
 
 // ============================================================================
 // CONFIGURAÇÃO DO SERVIDOR
@@ -80,6 +84,9 @@ app.use('/api', extrasRoutes);
 // Rotas de profissionais (cadastro, vínculos, painel)
 app.use('/api/profissional', profissionalRoutes);
 
+// Rotas de consultas (agenda do psicólogo)
+app.use('/api/consultas', consultaRoutes);
+
 // Rota 404 - quando a rota não existe
 app.use((req, res) => {
   res.status(404).json({
@@ -112,6 +119,30 @@ const startServer = async () => {
     // 1. Conecta ao MongoDB
     await connectDB();
     console.log('✅ Conectado ao MongoDB com sucesso!');
+
+    // 2. Seed: cria o Profissional IA se não existir
+    const iaExistente = await User.findOne({ email: 'ia@gainyourmuscle.com' });
+    if (!iaExistente) {
+      await User.create({
+        email: 'ia@gainyourmuscle.com',
+        password: 'IA_GainYourMuscle_2024!',
+        nome: 'IA GainYourMuscle',
+        dataNascimento: new Date('2024-01-01'),
+        sexo: 'masculino',
+        peso: 70,
+        altura: 170,
+        frequencia: 0,
+        role: 'profissional',
+        profissional: {
+          tipo: 'personal',
+          registro: 'IA-001',
+          bio: 'Personal trainer, nutricionista e psicólogo com inteligência artificial. Disponível 24h por dia para criar seus treinos, planos alimentares e apoio mental.',
+          isAI: true,
+          status: 'ativo'
+        }
+      });
+      console.log('✅ Profissional IA criado com sucesso!');
+    }
 
     // 2. Inicia o servidor Express
     app.listen(PORT, () => {

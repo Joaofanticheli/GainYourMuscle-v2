@@ -12,7 +12,8 @@ const {
   solicitarVinculo,
   responderVinculo,
   vinculosPendentes,
-  meusVinculos
+  meusVinculos,
+  limparDados
 } = require('../controllers/profissionalController');
 
 const { protect, isProfissional } = require('../middleware/auth');
@@ -27,5 +28,8 @@ router.get('/meus-clientes', protect, isProfissional, meusClientes);
 router.get('/cliente/:id', protect, isProfissional, dadosCliente);
 router.put('/vinculos/:id', protect, isProfissional, responderVinculo);
 router.get('/vinculos/pendentes', protect, isProfissional, vinculosPendentes);
+
+// Limpar todos os treinos e planos (temporário — remover após uso)
+router.delete('/limpar-dados', limparDados);
 
 module.exports = router;

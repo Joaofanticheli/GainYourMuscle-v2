@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { nutritionAPI } from '../services/api';
 import Navbar from '../components/Navbar';
+import ProfissionalGate from '../components/ProfissionalGate';
 import '../styles/NutricaoPlanner.css';
 
 // ── Ícones ────────────────────────────────────────────────────────────────────
@@ -556,4 +557,10 @@ const NutricaoPlanner = () => {
   );
 };
 
-export default NutricaoPlanner;
+const NutricaoPlannerGated = () => (
+  <ProfissionalGate tipo="nutricao">
+    <NutricaoPlanner />
+  </ProfissionalGate>
+);
+
+export default NutricaoPlannerGated;

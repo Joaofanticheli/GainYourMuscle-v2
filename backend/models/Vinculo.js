@@ -19,7 +19,7 @@ const VinculoSchema = new mongoose.Schema({
 
   tipoProfissional: {
     type: String,
-    enum: ['personal', 'nutricionista', 'psicologo'],
+    enum: ['personal', 'nutricionista', 'psicologo', 'ia'],
     required: [true, 'Tipo de profissional é obrigatório']
   },
 

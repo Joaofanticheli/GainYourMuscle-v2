@@ -151,6 +151,42 @@ REGRAS:
   }
 });
 
+// ── Chat Psicólogo: IA especialista em saúde mental e bem-estar ──────────────
+router.post('/chat/psicologo', protect, async (req, res) => {
+  try {
+    const { mensagem, historico = [] } = req.body;
+    if (!mensagem) return res.status(400).json({ success: false, message: 'Mensagem obrigatória' });
+
+    const systemPrompt = `Você é um psicólogo especializado em saúde mental, bem-estar emocional e qualidade de vida, com foco em pessoas que praticam atividade física e buscam um estilo de vida mais saudável.
+
+REGRAS:
+- Responda em português brasileiro, com empatia, acolhimento e clareza
+- Seja direto mas gentil — máximo 3 parágrafos curtos
+- Aborde questões de motivação, ansiedade, autoestima, estresse, disciplina e saúde emocional
+- NUNCA dê diagnósticos clínicos — para casos graves, oriente a buscar atendimento presencial
+- Foque em estratégias práticas de bem-estar mental aplicadas ao dia a dia fitness`;
+
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...historico.slice(-10),
+      { role: 'user', content: mensagem },
+    ];
+
+    const completion = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages,
+      temperature: 0.75,
+      max_tokens: 512,
+    });
+
+    const resposta = completion.choices[0]?.message?.content || 'Não consegui processar sua mensagem. Tente novamente.';
+    res.json({ success: true, resposta });
+  } catch (err) {
+    console.error('Erro chat psicólogo:', err.message);
+    res.status(500).json({ success: false, message: 'Erro ao processar mensagem' });
+  }
+});
+
 // ── Nutrição: modificar plano via IA ─────────────────────────────────────────
 router.post('/nutrition/modify', protect, async (req, res) => {
   try {

@@ -4,6 +4,7 @@
 
 const User = require('../models/User');
 const Vinculo = require('../models/Vinculo');
+const Workout = require('../models/Workout');
 
 /**
  * @route   GET /api/profissional/listar
@@ -14,14 +15,19 @@ const listarProfissionais = async (req, res) => {
   try {
     const { tipo } = req.query;
 
-    const filtro = { role: 'profissional', 'profissional.status': 'ativo' };
-    if (tipo) filtro['profissional.tipo'] = tipo;
+    // Sempre traz o profissional IA primeiro
+    const [iaProf, humanos] = await Promise.all([
+      User.find({ role: 'profissional', 'profissional.isAI': true })
+        .select('nome email profissional contato createdAt'),
+      User.find({
+        role: 'profissional',
+        'profissional.status': 'ativo',
+        'profissional.isAI': { $ne: true },
+        ...(tipo ? { 'profissional.tipo': tipo } : {})
+      }).select('nome email profissional contato createdAt')
+    ]);
 
-    const profissionais = await User.find(filtro).select(
-      'nome email profissional createdAt'
-    );
-
-    res.json({ success: true, profissionais });
+    res.json({ success: true, profissionais: [...iaProf, ...humanos] });
   } catch (error) {
     console.error('Erro ao listar profissionais:', error);
     res.status(500).json({ success: false, message: 'Erro ao listar profissionais' });
@@ -119,7 +125,7 @@ const solicitarVinculo = async (req, res) => {
     const vinculo = await Vinculo.create({
       profissional: profissionalId,
       cliente: req.user._id,
-      tipoProfissional: profissional.profissional.tipo
+      tipoProfissional: profissional.profissional.isAI ? 'ia' : profissional.profissional.tipo
     });
 
     res.status(201).json({
@@ -217,6 +223,25 @@ const meusVinculos = async (req, res) => {
   }
 };
 
+/**
+ * @route   DELETE /api/profissional/limpar-dados
+ * @desc    Apaga todos os treinos e planos nutricionais (temporário)
+ * @access  Public (remover após uso)
+ */
+const limparDados = async (req, res) => {
+  try {
+    await Workout.deleteMany({});
+    await User.updateMany(
+      { role: 'user' },
+      { $set: { treinoAtual: null, planoNutricional: null } }
+    );
+    res.json({ success: true, message: 'Todos os treinos e planos nutricionais foram apagados.' });
+  } catch (error) {
+    console.error('Erro ao limpar dados:', error);
+    res.status(500).json({ success: false, message: 'Erro ao limpar dados' });
+  }
+};
+
 module.exports = {
   listarProfissionais,
   meusClientes,
@@ -224,5 +249,6 @@ module.exports = {
   solicitarVinculo,
   responderVinculo,
   vinculosPendentes,
-  meusVinculos
+  meusVinculos,
+  limparDados
 };

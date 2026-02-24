@@ -116,7 +116,7 @@ const Dashboard = () => {
               </button>
               <button
                 className="btn btn-outline"
-                onClick={() => navigate('/progresso')}
+                onClick={() => navigate('/perfil')}
               >
                 📈 Registrar Progresso
               </button>

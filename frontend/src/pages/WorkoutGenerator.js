@@ -215,7 +215,7 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
               </p>
             </div>
             <div className="celebracao-acoes">
-              <button className="btn btn-primary btn-large" onClick={() => navigate('/progresso')}>
+              <button className="btn btn-primary btn-large" onClick={() => navigate('/perfil')}>
                 Registrar Dia 1
               </button>
               <button className="btn btn-outline" onClick={() => navigate('/meu-treino')}>

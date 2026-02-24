@@ -1,0 +1,104 @@
+.gate-loading {
+  text-align: center;
+  padding: 4rem;
+  color: var(--muted);
+}
+
+/* ── Sem profissional ── */
+.gate-sem-prof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 2rem;
+}
+
+.gate-sem-prof-card {
+  text-align: center;
+  max-width: 420px;
+}
+
+.gate-icone {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.gate-sem-prof-card h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary, #1a1a2e);
+  margin-bottom: 0.8rem;
+}
+
+.gate-sem-prof-card p {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.gate-btn-primary {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background: #e94560;
+  color: #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: opacity 0.2s;
+}
+
+.gate-btn-primary:hover { opacity: 0.85; }
+
+/* ── Profissional humano ── */
+.gate-humano {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 2rem;
+}
+
+.gate-humano-card {
+  text-align: center;
+  max-width: 440px;
+}
+
+.gate-humano-avatar {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.gate-humano-card h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary, #1a1a2e);
+  margin-bottom: 0.8rem;
+}
+
+.gate-humano-card p {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.gate-btn-whats {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background: #25d366;
+  color: #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: opacity 0.2s;
+}
+
+.gate-btn-whats:hover { opacity: 0.85; }
+
+.gate-sem-contato {
+  color: #999;
+  font-size: 0.85rem;
+}

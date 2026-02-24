@@ -1,0 +1,162 @@
+.prof-abas {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0;
+}
+
+.prof-aba-btn {
+  padding: 0.6rem 1.2rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #888;
+  margin-bottom: -2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.prof-aba-btn.ativa {
+  color: #e94560;
+  border-bottom-color: #e94560;
+}
+
+.cliente-card-acoes {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn-whats-cliente {
+  padding: 0.4rem 0.8rem;
+  background: #25d366;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-whats-cliente:hover { opacity: 0.85; }
+
+/* ── Agenda ── */
+.agenda-form-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 1.4rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 1rem;
+}
+
+.agenda-form-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+.agenda-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.agenda-form select,
+.agenda-form input,
+.agenda-form textarea {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+  color: #333;
+}
+
+.agenda-form select:focus,
+.agenda-form input:focus,
+.agenda-form textarea:focus {
+  outline: none;
+  border-color: #e94560;
+}
+
+.agenda-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+
+.agenda-form textarea {
+  resize: vertical;
+}
+
+/* ── Cards de consulta ── */
+.consulta-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-left: 4px solid #aaa;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.consulta-card.status-agendada { border-left-color: #e94560; }
+.consulta-card.status-realizada { border-left-color: #27ae60; }
+.consulta-card.status-cancelada { border-left-color: #bbb; opacity: 0.6; }
+
+.consulta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.consulta-info strong { font-size: 0.95rem; color: #1a1a2e; }
+.consulta-info span { font-size: 0.82rem; color: #666; }
+.consulta-notas { font-style: italic; }
+
+.consulta-acoes {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.btn-deletar {
+  padding: 0.3rem 0.5rem;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #999;
+}
+
+.btn-deletar:hover { color: #e74c3c; border-color: #e74c3c; }
+
+.badge-consulta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.badge-consulta.realizada { background: #e8f5e9; color: #27ae60; }
+.badge-consulta.cancelada { background: #f5f5f5; color: #999; }
+
+@media (max-width: 600px) {
+  .consulta-card { flex-direction: column; align-items: flex-start; }
+  .agenda-form-row { grid-template-columns: 1fr; }
+  .prof-abas { overflow-x: auto; }
+}

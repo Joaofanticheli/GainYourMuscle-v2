@@ -20,6 +20,7 @@ import Perfil from './pages/Perfil';
 import Progresso from './pages/Progresso';
 import NutricaoPlanner from './pages/NutricaoPlanner';
 import Duvidas from './pages/Duvidas';
+import Psicologo from './pages/Psicologo';
 import RegisterProfissional from './pages/RegisterProfissional';
 import DashboardProfissional from './pages/DashboardProfissional';
 import BuscarProfissional from './pages/BuscarProfissional';
@@ -129,6 +130,15 @@ function App() {
               element={
                 <PrivateRoute>
                   <Duvidas />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/psicologo"
+              element={
+                <PrivateRoute>
+                  <Psicologo />
                 </PrivateRoute>
               }
             />
