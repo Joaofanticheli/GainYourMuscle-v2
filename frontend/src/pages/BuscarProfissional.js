@@ -12,11 +12,12 @@ const TIPOS_FILTRO = [
   { value: 'psicologo', label: 'Psicólogo' },
 ];
 
+const tipoLabel = { personal: 'Personal Trainer', nutricionista: 'Nutricionista', psicologo: 'Psicólogo' };
 const tipoIcone = { personal: '🏋️', nutricionista: '🥗', psicologo: '🧠', ia: '🤖' };
 
 const BuscarProfissional = () => {
   const { token, user } = useAuth();
-  const [profissionais, setProfissionais] = useState([]);
+  const [todos, setTodos] = useState([]);
   const [meusVinculos, setMeusVinculos] = useState([]);
   const [filtro, setFiltro] = useState('');
   const [loading, setLoading] = useState(true);
@@ -27,19 +28,13 @@ const BuscarProfissional = () => {
   const carregar = useCallback(async () => {
     setLoading(true);
     try {
-      const url = filtro
-        ? `${API}/api/profissional/listar?tipo=${filtro}`
-        : `${API}/api/profissional/listar`;
-
       const [resProf, resVinc] = await Promise.all([
-        fetch(url, { headers }),
+        fetch(`${API}/api/profissional/listar`, { headers }),
         fetch(`${API}/api/profissional/meus-vinculos`, { headers }),
       ]);
-
       const dataProf = await resProf.json();
       const dataVinc = await resVinc.json();
-
-      if (dataProf.success) setProfissionais(dataProf.profissionais);
+      if (dataProf.success) setTodos(dataProf.profissionais);
       if (dataVinc.success) setMeusVinculos(dataVinc.vinculos);
     } catch (err) {
       console.error('Erro:', err);
@@ -47,9 +42,15 @@ const BuscarProfissional = () => {
       setLoading(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filtro, token]);
+  }, [token]);
 
   useEffect(() => { carregar(); }, [carregar]);
+
+  // Filtragem client-side
+  const profIA = todos.filter(p => p.profissional?.isAI);
+  const profHumanos = todos
+    .filter(p => !p.profissional?.isAI)
+    .filter(p => !filtro || p.profissional?.tipo === filtro);
 
   const statusVinculo = (profId) => {
     const v = meusVinculos.find(v => v.profissional?._id === profId);
@@ -80,7 +81,6 @@ const BuscarProfissional = () => {
       const data = await res.json();
       if (data.success) {
         carregar();
-        // Abre WhatsApp apenas para profissionais humanos
         if (!prof.profissional?.isAI) abrirWhatsApp(prof);
       } else {
         alert(data.message || 'Erro ao solicitar vínculo.');
@@ -94,7 +94,7 @@ const BuscarProfissional = () => {
 
   const renderBotao = (prof) => {
     const status = statusVinculo(prof._id);
-    if (status === 'ativo') return <span className="vinculo-status ativo">Vinculado ✓</span>;
+    if (status === 'ativo')    return <span className="vinculo-status ativo">Vinculado ✓</span>;
     if (status === 'pendente') return <span className="vinculo-status pendente">Aguardando resposta</span>;
     if (status === 'recusado') return <span className="vinculo-status">Recusado</span>;
 
@@ -110,45 +110,37 @@ const BuscarProfissional = () => {
     );
   };
 
-  // Separa IA dos humanos
-  const profIA = profissionais.filter(p => p.profissional?.isAI);
-  const profHumanos = profissionais.filter(p => !p.profissional?.isAI);
-
   return (
     <>
       <Navbar />
       <div className="buscar-prof-container">
-        <h1>Profissionais</h1>
-        <p className="subtitulo">
-          Encontre personal trainers, nutricionistas, psicólogos ou use nossa IA.
-        </p>
+        <header className="buscar-prof-header">
+          <h1>Profissionais</h1>
+          <p>Encontre personal trainers, nutricionistas, psicólogos ou use nossa IA.</p>
+        </header>
 
-        {/* Card destaque IA */}
-        {!loading && profIA.map(prof => (
-          <div key={prof._id} className="prof-card prof-card-ia">
-            <div className="prof-card-avatar ia-avatar">🤖</div>
-            <div className="prof-card-body">
-              <h3>{prof.nome}</h3>
-              <span className="prof-tipo-badge tipo-ia">Inteligência Artificial</span>
-              <p className="prof-bio">{prof.profissional?.bio}</p>
-              <p className="prof-registro" style={{ color: '#7c3aed', fontWeight: 600 }}>
-                Treino · Nutrição · Psicólogo — tudo em um só lugar
-              </p>
-              <div className="prof-card-actions">
-                {renderBotao(prof)}
-              </div>
-            </div>
-          </div>
-        ))}
-
-        {/* Divisor */}
-        {profHumanos.length > 0 && (
+        {loading ? (
+          <div className="loading-state">Buscando profissionais...</div>
+        ) : (
           <>
-            <div className="prof-divisor">
-              <span>ou escolha um profissional humano</span>
-            </div>
+            {/* Card destaque IA */}
+            {profIA.map(prof => (
+              <div key={prof._id} className="prof-card prof-card-ia">
+                <div className="prof-card-avatar ia-avatar">🤖</div>
+                <div className="prof-card-body">
+                  <h3>{prof.nome}</h3>
+                  <span className="prof-tipo-badge tipo-ia">Inteligência Artificial</span>
+                  <p className="prof-bio">{prof.profissional?.bio}</p>
+                  <p className="prof-registro-ia">Treino · Nutrição · Psicólogo — tudo em um só lugar</p>
+                  <div className="prof-card-actions">{renderBotao(prof)}</div>
+                </div>
+              </div>
+            ))}
 
-            {/* Filtros */}
+            {/* Divisor */}
+            <div className="prof-divisor"><span>ou escolha um profissional humano</span></div>
+
+            {/* Filtros — sempre visíveis */}
             <div className="filtro-tipo">
               {TIPOS_FILTRO.map(t => (
                 <button
@@ -160,34 +152,29 @@ const BuscarProfissional = () => {
                 </button>
               ))}
             </div>
-          </>
-        )}
 
-        {loading ? (
-          <div className="loading-state">Buscando profissionais...</div>
-        ) : profHumanos.length === 0 && profIA.length === 0 ? (
-          <p className="empty-state">Nenhum profissional encontrado.</p>
-        ) : (
-          profHumanos.map(prof => (
-            <div key={prof._id} className="prof-card">
-              <div className="prof-card-avatar">
-                {tipoIcone[prof.profissional?.tipo] || '👤'}
-              </div>
-              <div className="prof-card-body">
-                <h3>{prof.nome}</h3>
-                <span className={`prof-tipo-badge tipo-${prof.profissional?.tipo}`}>
-                  {prof.profissional?.tipo === 'personal' && 'Personal Trainer'}
-                  {prof.profissional?.tipo === 'nutricionista' && 'Nutricionista'}
-                  {prof.profissional?.tipo === 'psicologo' && 'Psicólogo'}
-                </span>
-                <p className="prof-registro">Registro: {prof.profissional?.registro}</p>
-                {prof.profissional?.bio && <p className="prof-bio">{prof.profissional.bio}</p>}
-                <div className="prof-card-actions">
-                  {renderBotao(prof)}
+            {/* Lista de profissionais humanos */}
+            {profHumanos.length === 0 ? (
+              <p className="empty-state">Nenhum profissional encontrado para este filtro.</p>
+            ) : (
+              profHumanos.map(prof => (
+                <div key={prof._id} className="prof-card">
+                  <div className="prof-card-avatar">
+                    {tipoIcone[prof.profissional?.tipo] || '👤'}
+                  </div>
+                  <div className="prof-card-body">
+                    <h3>{prof.nome}</h3>
+                    <span className={`prof-tipo-badge tipo-${prof.profissional?.tipo}`}>
+                      {tipoLabel[prof.profissional?.tipo] || prof.profissional?.tipo}
+                    </span>
+                    <p className="prof-registro">Registro: {prof.profissional?.registro}</p>
+                    {prof.profissional?.bio && <p className="prof-bio">{prof.profissional.bio}</p>}
+                    <div className="prof-card-actions">{renderBotao(prof)}</div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))
+              ))
+            )}
+          </>
         )}
       </div>
     </>
