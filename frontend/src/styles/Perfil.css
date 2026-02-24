@@ -1,17 +1,19 @@
 /* ── PERFIL ── */
 
-/* Navegação de abas */
+/* Navegação de abas — barra full-width que integra com o tema dark */
 .perfil-abas-nav {
   display: flex;
-  gap: 0.3rem;
-  max-width: 900px;
-  margin: 1.2rem auto 0;
+  gap: 0;
+  width: 100%;
   padding: 0 24px;
+  box-sizing: border-box;
   border-bottom: 1px solid var(--border);
+  background: rgba(7, 7, 15, 0.85);
+  margin: 0;
 }
 
 .perfil-aba-btn {
-  padding: 0.65rem 1.4rem;
+  padding: 0.8rem 1.6rem;
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
@@ -20,6 +22,7 @@
   font-weight: 600;
   color: var(--muted);
   margin-bottom: -1px;
+  white-space: nowrap;
   transition: color 0.2s, border-color 0.2s;
 }
 
