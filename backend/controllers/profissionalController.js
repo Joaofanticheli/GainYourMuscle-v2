@@ -216,7 +216,7 @@ const meusVinculos = async (req, res) => {
   try {
     const vinculos = await Vinculo.find({ cliente: req.user._id }).populate(
       'profissional',
-      'nome email profissional'
+      'nome email profissional contato'
     );
 
     res.json({ success: true, vinculos });
