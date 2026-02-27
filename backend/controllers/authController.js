@@ -4,8 +4,27 @@
 
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const { Resend } = require('resend');
 const User = require('../models/User');
+
+const sendBrevoEmail = async ({ to, toName, subject, html }) => {
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'api-key': process.env.BREVO_API_KEY,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      sender: { name: 'GainYourMuscle', email: process.env.BREVO_SENDER_EMAIL },
+      to: [{ email: to, name: toName || to }],
+      subject,
+      htmlContent: html,
+    }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Erro ao enviar email via Brevo');
+  return data;
+};
 
 /**
  * Função auxiliar para gerar token JWT
@@ -292,12 +311,9 @@ const forgotPassword = async (req, res) => {
     const frontendUrl = process.env.FRONTEND_URL || 'https://projetogym.vercel.app';
     const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
-    // Envia o email via Resend (funciona no Render via HTTPS)
-    const resend = new Resend(process.env.RESEND_API_KEY);
-
-    const { data, error } = await resend.emails.send({
-      from: 'GainYourMuscle <onboarding@resend.dev>',
+    await sendBrevoEmail({
       to: user.email,
+      toName: user.nome,
       subject: 'Recuperação de Senha - GainYourMuscle',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 24px; background: #0f0f1a; color: #e0e0e0; border-radius: 12px;">
@@ -319,16 +335,6 @@ const forgotPassword = async (req, res) => {
       `
     });
 
-    if (error) {
-      console.error('Resend error:', JSON.stringify(error));
-      return res.status(500).json({
-        success: false,
-        message: 'Erro ao enviar email. Tente novamente mais tarde.',
-        detail: error.message
-      });
-    }
-
-    console.log('Email enviado com sucesso, id:', data?.id);
     res.json({
       success: true,
       message: 'Se esse email estiver cadastrado, você receberá as instruções em breve.'
