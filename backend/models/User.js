@@ -207,6 +207,14 @@ const UserSchema = new mongoose.Schema({
     trim: true   // WhatsApp ou telefone para comunicação
   },
 
+  // ========== NOTIFICAÇÕES IN-APP ==========
+  notificacoes: [{
+    mensagem: { type: String, required: true },
+    de: { type: String },           // nome do profissional
+    lida: { type: Boolean, default: false },
+    criadaEm: { type: Date, default: Date.now }
+  }],
+
   // ========== METADADOS ==========
   role: {
     type: String,

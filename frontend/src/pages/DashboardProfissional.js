@@ -287,12 +287,36 @@ const DashboardProfissional = () => {
                           {fichaAberta === c._id ? 'Fechar Ficha' : 'Ver Ficha'}
                         </button>
                         {prof.tipo !== 'psicologo' && (
-                          <button
-                            className="btn-montar-treino"
-                            onClick={() => navigate(`/treino-manual?cliente=${c._id}&clienteNome=${encodeURIComponent(c.nome)}`)}
-                          >
-                            Montar Treino
-                          </button>
+                          c.anamnese ? (
+                            <button
+                              className="btn-montar-treino"
+                              onClick={() => navigate(`/treino-manual?cliente=${c._id}&clienteNome=${encodeURIComponent(c.nome)}`)}
+                            >
+                              Montar Treino
+                            </button>
+                          ) : (
+                            <button
+                              className="btn-notificar-ficha"
+                              onClick={async () => {
+                                try {
+                                  const res = await fetch(`${API}/api/user/notificacoes/enviar`, {
+                                    method: 'POST',
+                                    headers: { ...headers, 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                      clienteId: c._id,
+                                      mensagem: `${user?.nome} precisa que você preencha sua ficha de saúde para montar seu treino personalizado. Acesse "Minha Anamnese" no app! 💪`
+                                    })
+                                  });
+                                  const data = await res.json();
+                                  alert(data.success ? '✅ Notificação enviada ao aluno!' : data.message);
+                                } catch {
+                                  alert('Erro ao enviar notificação.');
+                                }
+                              }}
+                            >
+                              📋 Notificar Aluno
+                            </button>
+                          )
                         )}
                         {c.contato && (
                           <button className="btn-whats-cliente" onClick={() => abrirWhatsApp(c)}>

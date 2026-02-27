@@ -13,7 +13,10 @@ const {
   addProgress,
   getProgress,
   deleteProgress,
-  salvarAnamnese
+  salvarAnamnese,
+  enviarNotificacao,
+  getNotificacoes,
+  marcarNotificacaoLida
 } = require('../controllers/userController');
 
 // Importa o middleware de proteção
@@ -67,6 +70,10 @@ router.delete('/progress/:id', deleteProgress);
  * Salvar ficha de anamnese do aluno
  */
 router.put('/anamnese', salvarAnamnese);
+
+router.post('/notificacoes/enviar', enviarNotificacao);
+router.get('/notificacoes', getNotificacoes);
+router.put('/notificacoes/:id/lida', marcarNotificacaoLida);
 
 // Exporta o router
 module.exports = router;

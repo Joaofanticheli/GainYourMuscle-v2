@@ -287,6 +287,69 @@ const salvarAnamnese = async (req, res) => {
   }
 };
 
+/**
+ * @route   POST /api/user/notificacoes/enviar
+ * @desc    Profissional envia notificação in-app para um aluno
+ * @access  Profissional
+ */
+const enviarNotificacao = async (req, res) => {
+  try {
+    const { clienteId, mensagem } = req.body;
+    if (!clienteId || !mensagem) {
+      return res.status(400).json({ success: false, message: 'clienteId e mensagem são obrigatórios.' });
+    }
+
+    const aluno = await User.findById(clienteId);
+    if (!aluno) {
+      return res.status(404).json({ success: false, message: 'Aluno não encontrado.' });
+    }
+
+    aluno.notificacoes.push({ mensagem, de: req.user.nome });
+    await aluno.save();
+
+    res.json({ success: true, message: 'Notificação enviada!' });
+  } catch (error) {
+    console.error('Erro ao enviar notificação:', error);
+    res.status(500).json({ success: false, message: 'Erro ao enviar notificação.' });
+  }
+};
+
+/**
+ * @route   GET /api/user/notificacoes
+ * @desc    Aluno busca suas notificações não lidas
+ * @access  Private
+ */
+const getNotificacoes = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('notificacoes');
+    const naoLidas = user.notificacoes.filter(n => !n.lida);
+    res.json({ success: true, notificacoes: naoLidas });
+  } catch (error) {
+    console.error('Erro ao buscar notificações:', error);
+    res.status(500).json({ success: false, message: 'Erro ao buscar notificações.' });
+  }
+};
+
+/**
+ * @route   PUT /api/user/notificacoes/:id/lida
+ * @desc    Marca uma notificação como lida
+ * @access  Private
+ */
+const marcarNotificacaoLida = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const notif = user.notificacoes.id(req.params.id);
+    if (!notif) return res.status(404).json({ success: false, message: 'Notificação não encontrada.' });
+
+    notif.lida = true;
+    await user.save();
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erro ao marcar notificação:', error);
+    res.status(500).json({ success: false, message: 'Erro ao marcar notificação.' });
+  }
+};
+
 // Exporta todas as funções
 module.exports = {
   getProfile,
@@ -295,5 +358,8 @@ module.exports = {
   addProgress,
   getProgress,
   deleteProgress,
-  salvarAnamnese
+  salvarAnamnese,
+  enviarNotificacao,
+  getNotificacoes,
+  marcarNotificacaoLida
 };

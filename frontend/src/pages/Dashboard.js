@@ -10,6 +10,8 @@ import Navbar from '../components/Navbar';
 import '../styles/Dashboard.css';
 import '../styles/Anamnese.css';
 
+const API = process.env.REACT_APP_API_URL || 'https://gainyourmuscle-v2.onrender.com';
+
 const EyeIcon = ({ visivel }) => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     {visivel ? (
@@ -27,15 +29,37 @@ const EyeIcon = ({ visivel }) => (
 );
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
   const [treinoHoje, setTreinoHoje] = useState(null);
   const [loading, setLoading] = useState(true);
   const [ocultarPeso, setOcultarPeso] = useState(true);
+  const [notificacoes, setNotificacoes] = useState([]);
 
   useEffect(() => {
     loadTreinoHoje();
+    loadNotificacoes();
   }, []);
+
+  const loadNotificacoes = async () => {
+    try {
+      const res = await fetch(`${API}/api/user/notificacoes`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) setNotificacoes(data.notificacoes);
+    } catch {}
+  };
+
+  const dispensarNotificacao = async (id) => {
+    try {
+      await fetch(`${API}/api/user/notificacoes/${id}/lida`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setNotificacoes(prev => prev.filter(n => n._id !== id));
+    } catch {}
+  };
 
   const loadTreinoHoje = async () => {
     try {
@@ -69,6 +93,33 @@ const Dashboard = () => {
           <h1>Bem-vindo, {user?.nome}! 💪</h1>
           <p className="dashboard-subtitle">Seu painel de treinos e progresso</p>
         </header>
+
+        {notificacoes.length > 0 && (
+          <div className="notificacoes-lista">
+            {notificacoes.map(n => (
+              <div key={n._id} className="notificacao-banner">
+                <div className="notificacao-conteudo">
+                  <span className="notificacao-icone">📋</span>
+                  <div>
+                    <strong>{n.de}</strong>
+                    <p>{n.mensagem}</p>
+                  </div>
+                </div>
+                <div className="notificacao-acoes">
+                  <button
+                    className="notificacao-btn-acao"
+                    onClick={() => { dispensarNotificacao(n._id); navigate('/minha-anamnese'); }}
+                  >
+                    Preencher Ficha
+                  </button>
+                  <button className="notificacao-btn-dispensar" onClick={() => dispensarNotificacao(n._id)}>
+                    ✕
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="dashboard-grid">
           {/* Card de Treino de Hoje */}

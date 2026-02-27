@@ -54,6 +54,23 @@
   border-color: rgba(139,92,246,0.7);
 }
 
+.btn-notificar-ficha {
+  padding: 0.4rem 0.9rem;
+  background: rgba(245,158,11,0.12);
+  color: #f59e0b;
+  border: 1px solid rgba(245,158,11,0.4);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-notificar-ficha:hover {
+  background: rgba(245,158,11,0.25);
+  border-color: rgba(245,158,11,0.7);
+}
+
 .btn-whats-cliente {
   padding: 0.4rem 0.8rem;
   background: #25d366;

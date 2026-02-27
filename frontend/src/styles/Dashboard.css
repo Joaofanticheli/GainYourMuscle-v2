@@ -187,7 +187,92 @@
   user-select: none;
 }
 
+/* ── Notificações in-app ── */
+.notificacoes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.notificacao-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.notificacao-conteudo {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 1;
+}
+
+.notificacao-icone {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.notificacao-conteudo strong {
+  font-size: 0.85rem;
+  color: #f59e0b;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.notificacao-conteudo p {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.notificacao-acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.notificacao-btn-acao {
+  padding: 6px 12px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.notificacao-btn-acao:hover {
+  background: rgba(245, 158, 11, 0.28);
+}
+
+.notificacao-btn-dispensar {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.notificacao-btn-dispensar:hover {
+  color: #ff6688;
+}
+
 @media (max-width: 600px) {
   .dashboard-header h1 { font-size: 1.5em; }
   .dashboard-grid { grid-template-columns: 1fr; }
+  .notificacao-banner { flex-direction: column; align-items: flex-start; }
 }
