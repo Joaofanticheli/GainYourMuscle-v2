@@ -339,16 +339,17 @@ const getNotificacoes = async (req, res) => {
  */
 const marcarNotificacaoLida = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    const notif = user.notificacoes.id(req.params.id);
-    if (!notif) return res.status(404).json({ success: false, message: 'Notificação não encontrada.' });
-
-    notif.lida = true;
-    await user.save();
+    const result = await User.updateOne(
+      { _id: req.user.id, 'notificacoes._id': req.params.id },
+      { $set: { 'notificacoes.$.lida': true } }
+    );
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ success: false, message: 'Notificação não encontrada.' });
+    }
     res.json({ success: true });
   } catch (error) {
     console.error('Erro ao marcar notificação:', error);
-    res.status(500).json({ success: false, message: 'Erro ao marcar notificação.' });
+    res.status(500).json({ success: false, message: error.message || 'Erro ao marcar notificação.' });
   }
 };
 
