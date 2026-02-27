@@ -87,15 +87,6 @@ app.use('/api/profissional', profissionalRoutes);
 // Rotas de consultas (agenda do psicólogo)
 app.use('/api/consultas', consultaRoutes);
 
-// Rota temporária para deletar contas de teste (remover após uso)
-app.delete('/api/admin/delete-user', async (req, res) => {
-  const { email } = req.body;
-  if (!email) return res.status(400).json({ success: false });
-  const result = await User.deleteOne({ email });
-  await require('./models/Vinculo').deleteMany({ $or: [{ cliente: result._id }, { profissional: result._id }] });
-  res.json({ success: true, deletedCount: result.deletedCount, email });
-});
-
 // Rota 404 - quando a rota não existe
 app.use((req, res) => {
   res.status(404).json({
