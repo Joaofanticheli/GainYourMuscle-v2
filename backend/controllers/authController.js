@@ -3,6 +3,8 @@
 // ============================================================================
 
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const User = require('../models/User');
 
 /**
@@ -259,13 +261,71 @@ const updatePassword = async (req, res) => {
 
 /**
  * @route   POST /api/auth/forgot-password
- * @desc    Solicitar recuperação de senha (envia email)
+ * @desc    Solicitar recuperação de senha (envia email real)
  * @access  Public
  */
 const forgotPassword = async (req, res) => {
   try {
-    // Sempre retorna 200 para não revelar se o email existe no sistema
-    // Em produção: buscar usuário, gerar token e enviar email real
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    // Sempre retorna sucesso para não revelar se o email existe
+    if (!user) {
+      return res.json({
+        success: true,
+        message: 'Se esse email estiver cadastrado, você receberá as instruções em breve.'
+      });
+    }
+
+    // Gera token aleatório de 32 bytes
+    const resetToken = crypto.randomBytes(32).toString('hex');
+
+    // Salva o hash do token no banco (nunca o token puro)
+    const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+    await User.findByIdAndUpdate(user._id, {
+      resetPasswordToken: resetTokenHash,
+      resetPasswordExpires: Date.now() + 3600000 // expira em 1 hora
+    });
+
+    // Monta o link de redefinição
+    const frontendUrl = process.env.FRONTEND_URL || 'https://projetogym.vercel.app';
+    const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
+
+    // Configura o transporter do nodemailer com Gmail
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    // Envia o email
+    await transporter.sendMail({
+      from: `"GainYourMuscle" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: 'Recuperação de Senha - GainYourMuscle',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 24px; background: #0f0f1a; color: #e0e0e0; border-radius: 12px;">
+          <h2 style="color: #8b5cf6; margin-bottom: 4px;">GainYourMuscle 💪</h2>
+          <p style="color: #aaa; margin-top: 0; font-size: 0.85em;">Sua plataforma de treinos</p>
+          <hr style="border: none; border-top: 1px solid #2a2a3a; margin: 16px 0;" />
+          <p>Olá, <strong>${user.nome}</strong>!</p>
+          <p>Recebemos uma solicitação para redefinir a senha da sua conta. Clique no botão abaixo para criar uma nova senha:</p>
+          <div style="text-align: center; margin: 28px 0;">
+            <a href="${resetUrl}" style="display: inline-block; padding: 14px 32px; background: #8b5cf6; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1em;">
+              Redefinir Minha Senha
+            </a>
+          </div>
+          <p style="color: #888; font-size: 0.82em;">⏰ Este link expira em <strong>1 hora</strong>.</p>
+          <p style="color: #888; font-size: 0.82em;">Se você não solicitou a recuperação de senha, ignore este email — sua senha não será alterada.</p>
+          <hr style="border: none; border-top: 1px solid #2a2a3a; margin: 20px 0;" />
+          <p style="color: #555; font-size: 0.78em;">Ou copie e cole este link no navegador:<br/>${resetUrl}</p>
+        </div>
+      `
+    });
+
     res.json({
       success: true,
       message: 'Se esse email estiver cadastrado, você receberá as instruções em breve.'
@@ -275,7 +335,60 @@ const forgotPassword = async (req, res) => {
     console.error('Erro em forgot password:', error);
     res.status(500).json({
       success: false,
-      message: 'Erro ao processar solicitação'
+      message: 'Erro ao enviar email. Tente novamente mais tarde.'
+    });
+  }
+};
+
+/**
+ * @route   POST /api/auth/reset-password/:token
+ * @desc    Redefinir senha com token do email
+ * @access  Public
+ */
+const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { novaSenha } = req.body;
+
+    if (!novaSenha || novaSenha.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'A nova senha deve ter no mínimo 6 caracteres'
+      });
+    }
+
+    // Gera o hash do token recebido para comparar com o banco
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    // Busca usuário com token válido e não expirado
+    const user = await User.findOne({
+      resetPasswordToken: tokenHash,
+      resetPasswordExpires: { $gt: Date.now() }
+    }).select('+password +resetPasswordToken +resetPasswordExpires');
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token inválido ou expirado. Solicite um novo link de recuperação.'
+      });
+    }
+
+    // Atualiza a senha e limpa os campos de reset
+    user.password = novaSenha;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Senha redefinida com sucesso! Faça login com sua nova senha.'
+    });
+
+  } catch (error) {
+    console.error('Erro ao redefinir senha:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao redefinir senha'
     });
   }
 };
@@ -367,5 +480,6 @@ module.exports = {
   getMe,
   updatePassword,
   forgotPassword,
+  resetPassword,
   registerProfissional
 };

@@ -16,6 +16,7 @@ import WorkoutGenerator from './pages/WorkoutGenerator';
 import WorkoutManual from './pages/WorkoutManual';
 import WorkoutView from './pages/WorkoutView';
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Perfil from './pages/Perfil';
 import Progresso from './pages/Progresso';
 import NutricaoPlanner from './pages/NutricaoPlanner';
@@ -52,6 +53,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/register-profissional" element={<RegisterProfissional />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
 
             {/* Rotas Privadas (precisam de autenticação) */}
             <Route

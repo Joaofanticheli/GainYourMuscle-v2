@@ -215,6 +215,17 @@ const UserSchema = new mongoose.Schema({
     criadaEm: { type: Date, default: Date.now }
   }],
 
+  // ========== RECUPERAÇÃO DE SENHA ==========
+  resetPasswordToken: {
+    type: String,
+    select: false
+  },
+
+  resetPasswordExpires: {
+    type: Date,
+    select: false
+  },
+
   // ========== METADADOS ==========
   role: {
     type: String,

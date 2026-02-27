@@ -12,6 +12,7 @@ const {
   getMe,
   updatePassword,
   forgotPassword,
+  resetPassword,
   registerProfissional
 } = require('../controllers/authController');
 
@@ -39,6 +40,12 @@ router.post('/login', login);
  * Solicitar recuperação de senha
  */
 router.post('/forgot-password', forgotPassword);
+
+/**
+ * POST /api/auth/reset-password/:token
+ * Redefinir senha com token do email
+ */
+router.post('/reset-password/:token', resetPassword);
 
 /**
  * POST /api/auth/register-profissional
