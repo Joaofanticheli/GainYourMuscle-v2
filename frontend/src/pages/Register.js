@@ -156,22 +156,6 @@ const Register = () => {
               </div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="frequencia">
-                Frequência de atividade física (vezes/semana):
-              </label>
-              <input
-                type="number"
-                id="frequencia"
-                name="frequencia"
-                placeholder="0-7"
-                min="0"
-                max="7"
-                value={formData.frequencia}
-                onChange={handleChange}
-                disabled={loading}
-              />
-            </div>
           </fieldset>
 
           <fieldset className="form-fieldset">
