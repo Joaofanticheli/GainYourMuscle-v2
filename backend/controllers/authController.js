@@ -292,9 +292,11 @@ const forgotPassword = async (req, res) => {
     const frontendUrl = process.env.FRONTEND_URL || 'https://projetogym.vercel.app';
     const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
-    // Configura o transporter do nodemailer com Gmail
+    // Configura o transporter com SMTP explícito do Gmail
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -332,10 +334,11 @@ const forgotPassword = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Erro em forgot password:', error);
+    console.error('Erro em forgot password:', error.message || error);
     res.status(500).json({
       success: false,
-      message: 'Erro ao enviar email. Tente novamente mais tarde.'
+      message: 'Erro ao enviar email. Tente novamente mais tarde.',
+      detail: process.env.NODE_ENV !== 'production' ? error.message : undefined
     });
   }
 };

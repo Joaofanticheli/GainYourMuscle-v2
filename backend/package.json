@@ -20,7 +20,7 @@
     "groq-sdk": "^0.37.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.1",
-    "nodemailer": "^8.0.1",
+    "nodemailer": "^6.10.1",
     "youtube-sr": "^4.3.12"
   },
   "devDependencies": {
