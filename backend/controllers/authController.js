@@ -337,14 +337,17 @@ const forgotPassword = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Se esse email estiver cadastrado, você receberá as instruções em breve.'
+      message: 'Se esse email estiver cadastrado, você receberá as instruções em breve.',
+      _debug: { keySet: !!process.env.BREVO_API_KEY, senderSet: !!process.env.BREVO_SENDER_EMAIL }
     });
 
   } catch (error) {
     console.error('Erro em forgot password:', error.message || error);
     res.status(500).json({
       success: false,
-      message: 'Erro ao enviar email. Tente novamente mais tarde.'
+      message: 'Erro ao enviar email. Tente novamente mais tarde.',
+      detail: error.message,
+      _debug: { keySet: !!process.env.BREVO_API_KEY, senderSet: !!process.env.BREVO_SENDER_EMAIL }
     });
   }
 };
