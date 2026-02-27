@@ -28,7 +28,7 @@ const TIPO_PROF_LABEL = {
   psicologo:     { label: 'Psicólogo',        emoji: '🧠' },
 };
 
-const ProfissionalGate = ({ tipo, children }) => {
+const ProfissionalGate = ({ tipo, children, embedded = false }) => {
   const { token, user } = useAuth();
   // ativos = lista de vínculos ativos, cada um tem tipoProfissional e profissional (dados do prof)
   const { ativos, temIA, loading } = useProfissional(token);
@@ -56,7 +56,7 @@ const ProfissionalGate = ({ tipo, children }) => {
 
     return (
       <>
-      <Navbar />
+      {!embedded && <Navbar />}
       <div className="gate-humano">
         <div className="gate-humano-card">
           <div className="gate-humano-avatar">👨‍⚕️</div>
@@ -86,7 +86,7 @@ const ProfissionalGate = ({ tipo, children }) => {
 
   return (
     <>
-    <Navbar />
+    {!embedded && <Navbar />}
     <div className="gate-sem-prof">
       <div className="gate-sem-prof-card">
         <div className="gate-icone">{profInfo.emoji}</div>

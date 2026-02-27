@@ -301,7 +301,8 @@ UserSchema.methods.dadosPublicos = function() {
     treinoAtual: this.treinoAtual,
     contato: this.contato,
     role: this.role,
-    createdAt: this.createdAt
+    createdAt: this.createdAt,
+    anamnese: this.anamnese ? true : null
   };
 
   if (this.role === 'profissional' && this.profissional) {
