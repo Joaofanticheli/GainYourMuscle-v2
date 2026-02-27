@@ -304,8 +304,10 @@ const enviarNotificacao = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Aluno não encontrado.' });
     }
 
-    aluno.notificacoes.push({ mensagem, de: req.user.nome });
-    await aluno.save();
+    await User.updateOne(
+      { _id: clienteId },
+      { $push: { notificacoes: { mensagem, de: req.user.nome } } }
+    );
 
     res.json({ success: true, message: 'Notificação enviada!' });
   } catch (error) {
