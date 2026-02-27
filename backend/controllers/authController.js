@@ -293,7 +293,8 @@ const forgotPassword = async (req, res) => {
     if (!user) {
       return res.json({
         success: true,
-        message: 'Se esse email estiver cadastrado, você receberá as instruções em breve.'
+        message: 'Se esse email estiver cadastrado, você receberá as instruções em breve.',
+        _debug: 'user_not_found'
       });
     }
 
