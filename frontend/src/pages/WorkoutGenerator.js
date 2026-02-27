@@ -191,48 +191,47 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
   if (celebrando) {
     const isEsporte = dadosCelebracao.objetivo === 'esporte';
     const esporteLabel = isEsporte ? (esportesConfig[dadosCelebracao.esporte]?.label || '') : '';
-    return (
-      <div>
-        <Navbar />
-        <div className="workout-generator-container">
-          <div className="celebracao-card">
-            <div className="celebracao-icone">{isEsporte ? '🏆' : '🎉'}</div>
-            <h1 className="celebracao-titulo">
-              {isEsporte ? `Programa de ${esporteLabel} pronto!` : 'Treino criado!'}
-            </h1>
-            <p className="celebracao-subtitulo">
-              {isEsporte ? (
-                <>
-                  Seu programa específico para <strong>{dadosCelebracao.posicao}</strong> foi criado com
-                  exercícios funcionais e <strong>mobilidade integrada</strong> em todos os dias.
-                  Hoje é o <strong>Dia 1</strong> — registre suas medidas iniciais!
-                </>
-              ) : (
-                <>
-                  Parabéns! Seu treino personalizado está pronto, com <strong>mobilidade ao final de
-                  cada sessão</strong>. Hoje é o <strong>Dia 1 do seu projeto</strong> — registre suas
-                  medidas iniciais para acompanhar sua evolução!
-                </>
-              )}
+    const celebracaoContent = (
+      <div className="workout-generator-container">
+        <div className="celebracao-card">
+          <div className="celebracao-icone">{isEsporte ? '🏆' : '🎉'}</div>
+          <h1 className="celebracao-titulo">
+            {isEsporte ? `Programa de ${esporteLabel} pronto!` : 'Treino criado!'}
+          </h1>
+          <p className="celebracao-subtitulo">
+            {isEsporte ? (
+              <>
+                Seu programa específico para <strong>{dadosCelebracao.posicao}</strong> foi criado com
+                exercícios funcionais e <strong>mobilidade integrada</strong> em todos os dias.
+                Hoje é o <strong>Dia 1</strong> — registre suas medidas iniciais!
+              </>
+            ) : (
+              <>
+                Parabéns! Seu treino personalizado está pronto, com <strong>mobilidade ao final de
+                cada sessão</strong>. Hoje é o <strong>Dia 1 do seu projeto</strong> — registre suas
+                medidas iniciais para acompanhar sua evolução!
+              </>
+            )}
+          </p>
+          <div className="celebracao-dica">
+            <p>
+              Registrar seu peso e medidas hoje cria uma <strong>linha de base</strong>.
+              Em semanas você verá a diferença — e isso vai te manter motivado!
             </p>
-            <div className="celebracao-dica">
-              <p>
-                Registrar seu peso e medidas hoje cria uma <strong>linha de base</strong>.
-                Em semanas você verá a diferença — e isso vai te manter motivado!
-              </p>
-            </div>
-            <div className="celebracao-acoes">
-              <button className="btn btn-primary btn-large" onClick={() => navigate('/perfil')}>
-                Registrar Dia 1
-              </button>
-              <button className="btn btn-outline" onClick={() => navigate('/meu-treino')}>
-                Ver Meu Treino
-              </button>
-            </div>
+          </div>
+          <div className="celebracao-acoes">
+            <button className="btn btn-primary btn-large" onClick={() => navigate('/perfil')}>
+              Registrar Dia 1
+            </button>
+            <button className="btn btn-outline" onClick={() => navigate('/meu-treino')}>
+              Ver Meu Treino
+            </button>
           </div>
         </div>
       </div>
     );
+    if (embedded) return celebracaoContent;
+    return <div><Navbar />{celebracaoContent}</div>;
   }
 
   // ── Formulário ─────────────────────────────────────────────────────────────

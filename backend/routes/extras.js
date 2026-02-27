@@ -20,32 +20,134 @@ function httpGet(url) {
   });
 }
 
-// ── GIF de exercício via Giphy ────────────────────────────────────────────────
+// ── Mapeamento de exercícios → GIFs (Mundo Boa Forma) ────────────────────────
+const EXERCISE_GIFS = {
+  // PEITO
+  'supino reto':                        'supino-reto-com-barra',
+  'supino reto com barra':              'supino-reto-com-barra',
+  'supino inclinado':                   'supino-inclinado-com-barra',
+  'supino inclinado com barra':         'supino-inclinado-com-barra',
+  'supino declinado':                   'supino-declinado-com-barra',
+  'supino declinado com barra':         'supino-declinado-com-barra',
+  'supino com halteres':                'supino-reto-com-halteres',
+  'supino inclinado com halteres':      'supino-inclinado-com-halteres',
+  'crucifixo':                          'crucifixo-reto',
+  'crucifixo reto':                     'crucifixo-reto',
+  'crucifixo inclinado':                'crucifixo-inclinado',
+  'peck deck':                          'peck-deck',
+  'voador':                             'peck-deck',
+  'flexao de braco':                    'flexao-de-braco',
+  'flexão de braço':                    'flexao-de-braco',
+  'flexao':                             'flexao-de-braco',
+  'crossover':                          'crossover',
+  'pullover':                           'pullover-com-haltere',
+  // COSTAS
+  'puxada alta':                        'puxada-pela-frente',
+  'puxada pela frente':                 'puxada-pela-frente',
+  'puxada na frente':                   'puxada-pela-frente',
+  'puxada':                             'puxada-pela-frente',
+  'remada curvada':                     'remada-curvada-com-barra',
+  'remada curvada com barra':           'remada-curvada-com-barra',
+  'remada unilateral':                  'remada-unilateral-com-haltere',
+  'remada unilateral com haltere':      'remada-unilateral-com-haltere',
+  'remada baixa':                       'remada-baixa-na-polia',
+  'remada sentada':                     'remada-baixa-na-polia',
+  'levantamento terra':                 'levantamento-terra',
+  'barra fixa':                         'barra-fixa',
+  'pulldown':                           'puxada-pela-frente',
+  // OMBROS
+  'desenvolvimento com barra':          'desenvolvimento-com-barra',
+  'desenvolvimento com halteres':       'desenvolvimento-com-halteres',
+  'desenvolvimento arnold':             'desenvolvimento-arnold',
+  'elevacao lateral':                   'elevacao-lateral-com-halteres',
+  'elevação lateral':                   'elevacao-lateral-com-halteres',
+  'elevacao lateral com halteres':      'elevacao-lateral-com-halteres',
+  'elevacao frontal':                   'elevacao-frontal-com-haltere',
+  'elevação frontal':                   'elevacao-frontal-com-haltere',
+  'remada alta':                        'remada-alta',
+  'face pull':                          'face-pull',
+  // BICEPS
+  'rosca direta':                       'rosca-direta',
+  'rosca direta com barra':             'rosca-direta',
+  'rosca alternada':                    'rosca-alternada-com-halteres',
+  'rosca com halteres':                 'rosca-alternada-com-halteres',
+  'rosca martelo':                      'rosca-martelo',
+  'rosca concentrada':                  'rosca-concentrada',
+  'rosca scott':                        'rosca-scott',
+  'rosca na polia':                     'rosca-na-polia',
+  // TRICEPS
+  'triceps pulley':                     'triceps-pulley',
+  'tríceps pulley':                     'triceps-pulley',
+  'triceps frances':                    'triceps-frances',
+  'tríceps francês':                    'triceps-frances',
+  'triceps testa':                      'triceps-testa',
+  'tríceps testa':                      'triceps-testa',
+  'triceps coice':                      'triceps-coice-com-haltere',
+  'tríceps coice':                      'triceps-coice-com-haltere',
+  'mergulho':                           'mergulho-entre-bancos',
+  'triceps no banco':                   'mergulho-entre-bancos',
+  'tríceps no banco':                   'mergulho-entre-bancos',
+  'extensao de triceps':                'triceps-pulley',
+  // PERNAS
+  'agachamento':                        'agachamento-livre',
+  'agachamento livre':                  'agachamento-livre',
+  'agachamento com barra':              'agachamento-livre',
+  'agachamento sumô':                   'agachamento-sumo',
+  'agachamento sumo':                   'agachamento-sumo',
+  'leg press':                          'leg-press-45-graus',
+  'leg press 45':                       'leg-press-45-graus',
+  'cadeira extensora':                  'cadeira-extensora',
+  'extensora':                          'cadeira-extensora',
+  'mesa flexora':                       'mesa-flexora',
+  'flexora':                            'mesa-flexora',
+  'stiff':                              'stiff',
+  'levantamento terra romeno':          'levantamento-terra-romeno',
+  'terra romeno':                       'levantamento-terra-romeno',
+  'panturrilha':                        'panturrilha-em-pe',
+  'panturrilha em pe':                  'panturrilha-em-pe',
+  'panturrilha sentado':                'panturrilha-sentado',
+  'afundo':                             'afundo',
+  'avanço':                             'afundo',
+  'avanco':                             'afundo',
+  'hack squat':                         'hack-squat',
+  'agachamento hack':                   'hack-squat',
+  'abdutora':                           'abdutora',
+  'adutora':                            'adutora',
+  'glute bridge':                       'glute-bridge',
+  'elevacao de quadril':                'glute-bridge',
+  // ABDOMEN / CORE
+  'abdominal':                          'abdominal-crunch',
+  'crunch':                             'abdominal-crunch',
+  'abdominal crunch':                   'abdominal-crunch',
+  'abdominal infra':                    'abdominal-infra',
+  'abdominal inferior':                 'abdominal-infra',
+  'elevacao de pernas':                 'abdominal-infra',
+  'prancha':                            'prancha',
+  'obliquo':                            'abdominal-obliquo',
+  'abdominal obliquo':                  'abdominal-obliquo',
+  'russian twist':                      'russian-twist',
+  'abdominal na polia':                 'abdominal-na-polia',
+};
+
+function toSlug(str) {
+  return str
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+}
+
+// ── GIF de exercício via mapeamento ──────────────────────────────────────────
 router.get('/exercise-gif', protect, async (req, res) => {
-  try {
-    const { nome } = req.query;
-    if (!nome) return res.status(400).json({ success: false });
+  const { nome } = req.query;
+  if (!nome) return res.status(400).json({ success: false });
 
-    const apiKey = process.env.GIPHY_API_KEY;
-    if (!apiKey) return res.json({ success: false, gifUrl: null });
+  const nomeNorm = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s]/g, '').trim();
+  const slug = EXERCISE_GIFS[nomeNorm] || toSlug(nome);
+  const gifUrl = `https://www.mundoboaforma.com.br/wp-content/uploads/exercicios/${slug}.gif`;
 
-    const query = encodeURIComponent(`${nome} exercise workout how to`);
-    const url = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${query}&limit=8&rating=g&lang=en`;
-    const { body } = await httpGet(url);
-
-    const gif = body?.data?.[0];
-    if (!gif) return res.json({ success: false, gifUrl: null });
-
-    const gifUrl = gif.images?.downsized_medium?.url
-      || gif.images?.fixed_height?.url
-      || gif.images?.original?.url
-      || null;
-
-    res.json({ success: true, gifUrl });
-  } catch (err) {
-    console.error('Erro busca GIF:', err.message);
-    res.json({ success: false, gifUrl: null });
-  }
+  res.json({ success: true, gifUrl });
 });
 
 // ── Verifica se um vídeo pode ser embedado via oEmbed ─────────────────────────

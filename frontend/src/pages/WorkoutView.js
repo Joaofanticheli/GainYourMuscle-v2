@@ -13,13 +13,28 @@ import '../styles/WorkoutView.css';
 const GifModal = ({ exercicio, onClose }) => {
   const [gifUrl, setGifUrl] = useState(null);
   const [carregando, setCarregando] = useState(true);
+  const [gifErro, setGifErro] = useState(false);
 
   useEffect(() => {
+    setGifErro(false);
     extrasAPI.getGif(exercicio.nome)
       .then(r => setGifUrl(r.data.gifUrl || null))
       .catch(() => setGifUrl(null))
       .finally(() => setCarregando(false));
   }, [exercicio.nome]);
+
+  const fallback = (
+    <div className="video-not-found">
+      <p>GIF não disponível para este exercício.</p>
+      <a
+        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(exercicio.nome + ' execução correta')}`}
+        target="_blank" rel="noopener noreferrer"
+        className="btn btn-outline btn-sm"
+      >
+        🎬 Ver no YouTube
+      </a>
+    </div>
+  );
 
   return (
     <div className="video-modal-overlay" onClick={onClose}>
@@ -31,33 +46,14 @@ const GifModal = ({ exercicio, onClose }) => {
         <div className="video-modal-body">
           {carregando ? (
             <div className="video-loading">Buscando demonstração...</div>
-          ) : gifUrl ? (
+          ) : gifUrl && !gifErro ? (
             <img
               src={gifUrl}
               alt={`Demonstração: ${exercicio.nome}`}
               className="exercise-gif"
+              onError={() => setGifErro(true)}
             />
-          ) : (
-            <div className="video-not-found">
-              <p>GIF não encontrado automaticamente.</p>
-              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <a
-                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(exercicio.nome + ' execução correta')}`}
-                  target="_blank" rel="noopener noreferrer"
-                  className="btn btn-outline btn-sm"
-                >
-                  Ver no YouTube
-                </a>
-                <a
-                  href={`https://giphy.com/search/${encodeURIComponent(exercicio.nome + ' exercise')}`}
-                  target="_blank" rel="noopener noreferrer"
-                  className="btn btn-outline btn-sm"
-                >
-                  Ver no Giphy
-                </a>
-              </div>
-            </div>
-          )}
+          ) : fallback}
         </div>
         {exercicio.educacao && (
           <div className="video-educacao">
