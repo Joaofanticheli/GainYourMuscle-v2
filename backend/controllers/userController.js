@@ -312,7 +312,7 @@ const enviarNotificacao = async (req, res) => {
     res.json({ success: true, message: 'Notificação enviada!' });
   } catch (error) {
     console.error('Erro ao enviar notificação:', error);
-    res.status(500).json({ success: false, message: 'Erro ao enviar notificação.' });
+    res.status(500).json({ success: false, message: error.message || 'Erro ao enviar notificação.' });
   }
 };
 
