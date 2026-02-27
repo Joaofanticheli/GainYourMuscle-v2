@@ -39,6 +39,7 @@ const Dashboard = () => {
   useEffect(() => {
     loadTreinoHoje();
     loadNotificacoes();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadNotificacoes = async () => {
