@@ -338,7 +338,7 @@ const forgotPassword = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Erro ao enviar email. Tente novamente mais tarde.',
-      detail: process.env.NODE_ENV !== 'production' ? error.message : undefined
+      detail: error.message
     });
   }
 };
