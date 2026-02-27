@@ -309,7 +309,7 @@ const forgotPassword = async (req, res) => {
     });
 
     // Monta o link de redefinição
-    const frontendUrl = process.env.FRONTEND_URL || 'https://gain-your-muscle-v2.vercel.app';
+    const frontendUrl = process.env.FRONTEND_URL || 'https://projetogym.vercel.app';
     const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
     await sendBrevoEmail({
