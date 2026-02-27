@@ -142,6 +142,34 @@ SUPLEMENTAÇÃO COM EVIDÊNCIA CIENTÍFICA FORTE (nível A):
 EVITAR ou SEM EVIDÊNCIA FORTE: BCAAs (inúteis com proteína suficiente), glutamina,
 queimadores de gordura termogênicos, ZMA, testosterona boosters, HMB (exceto idosos)`;
 
+// ── Tabela TACO — valores por 100g ───────────────────────────────────────────
+const TACO_REFERENCIA = `
+TABELA TACO — VALORES POR 100g (use como referência OBRIGATÓRIA para macros individuais):
+Arroz branco cozido: 2.5g P | 28.1g C | 0.1g G | 128kcal
+Feijão carioca cozido: 4.8g P | 13.6g C | 0.5g G | 76kcal
+Frango peito s/pele cozido: 31.5g P | 0g C | 3.7g G | 163kcal
+Ovo inteiro cozido: 13.3g P | 0.5g C | 9.6g G | 146kcal
+Clara de ovo cozida: 9.7g P | 0g C | 0g G | 39kcal
+Aveia em flocos: 13.9g P | 67.2g C | 8.5g G | 394kcal
+Batata-doce cozida: 1.4g P | 18.4g C | 0.1g G | 77kcal
+Banana nanica (1 unidade ≈ 100g): 1.3g P | 23.8g C | 0.1g G | 92kcal
+Carne bovina patinho cozido: 32.0g P | 0g C | 9.7g G | 219kcal
+Atum em água escorrido: 26.0g P | 0g C | 1.3g G | 119kcal
+Pão francês (1 unid ≈ 50g): 8.0g P | 58.6g C | 3.1g G | 300kcal
+Macarrão cozido: 4.8g P | 27.9g C | 0.5g G | 133kcal
+Batata inglesa cozida: 1.2g P | 11.9g C | 0.1g G | 52kcal
+Mandioca cozida: 0.6g P | 30.1g C | 0.3g G | 125kcal
+Salmão grelhado: 26.8g P | 0g C | 11.5g G | 210kcal
+Sardinha em óleo escorrida: 24.9g P | 0g C | 13.9g G | 224kcal
+Azeite de oliva: 0g P | 0g C | 100g G | 884kcal
+Leite desnatado (200ml): 3.2g P | 4.9g C | 0.1g G | 35kcal
+Iogurte natural desnatado: 3.7g P | 5.3g C | 0.1g G | 40kcal
+Queijo mussarela: 22.4g P | 3.4g C | 17.3g G | 261kcal
+Queijo cottage: 12.5g P | 2.7g C | 4.3g G | 97kcal
+Amendoim torrado: 26.2g P | 21.1g C | 44.0g G | 581kcal
+Castanha do pará (1 unid ≈ 5g): 14.5g P | 15.1g C | 63.5g G | 656kcal
+Whey protein (padrão): 80g P | 5g C | 5g G | 385kcal`;
+
 // ── Monta o prompt ────────────────────────────────────────────────────────────
 function buildNutritionPrompt(params) {
   const {
@@ -228,7 +256,11 @@ INSTRUÇÕES PARA O PLANO NUTRICIONAL:
 17. Total do plano (calorias e macros) = soma de todas as refeições — verifique a consistência
 18. Se o usuário tem treino cadastrado: posicione as refeições de maior carbo pré e pós-treino
 19. Personalize o TÍTULO do plano com o nome do objetivo e dados do usuário (ex: "Plano Hipertrofia — 85kg / 25 anos")
-20. As dicas devem ser PRÁTICAS e ESPECÍFICAS para o perfil do usuário, não genéricas`;
+20. As dicas devem ser PRÁTICAS e ESPECÍFICAS para o perfil do usuário, não genéricas
+
+${TACO_REFERENCIA}
+
+⚠️ OBRIGATÓRIO: Calcule os macros de CADA ALIMENTO usando a tabela TACO acima como referência. Ajuste proporcionalmente para a quantidade indicada. A fórmula kcal = (P×4)+(C×4)+(G×9) DEVE ser respeitada em todos os alimentos.`;
 }
 
 // ── Schema JSON esperado ──────────────────────────────────────────────────────
@@ -404,7 +436,74 @@ Responda SOMENTE com um objeto JSON válido. Sem markdown, sem \`\`\`json, sem t
     plano = JSON.parse(match[0]);
   }
 
-  return validarPlano(plano);
+  const planoFinal = validarPlano(plano);
+
+  // Calcula água diária deterministicamente (35ml/kg)
+  if (params.peso) {
+    planoFinal.aguaDiaria = Math.round(params.peso * 35);
+    planoFinal.aguaDicaContexto = `Baseado no seu peso (${params.peso}kg × 35ml). Aumente 500ml nos dias de treino intenso.`;
+  }
+
+  return planoFinal;
 }
 
-module.exports = { gerarPlanoNutricional };
+// ── Modifica plano existente via chat ─────────────────────────────────────────
+async function modificarPlanoNutricional(planoAtual, pedido) {
+  const completion = await groq.chat.completions.create({
+    messages: [
+      {
+        role: 'system',
+        content: `Você é um Nutricionista Esportivo de elite. Você receberá um plano nutricional completo e uma solicitação de modificação do usuário.
+
+REGRAS:
+1. Faça APENAS as modificações solicitadas — preserve todo o resto do plano
+2. REGRA DE OURO: kcal do alimento = (proteina×4) + (carboidrato×4) + (gordura×9)
+3. Use a tabela TACO para macros dos alimentos alterados:
+   - Frango peito cozido/100g: 31.5g P, 0g C, 3.7g G
+   - Ovo inteiro cozido/100g: 13.3g P, 0.5g C, 9.6g G
+   - Arroz cozido/100g: 2.5g P, 28.1g C, 0.1g G
+   - Batata-doce cozida/100g: 1.4g P, 18.4g C, 0.1g G
+4. Preserve os campos aguaDiaria e aguaDicaContexto do plano original
+5. Retorne JSON com: { "plano": {...plano completo modificado...}, "mensagem": "string descrevendo as alterações feitas" }
+6. Sem markdown, sem \`\`\`json. Apenas JSON puro.`,
+      },
+      {
+        role: 'user',
+        content: `PLANO ATUAL:\n${JSON.stringify(planoAtual)}\n\nSOLICITAÇÃO: ${pedido}`,
+      },
+    ],
+    model: 'llama-3.3-70b-versatile',
+    temperature: 0.5,
+    max_tokens: 6000,
+    response_format: { type: 'json_object' },
+  });
+
+  const content = completion.choices[0]?.message?.content;
+  if (!content) throw new Error('Resposta vazia do Groq');
+
+  let resultado;
+  try {
+    resultado = JSON.parse(content);
+  } catch {
+    const match = content.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('JSON inválido na resposta da IA');
+    resultado = JSON.parse(match[0]);
+  }
+
+  if (!resultado.plano) throw new Error('Plano não retornado pela IA');
+
+  // Preserva aguaDiaria do plano original caso a IA não inclua
+  if (!resultado.plano.aguaDiaria && planoAtual.aguaDiaria) {
+    resultado.plano.aguaDiaria = planoAtual.aguaDiaria;
+    resultado.plano.aguaDicaContexto = planoAtual.aguaDicaContexto;
+  }
+
+  resultado.plano = validarPlano(resultado.plano);
+
+  return {
+    plano: resultado.plano,
+    mensagem: resultado.mensagem || 'Plano atualizado com sucesso.',
+  };
+}
+
+module.exports = { gerarPlanoNutricional, modificarPlanoNutricional };

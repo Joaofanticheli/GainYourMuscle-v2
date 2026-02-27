@@ -3,7 +3,7 @@
 // ============================================================================
 
 const User = require('../models/User');
-const { gerarPlanoNutricional } = require('../utils/nutritionGenerator');
+const { gerarPlanoNutricional, modificarPlanoNutricional } = require('../utils/nutritionGenerator');
 
 /**
  * @route  POST /api/nutrition/generate
@@ -69,4 +69,35 @@ const getNutritionPlan = async (req, res) => {
   }
 };
 
-module.exports = { generateNutritionPlan, getNutritionPlan };
+/**
+ * @route  POST /api/nutrition/modify
+ * @desc   Modifica plano nutricional existente via chat da IA
+ * @access Private
+ */
+const modifyNutritionPlan = async (req, res) => {
+  try {
+    const { plano, pedido } = req.body;
+    if (!plano || !pedido) {
+      return res.status(400).json({ success: false, message: 'Plano e pedido são obrigatórios' });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+
+    const resultado = await modificarPlanoNutricional(plano, pedido);
+
+    user.planoNutricional = resultado.plano;
+    user.markModified('planoNutricional');
+    await user.save();
+
+    res.json({ success: true, plano: resultado.plano, mensagem: resultado.mensagem });
+  } catch (error) {
+    console.error('Erro ao modificar plano nutricional:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Erro ao modificar plano nutricional',
+    });
+  }
+};
+
+module.exports = { generateNutritionPlan, getNutritionPlan, modifyNutritionPlan };

@@ -9,8 +9,8 @@ import ProfissionalGate from '../components/ProfissionalGate';
 import '../styles/NutricaoPlanner.css';
 
 // ── Ícones ────────────────────────────────────────────────────────────────────
-const MacroBar = ({ label, valor, total, cor }) => {
-  const pct = total > 0 ? Math.round((valor * 4 / total) * 100) : 0;
+const MacroBar = ({ label, valor, total, cor, multiplicador = 4 }) => {
+  const pct = total > 0 ? Math.round((valor * multiplicador / total) * 100) : 0;
   return (
     <div className="macro-bar-item">
       <div className="macro-bar-header">
@@ -196,6 +196,7 @@ const NutricaoPlanner = () => {
                 valor={plano.macros.gordura}
                 total={totalCal}
                 cor="#f59e0b"
+                multiplicador={9}
               />
             </div>
             {plano.macros.fibraMinima && (
