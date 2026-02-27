@@ -123,25 +123,23 @@ const BuscarProfissional = () => {
           <div className="loading-state">Buscando profissionais...</div>
         ) : (
           <>
-            {/* Card destaque IA — não aparece quando filtro é Psicólogo */}
-            {filtro !== 'psicologo' && profIA.map(prof => (
+            {/* Card destaque IA */}
+            {profIA.map(prof => (
               <div key={prof._id} className="prof-card prof-card-ia">
                 <div className="prof-card-avatar ia-avatar">🤖</div>
                 <div className="prof-card-body">
                   <h3>{prof.nome}</h3>
                   <span className="prof-tipo-badge tipo-ia">Inteligência Artificial</span>
                   <p className="prof-bio">{prof.profissional?.bio}</p>
-                  <p className="prof-registro-ia">Treino · Nutrição — tudo em um só lugar</p>
+                  <p className="prof-registro-ia">Treino · Nutrição · Psicólogo — tudo em um só lugar</p>
                   <p className="prof-aviso-ia">⚠️ A IA é prática, mas um profissional humano sempre será a melhor escolha.</p>
                   <div className="prof-card-actions">{renderBotao(prof)}</div>
                 </div>
               </div>
             ))}
 
-            {/* Divisor — só aparece quando a IA está visível */}
-            {filtro !== 'psicologo' && (
-              <div className="prof-divisor"><span>ou escolha um profissional humano</span></div>
-            )}
+            {/* Divisor */}
+            <div className="prof-divisor"><span>ou escolha um profissional humano</span></div>
 
             {/* Filtros — sempre visíveis */}
             <div className="filtro-tipo">

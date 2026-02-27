@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
+import ProfissionalGate from '../components/ProfissionalGate';
 import '../styles/Duvidas.css';
 
 const API = process.env.REACT_APP_API_URL || 'https://gainyourmuscle-v2.onrender.com';
@@ -160,6 +161,10 @@ const PsicologoChat = () => {
   );
 };
 
-const Psicologo = () => <PsicologoChat />;
+const PsicologoGated = () => (
+  <ProfissionalGate tipo="psicologo">
+    <PsicologoChat />
+  </ProfissionalGate>
+);
 
-export default Psicologo;
+export default PsicologoGated;

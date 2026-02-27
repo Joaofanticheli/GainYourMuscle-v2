@@ -3,6 +3,7 @@
 /* Navegação de abas — barra full-width que integra com o tema dark */
 .perfil-abas-nav {
   display: flex;
+  justify-content: center;
   gap: 0;
   width: 100%;
   padding: 0 24px;
