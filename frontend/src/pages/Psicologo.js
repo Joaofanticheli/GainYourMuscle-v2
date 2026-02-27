@@ -87,6 +87,7 @@ const PsicologoChat = () => {
                   Aqui você pode falar sobre ansiedade, motivação, disciplina, autoestima e equilíbrio
                   emocional. Tudo no contexto de um estilo de vida mais saudável.
                 </p>
+                <p className="psicologo-aviso">⚠️ Este chat é uma IA de apoio emocional. Se você estiver passando por algo sério, procure um psicólogo de verdade — ele pode te ajudar de um jeito que nenhuma IA consegue.</p>
               </div>
             </div>
             <span className="duvidas-sugestoes-titulo">Sugestões de temas</span>

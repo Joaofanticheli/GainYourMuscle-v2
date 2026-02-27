@@ -174,6 +174,22 @@ const responderVinculo = async (req, res) => {
       });
     }
 
+    if (acao === 'aceitar') {
+      const vinculoAtivoMesmaArea = await Vinculo.findOne({
+        cliente: vinculo.cliente,
+        tipoProfissional: vinculo.tipoProfissional,
+        status: 'ativo',
+        _id: { $ne: vinculo._id }
+      });
+
+      if (vinculoAtivoMesmaArea) {
+        return res.status(400).json({
+          success: false,
+          message: `Este aluno já possui um profissional da área "${vinculo.tipoProfissional}" ativo. Não é possível aceitar.`
+        });
+      }
+    }
+
     vinculo.status = acao === 'aceitar' ? 'ativo' : 'recusado';
     await vinculo.save();
 

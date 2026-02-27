@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useProfissional } from '../hooks/useProfissional';
+import Navbar from './Navbar';
 import '../styles/ProfissionalGate.css';
 
 // Texto exibido em cada tipo de gate
@@ -54,6 +55,8 @@ const ProfissionalGate = ({ tipo, children }) => {
     const whatsLink = numero ? `https://wa.me/55${numero}?text=${msg}` : null;
 
     return (
+      <>
+      <Navbar />
       <div className="gate-humano">
         <div className="gate-humano-card">
           <div className="gate-humano-avatar">👨‍⚕️</div>
@@ -71,6 +74,7 @@ const ProfissionalGate = ({ tipo, children }) => {
           )}
         </div>
       </div>
+      </>
     );
   }
 
@@ -81,6 +85,8 @@ const ProfissionalGate = ({ tipo, children }) => {
   const temOutroProfissional = ativos.length > 0;
 
   return (
+    <>
+    <Navbar />
     <div className="gate-sem-prof">
       <div className="gate-sem-prof-card">
         <div className="gate-icone">{profInfo.emoji}</div>
@@ -97,6 +103,7 @@ const ProfissionalGate = ({ tipo, children }) => {
         </Link>
       </div>
     </div>
+    </>
   );
 };
 

@@ -431,6 +431,13 @@
   line-height: 1.55;
 }
 
+.prof-aviso-ia {
+  font-size: 0.8rem;
+  color: #f59e0b;
+  margin-bottom: 0.7rem;
+  line-height: 1.4;
+}
+
 .prof-card-actions {
   display: flex;
   align-items: center;
