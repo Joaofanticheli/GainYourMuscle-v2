@@ -173,12 +173,14 @@ const Dashboard = () => {
               >
                 🩺 Buscar Profissional
               </button>
-              <button
-                className="btn btn-outline"
-                onClick={() => navigate('/minha-anamnese')}
-              >
-                📋 Minha Ficha de Saúde
-              </button>
+              {!user?.anamnese && (
+                <button
+                  className="btn btn-outline"
+                  onClick={() => navigate('/minha-anamnese')}
+                >
+                  📋 Preencher Ficha
+                </button>
+              )}
               <button
                 className="btn btn-outline"
                 onClick={() => navigate('/perfil')}
@@ -223,25 +225,16 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Card Anamnese - aparece para alunos que ainda não preencheram ou precisam atualizar */}
-          <div className="card card-anamnese-cta">
-            <h2>{user?.anamnese ? '📋 Sua Ficha de Saúde' : '📋 Preencha sua Ficha'}</h2>
-            {user?.anamnese ? (
-              <div>
-                <p>Ficha preenchida! Seu profissional pode ver suas informações e montar seu treino.</p>
-                <button className="btn btn-outline" onClick={() => navigate('/minha-anamnese')}>
-                  Atualizar Ficha
-                </button>
-              </div>
-            ) : (
-              <div>
-                <p>Preencha sua ficha de saúde para que seu profissional possa montar um treino personalizado para você.</p>
-                <button className="btn btn-primary" onClick={() => navigate('/minha-anamnese')}>
-                  Preencher Agora
-                </button>
-              </div>
-            )}
-          </div>
+          {/* Card Anamnese - só aparece quando ainda não preencheu */}
+          {!user?.anamnese && (
+            <div className="card card-anamnese-cta">
+              <h2>📋 Preencha sua Ficha</h2>
+              <p>Preencha sua ficha de saúde para que seu profissional possa montar um treino personalizado para você.</p>
+              <button className="btn btn-primary" onClick={() => navigate('/minha-anamnese')}>
+                Preencher Agora
+              </button>
+            </div>
+          )}
 
           {/* Card de Dicas */}
           <div className="card">
