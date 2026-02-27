@@ -13,7 +13,8 @@ const {
   responderVinculo,
   vinculosPendentes,
   meusVinculos,
-  limparDados
+  limparDados,
+  desvincular
 } = require('../controllers/profissionalController');
 
 const { protect, isProfissional } = require('../middleware/auth');
@@ -22,6 +23,7 @@ const { protect, isProfissional } = require('../middleware/auth');
 router.get('/listar', protect, listarProfissionais);
 router.post('/vincular', protect, solicitarVinculo);
 router.get('/meus-vinculos', protect, meusVinculos);
+router.delete('/vinculos/:id', protect, desvincular);
 
 // Apenas profissionais
 router.get('/meus-clientes', protect, isProfissional, meusClientes);

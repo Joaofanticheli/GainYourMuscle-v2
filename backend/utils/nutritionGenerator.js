@@ -148,16 +148,46 @@ function buildNutritionPrompt(params) {
     objetivo, restricao, atividade, refeicoes, tempoCozinhar,
     foraLar, saude, suplementos, orcamento, dietaAnterior,
     peso, altura, idade, sexo,
+    treino, anamnese, diasTreino,
   } = params;
 
   const temCondicaoMedica = saude && saude !== 'nenhuma';
   const avisoMedico = temCondicaoMedica
-    ? `⚠️ ATENÇÃO: O usuário tem ${LABELS.saude[saude]}. Adapte rigorosamente o plano para esta condição e inclua aviso para acompanhamento médico.`
+    ? `⚠️ ATENÇÃO CLÍNICA: O usuário tem ${LABELS.saude[saude]}. Adapte rigorosamente o plano para esta condição e inclua aviso obrigatório de acompanhamento médico.`
     : '';
 
   const dadosFisicos = peso && altura && idade && sexo
-    ? `Peso: ${peso}kg | Altura: ${altura}cm | Idade: ${idade} anos | Sexo: ${sexo}`
-    : 'Dados físicos não informados — use valores médios e indique para calcular com precisão com um profissional';
+    ? `Peso: ${peso}kg | Altura: ${altura}cm | Idade: ${idade} anos | Sexo: ${sexo === 'masculino' ? 'Masculino' : 'Feminino'}`
+    : 'Dados físicos não informados — use valores médios e oriente buscar profissional';
+
+  // Contexto do treino atual
+  let treinoCtx = '';
+  if (treino) {
+    treinoCtx = `
+TREINO ATUAL DO USUÁRIO (use para personalizar timing e calorias):
+- Objetivo do treino: ${treino.tipo || 'não informado'}
+- Nível: ${treino.nivel || 'não informado'}
+- Dias de treino/semana: ${treino.diasPorSemana || diasTreino || 4}
+- Divisão: ${treino.divisao || 'não informada'}
+→ Adapte a distribuição de carboidratos ao redor dos treinos (maior carbo pré e pós-treino).
+→ Nos dias de treino: aumente carbo em ~20%, reduza em dias de descanso.`;
+  } else if (diasTreino) {
+    treinoCtx = `\nFREQUÊNCIA DE TREINO: ${diasTreino} dias/semana — considere timing nutricional pré e pós-treino.`;
+  }
+
+  // Contexto da anamnese
+  let anamneseCtx = '';
+  if (anamnese) {
+    const partes = [];
+    if (anamnese.doencas) partes.push(`Doenças reportadas: ${anamnese.doencas}`);
+    if (anamnese.medicamentos) partes.push(`Medicamentos: ${anamnese.medicamentos}`);
+    if (anamnese.alergias) partes.push(`Alergias: ${anamnese.alergias}`);
+    if (anamnese.cirurgias) partes.push(`Cirurgias/histórico: ${anamnese.cirurgias}`);
+    if (anamnese.objetivoPrincipal) partes.push(`Objetivo declarado pelo aluno: ${anamnese.objetivoPrincipal}`);
+    if (partes.length > 0) {
+      anamneseCtx = `\nFICHA DE SAÚDE (ANAMNESE) — USE PARA PERSONALIZAR:\n${partes.join('\n')}`;
+    }
+  }
 
   return `PERFIL NUTRICIONAL COMPLETO DO USUÁRIO:
 ${dadosFisicos}
@@ -172,19 +202,21 @@ ${dadosFisicos}
 - Suplementação atual: ${LABELS.suplementos[suplementos] || suplementos}
 - Orçamento alimentar: ${LABELS.orcamento[orcamento] || orcamento}
 - Experiência anterior com dieta: ${LABELS.dietaAnterior[dietaAnterior] || dietaAnterior}
+${treinoCtx}
+${anamneseCtx}
 ${avisoMedico}
 
 ${CIENCIA_NUTRICIONAL}
 
 INSTRUÇÕES PARA O PLANO NUTRICIONAL:
-1. Calcule as calorias usando Mifflin-St Jeor se tiver dados físicos, ou estime conservadoramente
+1. Calcule as calorias usando Mifflin-St Jeor com os dados físicos fornecidos — mostre o cálculo no campo descricao
 2. Gere EXATAMENTE o número de refeições que o usuário prefere
 3. Cada refeição deve ter: nome, horário sugerido, lista de alimentos com quantidade e calorias, total de calorias, macro breakdown e uma opção substituta prática
-4. Inclua alimentos acessíveis para o Brasil, com preços compatíveis com o orçamento informado
+4. USE ALIMENTOS TIPICAMENTE BRASILEIROS: arroz, feijão, frango, ovo, mandioca, banana, laranja, carne moída, pão francês, leite, iogurte, queijo, etc.
 5. Respeite TODAS as restrições alimentares sem exceção
 6. Para vegetariano/vegano: garanta proteína completa (combinações corretas)
-7. Inclua dicas de preparo rápido se o usuário tem pouco tempo
-8. Se come fora com frequência: inclua guia de escolhas em restaurantes e fast food
+7. Inclua dicas de preparo rápido se o usuário tem pouco tempo para cozinhar
+8. Se come fora com frequência: inclua guia de escolhas em restaurantes e fast food brasileiros (por ex. almoço executivo, lanchonete, etc.)
 9. Suplementação: recomende APENAS o que tem evidência forte. Explique dose, horário e motivo
 10. Inclua dicas de micronutrientes relevantes para o objetivo
 11. A proteína total deve bater no target calculado — verifique somando todas as refeições
@@ -193,7 +225,10 @@ INSTRUÇÕES PARA O PLANO NUTRICIONAL:
 14. REGRA DE OURO: calorias do alimento = (proteina×4) + (carboidrato×4) + (gordura×9)
 15. Total de calorias da refeição = soma das calorias de todos os alimentos
 16. Macros da refeição (proteina/carbo/gordura) = soma dos macros de todos os alimentos da refeição
-17. Total do plano (calorias e macros) = soma de todas as refeições — verifique a consistência`;
+17. Total do plano (calorias e macros) = soma de todas as refeições — verifique a consistência
+18. Se o usuário tem treino cadastrado: posicione as refeições de maior carbo pré e pós-treino
+19. Personalize o TÍTULO do plano com o nome do objetivo e dados do usuário (ex: "Plano Hipertrofia — 85kg / 25 anos")
+20. As dicas devem ser PRÁTICAS e ESPECÍFICAS para o perfil do usuário, não genéricas`;
 }
 
 // ── Schema JSON esperado ──────────────────────────────────────────────────────

@@ -12,16 +12,27 @@ const { gerarPlanoNutricional } = require('../utils/nutritionGenerator');
  */
 const generateNutritionPlan = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id).populate('treinoAtual');
     if (!user) return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
 
-    // Injeta dados físicos do perfil
+    // Injeta dados físicos + contexto completo do usuário
     const params = {
       ...req.body,
       peso: user.peso,
       altura: user.altura,
       idade: user.idade,
       sexo: user.sexo,
+      // Dados do treino atual (se existir)
+      treino: user.treinoAtual ? {
+        tipo: user.treinoAtual.tipo,
+        nivel: user.treinoAtual.nivel,
+        diasPorSemana: user.treinoAtual.diasPorSemana,
+        divisao: user.treinoAtual.divisao,
+      } : null,
+      // Dados da anamnese (se preenchida)
+      anamnese: user.anamnese || null,
+      // Preferências de treino
+      diasTreino: user.preferencias?.diasTreino || null,
     };
 
     const plano = await gerarPlanoNutricional(params);

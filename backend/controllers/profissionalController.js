@@ -46,7 +46,10 @@ const meusClientes = async (req, res) => {
       status: 'ativo'
     }).populate('cliente', 'nome email idade peso altura frequencia treinoAtual lastLogin anamnese contato');
 
-    res.json({ success: true, clientes: vinculos.map(v => v.cliente) });
+    res.json({
+      success: true,
+      clientes: vinculos.map(v => ({ ...v.cliente.toObject(), vinculoId: v._id }))
+    });
   } catch (error) {
     console.error('Erro ao buscar clientes:', error);
     res.status(500).json({ success: false, message: 'Erro ao buscar clientes' });
@@ -261,6 +264,23 @@ const limparDados = async (req, res) => {
   }
 };
 
+const desvincular = async (req, res) => {
+  try {
+    const vinculo = await Vinculo.findOne({
+      _id: req.params.id,
+      $or: [{ cliente: req.user._id }, { profissional: req.user._id }]
+    });
+    if (!vinculo) {
+      return res.status(404).json({ success: false, message: 'Vínculo não encontrado.' });
+    }
+    await Vinculo.deleteOne({ _id: vinculo._id });
+    res.json({ success: true, message: 'Vínculo desfeito com sucesso.' });
+  } catch (error) {
+    console.error('Erro ao desvincular:', error);
+    res.status(500).json({ success: false, message: 'Erro ao desvincular.' });
+  }
+};
+
 module.exports = {
   listarProfissionais,
   meusClientes,
@@ -269,5 +289,6 @@ module.exports = {
   responderVinculo,
   vinculosPendentes,
   meusVinculos,
-  limparDados
+  limparDados,
+  desvincular
 };

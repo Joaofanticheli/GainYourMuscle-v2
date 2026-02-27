@@ -487,6 +487,33 @@
 .vinculo-status.pendente { color: #fbbf24; }
 .vinculo-status.ativo    { color: #4ade80; font-style: normal; font-weight: 600; }
 
+.vinculo-ativo-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-desvincular {
+  padding: 0.35rem 0.85rem;
+  background: transparent;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  border-radius: 6px;
+  color: #f87171;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-desvincular:hover:not(:disabled) {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: #f87171;
+}
+
+.btn-desvincular:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 /* ── Card IA ── */
 .prof-card-ia {
   border-color: rgba(124,58,237,0.4);

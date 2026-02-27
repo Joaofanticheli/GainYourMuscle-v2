@@ -3,6 +3,7 @@
 // ============================================================================
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { userAPI, workoutAPI } from '../services/api';
 import Navbar from '../components/Navbar';
@@ -66,6 +67,7 @@ const tipoLabelMap = { personal: 'Personal Trainer', nutricionista: 'Nutricionis
 // ── Aba Perfil ──────────────────────────────────────────────────────────────
 const PerfilConteudo = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const isProfissional = user?.role === 'profissional';
 
   const [editando, setEditando] = useState(false);
@@ -229,8 +231,18 @@ const PerfilConteudo = () => {
                     <span className="dado-valor">{user?.altura} cm</span>
                   </div>
                   <div className="dado-item">
-                    <span className="dado-label">Frequência Atual</span>
-                    <span className="dado-valor">{user?.frequencia}x por semana</span>
+                    <span className="dado-label">Ficha de Saúde</span>
+                    <span className="dado-valor">
+                      {user?.anamnese ? (
+                        <button className="btn btn-outline btn-sm" onClick={() => navigate('/minha-anamnese')}>
+                          Atualizar Ficha
+                        </button>
+                      ) : (
+                        <button className="btn btn-primary btn-sm" onClick={() => navigate('/minha-anamnese')}>
+                          Preencher Ficha
+                        </button>
+                      )}
+                    </span>
                   </div>
                 </>
               )}

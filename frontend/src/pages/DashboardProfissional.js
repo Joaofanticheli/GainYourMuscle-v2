@@ -19,6 +19,7 @@ const DashboardProfissional = () => {
   const [abaAtiva, setAbaAtiva] = useState('clientes');
   const [loading, setLoading] = useState(true);
   const [fichaAberta, setFichaAberta] = useState(null); // ID do cliente com ficha expandida
+  const [desvinculando, setDesvinculando] = useState(null);
 
   // Nova consulta
   const [novaConsulta, setNovaConsulta] = useState({ clienteId: '', data: '', hora: '', notas: '' });
@@ -61,6 +62,27 @@ const DashboardProfissional = () => {
       body: JSON.stringify({ acao }),
     });
     carregar();
+  };
+
+  const desvincularAluno = async (cliente) => {
+    if (!window.confirm(`Desvincular ${cliente.nome}?`)) return;
+    setDesvinculando(cliente._id);
+    try {
+      const res = await fetch(`${API}/api/profissional/vinculos/${cliente.vinculoId}`, {
+        method: 'DELETE',
+        headers,
+      });
+      const data = await res.json();
+      if (data.success) {
+        carregar();
+      } else {
+        alert(data.message || 'Erro ao desvincular.');
+      }
+    } catch {
+      alert('Erro de conexão.');
+    } finally {
+      setDesvinculando(null);
+    }
   };
 
   const abrirWhatsApp = (cliente) => {
@@ -323,6 +345,13 @@ const DashboardProfissional = () => {
                             WhatsApp
                           </button>
                         )}
+                        <button
+                          className="btn-desvincular-prof"
+                          onClick={() => desvincularAluno(c)}
+                          disabled={desvinculando === c._id}
+                        >
+                          {desvinculando === c._id ? 'Removendo...' : 'Desvincular'}
+                        </button>
                       </div>
                       {fichaAberta === c._id && renderFicha(c.anamnese)}
                     </div>

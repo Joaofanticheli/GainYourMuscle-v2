@@ -140,13 +140,19 @@ const Dashboard = () => {
               </div>
             ) : (
               <div>
-                <p>Seu profissional irá montar seu treino. Preencha sua ficha para que ele possa começar!</p>
-                <button
-                  className="btn btn-outline"
-                  onClick={() => navigate('/minha-anamnese')}
-                >
-                  Preencher Ficha de Saúde
-                </button>
+                {user?.anamnese ? (
+                  <p>Ficha preenchida! Aguardando seu profissional montar seu treino.</p>
+                ) : (
+                  <>
+                    <p>Seu profissional irá montar seu treino. Preencha sua ficha para que ele possa começar!</p>
+                    <button
+                      className="btn btn-outline"
+                      onClick={() => navigate('/minha-anamnese')}
+                    >
+                      Preencher Ficha de Saúde
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>
@@ -213,10 +219,6 @@ const Dashboard = () => {
               <div className="stat-item">
                 <span className="stat-label">Altura:</span>
                 <span className="stat-value">{user?.altura} cm</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-label">Frequência:</span>
-                <span className="stat-value">{user?.frequencia}x/semana</span>
               </div>
             </div>
           </div>

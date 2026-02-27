@@ -84,6 +84,27 @@
 
 .btn-whats-cliente:hover { opacity: 0.85; }
 
+.btn-desvincular-prof {
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 6px;
+  color: #ef4444;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-desvincular-prof:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+}
+
+.btn-desvincular-prof:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 /* ── Agenda ── */
 .agenda-form-card {
   background: #fff;

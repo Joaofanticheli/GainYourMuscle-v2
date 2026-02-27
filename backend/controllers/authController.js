@@ -295,7 +295,7 @@ const forgotPassword = async (req, res) => {
     // Envia o email via Resend (funciona no Render via HTTPS)
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: 'GainYourMuscle <onboarding@resend.dev>',
       to: user.email,
       subject: 'Recuperação de Senha - GainYourMuscle',
@@ -319,6 +319,16 @@ const forgotPassword = async (req, res) => {
       `
     });
 
+    if (error) {
+      console.error('Resend error:', JSON.stringify(error));
+      return res.status(500).json({
+        success: false,
+        message: 'Erro ao enviar email. Tente novamente mais tarde.',
+        detail: error.message
+      });
+    }
+
+    console.log('Email enviado com sucesso, id:', data?.id);
     res.json({
       success: true,
       message: 'Se esse email estiver cadastrado, você receberá as instruções em breve.'
@@ -328,8 +338,7 @@ const forgotPassword = async (req, res) => {
     console.error('Erro em forgot password:', error.message || error);
     res.status(500).json({
       success: false,
-      message: 'Erro ao enviar email. Tente novamente mais tarde.',
-      detail: error.message
+      message: 'Erro ao enviar email. Tente novamente mais tarde.'
     });
   }
 };

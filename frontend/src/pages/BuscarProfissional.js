@@ -22,6 +22,7 @@ const BuscarProfissional = () => {
   const [filtro, setFiltro] = useState('');
   const [loading, setLoading] = useState(true);
   const [solicitando, setSolicitando] = useState(null);
+  const [desvinculando, setDesvinculando] = useState(null);
 
   const headers = { Authorization: `Bearer ${token}` };
 
@@ -55,6 +56,34 @@ const BuscarProfissional = () => {
   const statusVinculo = (profId) => {
     const v = meusVinculos.find(v => v.profissional?._id === profId);
     return v ? v.status : null;
+  };
+
+  const vinculoId = (profId) => {
+    const v = meusVinculos.find(v => v.profissional?._id === profId);
+    return v ? v._id : null;
+  };
+
+  const desvincular = async (profId) => {
+    if (!window.confirm('Deseja realmente desvincular deste profissional?')) return;
+    const id = vinculoId(profId);
+    if (!id) return;
+    setDesvinculando(profId);
+    try {
+      const res = await fetch(`${API}/api/profissional/vinculos/${id}`, {
+        method: 'DELETE',
+        headers,
+      });
+      const data = await res.json();
+      if (data.success) {
+        carregar();
+      } else {
+        alert(data.message || 'Erro ao desvincular.');
+      }
+    } catch {
+      alert('Erro de conexão.');
+    } finally {
+      setDesvinculando(null);
+    }
   };
 
   const abrirWhatsApp = (prof) => {
@@ -94,7 +123,18 @@ const BuscarProfissional = () => {
 
   const renderBotao = (prof) => {
     const status = statusVinculo(prof._id);
-    if (status === 'ativo')    return <span className="vinculo-status ativo">Vinculado ✓</span>;
+    if (status === 'ativo') return (
+      <div className="vinculo-ativo-actions">
+        <span className="vinculo-status ativo">Vinculado ✓</span>
+        <button
+          className="btn-desvincular"
+          onClick={() => desvincular(prof._id)}
+          disabled={desvinculando === prof._id}
+        >
+          {desvinculando === prof._id ? 'Removendo...' : 'Desvincular'}
+        </button>
+      </div>
+    );
     if (status === 'pendente') return <span className="vinculo-status pendente">Aguardando resposta</span>;
     if (status === 'recusado') return <span className="vinculo-status">Recusado</span>;
 
