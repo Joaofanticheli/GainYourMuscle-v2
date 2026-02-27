@@ -685,9 +685,9 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
   );
 };
 
-const WorkoutGeneratorGated = () => (
+const WorkoutGeneratorGated = ({ embedded, onSuccess }) => (
   <ProfissionalGate tipo="treino">
-    <WorkoutGenerator />
+    <WorkoutGenerator embedded={embedded} onSuccess={onSuccess} />
   </ProfissionalGate>
 );
 

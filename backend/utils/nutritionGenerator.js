@@ -275,6 +275,53 @@ const JSON_SCHEMA = `{
   "avisoMedico": "string obrigatória com aviso de que o plano é educativo e recomendação de acompanhamento profissional"
 }`;
 
+// ── Recalcula calorias e macros matematicamente (corrige erros da IA) ─────────
+function recalcularTotais(plano) {
+  let totalCal = 0, totalProt = 0, totalCarbo = 0, totalGord = 0;
+
+  plano.refeicoes = plano.refeicoes.map(refeicao => {
+    let refCal = 0, refProt = 0, refCarbo = 0, refGord = 0;
+
+    refeicao.alimentos = (refeicao.alimentos || []).map(alimento => {
+      const p = Number(alimento.proteina)    || 0;
+      const c = Number(alimento.carboidrato) || 0;
+      const g = Number(alimento.gordura)     || 0;
+      const cal = Math.round((p * 4) + (c * 4) + (g * 9));
+      refProt  += p;
+      refCarbo += c;
+      refGord  += g;
+      refCal   += cal;
+      return { ...alimento, calorias: cal };
+    });
+
+    refCal  = Math.round(refCal);
+    refProt  = Math.round(refProt);
+    refCarbo = Math.round(refCarbo);
+    refGord  = Math.round(refGord);
+
+    totalCal  += refCal;
+    totalProt  += refProt;
+    totalCarbo += refCarbo;
+    totalGord  += refGord;
+
+    return {
+      ...refeicao,
+      calorias: refCal,
+      macros: { proteina: refProt, carbo: refCarbo, gordura: refGord },
+    };
+  });
+
+  plano.calorias = Math.round(totalCal);
+  plano.macros = {
+    ...plano.macros,
+    proteina:    Math.round(totalProt),
+    carboidrato: Math.round(totalCarbo),
+    gordura:     Math.round(totalGord),
+  };
+
+  return plano;
+}
+
 // ── Validação do retorno ──────────────────────────────────────────────────────
 function validarPlano(plano) {
   if (!plano || typeof plano !== 'object') throw new Error('Resposta não é um objeto');
@@ -283,8 +330,7 @@ function validarPlano(plano) {
 
   if (!plano.titulo) plano.titulo = 'Plano Nutricional Personalizado';
   if (!plano.descricao) plano.descricao = 'Plano gerado com base no seu perfil e objetivo.';
-  if (!plano.calorias || plano.calorias < 1000) plano.calorias = 2000;
-  if (!plano.macros) plano.macros = { proteina: 150, carboidrato: 200, gordura: 67, fibraMinima: 25 };
+  if (!plano.macros) plano.macros = { proteina: 0, carboidrato: 0, gordura: 0, fibraMinima: 25 };
   if (!Array.isArray(plano.dicas)) plano.dicas = [];
   if (!Array.isArray(plano.suplementacao)) plano.suplementacao = [];
   if (!plano.avisoMedico)
@@ -292,9 +338,11 @@ function validarPlano(plano) {
 
   plano.refeicoes.forEach(r => {
     if (!r.alimentos) r.alimentos = [];
-    if (!r.calorias) r.calorias = 0;
     if (!r.macros) r.macros = { proteina: 0, carbo: 0, gordura: 0 };
   });
+
+  // Recalcula todos os totais matematicamente — garante consistência
+  plano = recalcularTotais(plano);
 
   plano.geradoEm = new Date().toISOString();
 
