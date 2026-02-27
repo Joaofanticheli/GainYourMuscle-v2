@@ -4,7 +4,7 @@
 
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const User = require('../models/User');
 
 /**
@@ -292,20 +292,11 @@ const forgotPassword = async (req, res) => {
     const frontendUrl = process.env.FRONTEND_URL || 'https://projetogym.vercel.app';
     const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
-    // Configura o transporter com SMTP explícito do Gmail
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
+    // Envia o email via Resend (funciona no Render via HTTPS)
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    // Envia o email
-    await transporter.sendMail({
-      from: `"GainYourMuscle" <${process.env.EMAIL_USER}>`,
+    await resend.emails.send({
+      from: 'GainYourMuscle <onboarding@resend.dev>',
       to: user.email,
       subject: 'Recuperação de Senha - GainYourMuscle',
       html: `
