@@ -2,7 +2,7 @@
   "name": "gainyourmuscle",
   "version": "1.0.0",
   "private": true,
-  "homepage": "./",
+  "homepage": "/",
   "dependencies": {
     "@capacitor/android": "^8.1.0",
     "@capacitor/cli": "^8.1.0",
