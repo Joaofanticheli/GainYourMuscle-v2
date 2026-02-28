@@ -170,8 +170,26 @@ Amendoim torrado: 26.2g P | 21.1g C | 44.0g G | 581kcal
 Castanha do pará (1 unid ≈ 5g): 14.5g P | 15.1g C | 63.5g G | 656kcal
 Whey protein (padrão): 80g P | 5g C | 5g G | 385kcal`;
 
+// ── Calcula meta calórica deterministicamente (Mifflin-St Jeor) ──────────────
+function calcularMetaCalorica({ peso, altura, idade, sexo, atividade, objetivo }) {
+  if (!peso || !altura || !idade || !sexo) return 0;
+
+  const tmb = sexo === 'masculino'
+    ? (10 * peso) + (6.25 * altura) - (5 * idade) + 5
+    : (10 * peso) + (6.25 * altura) - (5 * idade) - 161;
+
+  const fatorAtividade = { sedentario: 1.2, leve: 1.375, moderado: 1.55, muito_ativo: 1.725 };
+  const tdee = Math.round(tmb * (fatorAtividade[atividade] || 1.55));
+
+  const ajuste = { emagrecimento: -400, ganho_massa: 275, recomposicao: 0, manutencao: 0, saude_geral: 0, performance: 100 };
+  const meta = tdee + (ajuste[objetivo] || 0);
+
+  const minimo = sexo === 'masculino' ? 1500 : 1200;
+  return Math.max(Math.round(meta), minimo);
+}
+
 // ── Monta o prompt ────────────────────────────────────────────────────────────
-function buildNutritionPrompt(params) {
+function buildNutritionPrompt(params, metaCalorica = 0) {
   const {
     objetivo, restricao, atividade, refeicoes, tempoCozinhar,
     foraLar, saude, suplementos, orcamento, dietaAnterior,
@@ -260,7 +278,12 @@ INSTRUÇÕES PARA O PLANO NUTRICIONAL:
 
 ${TACO_REFERENCIA}
 
-⚠️ OBRIGATÓRIO: Calcule os macros de CADA ALIMENTO usando a tabela TACO acima como referência. Ajuste proporcionalmente para a quantidade indicada. A fórmula kcal = (P×4)+(C×4)+(G×9) DEVE ser respeitada em todos os alimentos.`;
+⚠️ OBRIGATÓRIO: Calcule os macros de CADA ALIMENTO usando a tabela TACO acima como referência. Ajuste proporcionalmente para a quantidade indicada. A fórmula kcal = (P×4)+(C×4)+(G×9) DEVE ser respeitada em todos os alimentos.${metaCalorica > 0 ? `
+
+🎯 ALVO CALÓRICO FIXO (calculado pelo servidor via Mifflin-St Jeor): ${metaCalorica} kcal/dia.
+VOCÊ DEVE gerar alimentos em quantidades suficientes para que a soma de (P×4)+(C×4)+(G×9) de TODOS os alimentos do plano = ${metaCalorica} kcal.
+Se o total estiver baixo, AUMENTE as quantidades dos alimentos proporcionalmente até atingir ${metaCalorica} kcal.
+NÃO retorne um plano com menos de ${Math.round(metaCalorica * 0.9)} kcal nem mais de ${Math.round(metaCalorica * 1.1)} kcal.` : ''}`;
 }
 
 // ── Schema JSON esperado ──────────────────────────────────────────────────────
@@ -354,6 +377,29 @@ function recalcularTotais(plano) {
   return plano;
 }
 
+// ── Escala macros para atingir meta calórica se desvio > 10% ─────────────────
+function escalarParaMeta(plano, metaCalorica) {
+  const atual = plano.calorias;
+  if (!metaCalorica || !atual || atual <= 0) return plano;
+
+  const diff = Math.abs(atual - metaCalorica) / metaCalorica;
+  if (diff <= 0.10) return plano; // dentro de 10% — ok
+
+  const fator = metaCalorica / atual;
+
+  plano.refeicoes = plano.refeicoes.map(ref => ({
+    ...ref,
+    alimentos: ref.alimentos.map(al => ({
+      ...al,
+      proteina:    Math.round((Number(al.proteina)    || 0) * fator * 10) / 10,
+      carboidrato: Math.round((Number(al.carboidrato) || 0) * fator * 10) / 10,
+      gordura:     Math.round((Number(al.gordura)     || 0) * fator * 10) / 10,
+    })),
+  }));
+
+  return recalcularTotais(plano);
+}
+
 // ── Validação do retorno ──────────────────────────────────────────────────────
 function validarPlano(plano) {
   if (!plano || typeof plano !== 'object') throw new Error('Resposta não é um objeto');
@@ -383,6 +429,8 @@ function validarPlano(plano) {
 
 // ── Função principal ──────────────────────────────────────────────────────────
 async function gerarPlanoNutricional(params) {
+  const metaCalorica = calcularMetaCalorica(params);
+
   const completion = await groq.chat.completions.create({
     messages: [
       {
@@ -415,7 +463,7 @@ Responda SOMENTE com um objeto JSON válido. Sem markdown, sem \`\`\`json, sem t
       },
       {
         role: 'user',
-        content: `${buildNutritionPrompt(params)}\n\nRetorne APENAS o JSON seguindo este schema exato:\n${JSON_SCHEMA}`,
+        content: `${buildNutritionPrompt(params, metaCalorica)}\n\nRetorne APENAS o JSON seguindo este schema exato:\n${JSON_SCHEMA}`,
       },
     ],
     model: 'llama-3.3-70b-versatile',
@@ -436,7 +484,12 @@ Responda SOMENTE com um objeto JSON válido. Sem markdown, sem \`\`\`json, sem t
     plano = JSON.parse(match[0]);
   }
 
-  const planoFinal = validarPlano(plano);
+  let planoFinal = validarPlano(plano);
+
+  // Escala macros se o total gerado desviou mais de 10% da meta
+  if (metaCalorica > 0) {
+    planoFinal = escalarParaMeta(planoFinal, metaCalorica);
+  }
 
   // Calcula água diária deterministicamente (35ml/kg)
   if (params.peso) {
