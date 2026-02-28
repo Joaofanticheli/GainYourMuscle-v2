@@ -563,6 +563,52 @@
   margin-top: 24px;
 }
 
+.anamnese-ja-preenchida {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 8px;
+}
+
+.anamnese-ja-preenchida .anamnese-check {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.anamnese-ja-preenchida strong {
+  display: block;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.anamnese-ja-preenchida p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.btn-atualizar-anamnese {
+  margin-left: auto;
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  color: var(--primary);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.btn-atualizar-anamnese:hover {
+  background: rgba(139, 92, 246, 0.15);
+}
+
 .parq-aviso {
   background: rgba(255, 193, 7, 0.12);
   border: 1px solid rgba(255, 193, 7, 0.4);

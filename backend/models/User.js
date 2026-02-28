@@ -302,7 +302,7 @@ UserSchema.methods.dadosPublicos = function() {
     contato: this.contato,
     role: this.role,
     createdAt: this.createdAt,
-    anamnese: this.anamnese ? true : null
+    anamnese: this.anamnese || null
   };
 
   if (this.role === 'profissional' && this.profissional) {

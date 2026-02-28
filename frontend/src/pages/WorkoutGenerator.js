@@ -2,9 +2,10 @@
 // PÁGINA GERADOR DE TREINO - Questionário e Geração
 // ============================================================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { workoutAPI } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import { WorkoutManual } from './WorkoutManual';
 import ProfissionalGate from '../components/ProfissionalGate';
@@ -40,11 +41,13 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
   const [searchParams] = useSearchParams();
   const clienteId   = searchParams.get('cliente');
   const clienteNome = searchParams.get('clienteNome');
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [celebrando, setCelebrando] = useState(false);
   const [dadosCelebracao, setDadosCelebracao] = useState({});
   const [abaAtiva, setAbaAtiva] = useState('gerar');
+  const [anamnesePreenchida, setAnamnesePreenchida] = useState(false);
 
   const DIAS_SEMANA = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'];
 
@@ -81,6 +84,25 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
     medicamento:       'nao',
     medicamentoDescricao: '',
   });
+
+  // Pré-preenche campos de anamnese se o aluno já tiver a ficha salva
+  useEffect(() => {
+    if (user?.anamnese && typeof user.anamnese === 'object') {
+      const a = user.anamnese;
+      setFormData(prev => ({
+        ...prev,
+        parqRespostas:        a.parqRespostas        || Array(7).fill('nao'),
+        doencaCronica:        a.doencaCronica        || 'nao',
+        doencaDescricao:      a.doencaDescricao      || '',
+        medicamento:          a.medicamento          || 'nao',
+        medicamentoDescricao: a.medicamentoDescricao || '',
+        lesao:                a.lesao                || '',
+        localLesao:           a.localLesao           || '',
+        lesaoDescricao:       a.lesaoDescricao       || '',
+      }));
+      setAnamnesePreenchida(true);
+    }
+  }, [user]);
 
   const toggleDia = (dia) => {
     setFormData(prev => {
@@ -298,7 +320,23 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
             <form className="generator-form" onSubmit={handleSubmit}>
             {error && <div className="alert alert-error">{error}</div>}
 
-            {/* ── 1. ANAMNESE DE SAÚDE (PRIMEIRO — conforme orientação do personal) ── */}
+            {/* ── 1. ANAMNESE DE SAÚDE ── */}
+            {anamnesePreenchida ? (
+              <div className="anamnese-ja-preenchida">
+                <span className="anamnese-check">✅</span>
+                <div>
+                  <strong>Ficha de saúde já preenchida</strong>
+                  <p>Seus dados de saúde estão salvos e serão usados na geração do treino.</p>
+                </div>
+                <button
+                  type="button"
+                  className="btn-atualizar-anamnese"
+                  onClick={() => setAnamnesePreenchida(false)}
+                >
+                  Atualizar ficha
+                </button>
+              </div>
+            ) : (
             <fieldset className="fieldset-parq">
               <legend>🏥 Anamnese de Saúde</legend>
               <p className="fieldset-desc">
@@ -441,6 +479,7 @@ const WorkoutGenerator = ({ embedded = false, onSuccess }) => {
                 </div>
               )}
             </fieldset>
+            )}
 
             {/* ── 2. OBJETIVO ── */}
             <fieldset className="fieldset-objetivo">
