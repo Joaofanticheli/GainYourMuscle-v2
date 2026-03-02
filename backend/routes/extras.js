@@ -138,14 +138,16 @@ function toSlug(str) {
     .replace(/\s+/g, '-');
 }
 
-// ── GIF de exercício via mapeamento ──────────────────────────────────────────
+// ── GIF de exercício via arquivos locais do frontend ─────────────────────────
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://gain-your-muscle-v2.vercel.app';
+
 router.get('/exercise-gif', protect, async (req, res) => {
   const { nome } = req.query;
   if (!nome) return res.status(400).json({ success: false });
 
   const nomeNorm = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s]/g, '').trim();
   const slug = EXERCISE_GIFS[nomeNorm] || toSlug(nome);
-  const gifUrl = `https://www.mundoboaforma.com.br/wp-content/uploads/exercicios/${slug}.gif`;
+  const gifUrl = `${FRONTEND_URL}/gifs/${slug}.gif`;
 
   res.json({ success: true, gifUrl });
 });
