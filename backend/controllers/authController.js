@@ -390,7 +390,7 @@ const resetPassword = async (req, res) => {
     user.password = novaSenha;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
     res.json({
       success: true,
