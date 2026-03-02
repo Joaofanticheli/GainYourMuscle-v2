@@ -236,7 +236,7 @@ const updatePassword = async (req, res) => {
       });
     }
 
-    if (novaSenha.length < 6) {
+    if (novaSenha.trim().length < 6) {
       return res.status(400).json({
         success: false,
         message: 'Nova senha deve ter no mínimo 6 caracteres'
@@ -363,7 +363,7 @@ const resetPassword = async (req, res) => {
     const { token } = req.params;
     const { novaSenha } = req.body;
 
-    if (!novaSenha || novaSenha.length < 6) {
+    if (!novaSenha || novaSenha.trim().length < 6) {
       return res.status(400).json({
         success: false,
         message: 'A nova senha deve ter no mínimo 6 caracteres'
