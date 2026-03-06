@@ -222,3 +222,176 @@
   .agenda-form-row { grid-template-columns: 1fr; }
   .prof-abas { overflow-x: auto; }
 }
+
+/* ── Ver Treinos ── */
+.btn-ver-treinos {
+  background: rgba(139,92,246,0.12);
+  color: #c4b5fd;
+  border: 1px solid rgba(139,92,246,0.3);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 0.82em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-ver-treinos:hover {
+  background: rgba(139,92,246,0.2);
+}
+
+/* ── Lista de treinos do cliente ── */
+.treinos-cliente-lista {
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.treinos-cliente-loading,
+.treinos-cliente-vazio {
+  padding: 12px;
+  color: var(--muted);
+  font-size: 0.85em;
+  text-align: center;
+}
+
+.treino-item-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.treino-item-card.arquivado {
+  opacity: 0.55;
+  border-style: dashed;
+}
+
+.treino-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.treino-item-nome {
+  font-weight: 700;
+  font-size: 0.92em;
+  color: var(--dark);
+}
+
+.treino-item-meta {
+  font-size: 0.78em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.treino-item-data {
+  font-size: 0.75em;
+  color: var(--muted);
+}
+
+.badge-arquivado {
+  background: rgba(255,255,255,0.08);
+  color: var(--muted);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.78em;
+}
+
+.treino-item-acoes {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-treino-acao {
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.78em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-treino-acao.btn-copiar {
+  background: rgba(139,92,246,0.12);
+  color: #c4b5fd;
+  border: 1px solid rgba(139,92,246,0.25);
+}
+
+.btn-treino-acao.btn-transferir {
+  background: rgba(59,130,246,0.12);
+  color: #93c5fd;
+  border: 1px solid rgba(59,130,246,0.25);
+}
+
+.btn-treino-acao.btn-arquivar {
+  background: rgba(250,204,21,0.10);
+  color: #fde68a;
+  border: 1px solid rgba(250,204,21,0.2);
+}
+
+.btn-treino-acao.btn-deletar-treino {
+  background: rgba(239,68,68,0.1);
+  color: #fca5a5;
+  border: 1px solid rgba(239,68,68,0.2);
+}
+
+.btn-treino-acao:hover {
+  opacity: 0.8;
+}
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: #13131f;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-box h3 {
+  font-size: 1em;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+.modal-box p {
+  font-size: 0.85em;
+  color: var(--muted);
+}
+
+.modal-box select {
+  width: 100%;
+}
+
+.modal-acoes {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-acoes button {
+  flex: 1;
+}

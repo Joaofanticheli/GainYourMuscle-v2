@@ -290,3 +290,91 @@
   .manual-dia-header { flex-direction: column; align-items: flex-start; }
   .manual-dia-nome { width: 100%; }
 }
+
+/* ── Config global em lote ── */
+.manual-config-global {
+  border-color: rgba(139,92,246,0.25);
+  background: rgba(139,92,246,0.04);
+}
+
+.config-global-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.config-global-row .form-group {
+  flex: 1;
+  min-width: 100px;
+}
+
+.btn-aplicar-global {
+  background: var(--gradient);
+  color: #07070f;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-weight: 700;
+  font-size: 0.88em;
+  cursor: pointer;
+  white-space: nowrap;
+  height: 40px;
+  align-self: flex-end;
+}
+
+.btn-aplicar-global:hover {
+  opacity: 0.85;
+}
+
+.config-global-hint {
+  color: var(--muted);
+  font-size: 0.78em;
+  margin-top: 8px;
+}
+
+/* ── Obs geral do dia ── */
+.manual-obs-geral {
+  margin-bottom: 16px;
+}
+
+.manual-obs-geral input {
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: var(--muted);
+  font-size: 0.85em;
+  width: 100%;
+}
+
+/* ── Botão copiar treino/dia ── */
+.btn-copiar-dia {
+  background: rgba(139,92,246,0.12);
+  color: #c4b5fd;
+  border: 1px solid rgba(139,92,246,0.3);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.82em;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-copiar-dia:hover:not(:disabled) {
+  background: rgba(139,92,246,0.2);
+}
+
+.btn-copiar-dia:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Botão copiar exercício ── */
+.btn-ex-copy {
+  color: #a78bfa !important;
+}
+
+.btn-ex-copy:hover {
+  background: rgba(139,92,246,0.15) !important;
+}
