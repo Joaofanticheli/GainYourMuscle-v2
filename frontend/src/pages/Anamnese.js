@@ -59,7 +59,7 @@ const FORM_INICIAL = {
 
 // ── Componente principal ──────────────────────────────────────────────────────
 const Anamnese = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
   const [form, setForm]       = useState(FORM_INICIAL);
   const [salvando, setSalvando] = useState(false);
@@ -109,7 +109,8 @@ const Anamnese = () => {
 
     setSalvando(true);
     try {
-      await userAPI.saveAnamnese(form);
+      const res = await userAPI.saveAnamnese(form);
+      setUser(prev => ({ ...prev, anamnese: res.data.anamnese }));
       setSucesso(true);
     } catch (err) {
       setErro('Erro ao salvar ficha. Tente novamente.');
